@@ -1,0 +1,21 @@
+{
+    "PluginFileVersion" : 1,
+	
+	"FriendlyName" : "TrueSky Plugin",
+	"Version" : 1,
+	"VersionName" : "0.01",
+	"CreatedBy" : "Gamajun s.r.o.",
+	"CreatedByURL" : "http://www.gamajun.biz",
+	"MinEngineVersion" : 1579795,
+	"Description" : "TrueSky plugin for real-time sky simulation.",
+	"CategoryPath" : "Programming Rendering.Custom",
+	
+	"Modules" :
+	[
+		{
+			"Name" : "TrueSkyPlugin",
+			"Type" : "Runtime",
+			"WhitelistPlatforms" : [ "Win64", "Win32" ]
+		}
+	]
+}
