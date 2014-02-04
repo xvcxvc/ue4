@@ -1,0 +1,46 @@
+=== Build UE4 TrueSky plugin ===
+
+* Use UE4.sln (UE4.vcxproj).
+
+* Soluton file must go to the folder where your UE4 installation is (UE4 root folder)
+* Project file goes to Engine/Intermediate/ProjectFiles (i.e. folder where prj files were generated)
+* Project contains "TrueSkyPlugin" folder in Engine/UE4/Plugins
+
+* Build UE4 project.
+* Build some game project (I build QAGame). Set that game project as a startup project in VS.
+( If you want to debug, run the game project, not UE4. Otherwise you must manually attach the debugger to
+a new process.)
+
+TrueSkyPlugin currently loads "TrueSkyUI.dll" from %SIMUL%\exe\x64\VC11\Debug\TrueSkyUI.dll
+This DLL further loads Qt libraries. For that, the PATH env-variable is extended by
+%QTDIR%\bin
+%SIMUL%\exe\x64
+%SIMUL%\exe\x64\VC11\Debug
+
+It also loads Qt style-sheet from
+%SIMUL%\PlugIns\UE4\TrueSkyUI\qss
+(Note that it's all temporary solution!)
+
+Therefore before running UE4 you must properly set QTDIR and SIMUL env-variables
+
+I do it by starting VS using following batch file:
+
+@echo off
+set SIMUL=%CD%\Simul
+set QTDIR=C:\Qt64\Qt5.2.0\5.2.0\msvc2012_64
+cd "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\"
+start devenv.exe
+
+
+=== Build TrueSkyUI.dll ===
+
+* Use %SIMUL%/PlugIns/UE4/TrueSkyUI/TrueSkyUI.vcxproj
+It builds x64 DLL into %SIMUL%/exe/$(Platform)/VC11/$(Configuration)
+However UE4 plugin currently loads debug version (from .../Debug folder) only!
+* To build DLL you must build "qtwinmigrate" library first (in PlugIns/Qt/QtWinMigrate)
+ [I don't know if dependencies are correctly set]
+
+
+
+
+

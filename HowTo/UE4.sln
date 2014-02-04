@@ -1,0 +1,85 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Programs", "Programs", "{6F0C52E4-A159-426F-94A2-3C369539FF7F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{2407ED29-B02C-4F18-B501-0087FB8040B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{FD783C31-A8F3-41AA-83D6-14A64E931932}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{508E1EEA-20D0-40F3-8365-A7E2B047E662}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UE4", "Engine\Intermediate\ProjectFiles\UE4.vcxproj", "{C0617D58-D954-447A-9105-0DACC87C9312}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QAGame", "Engine\Intermediate\ProjectFiles\QAGame.vcxproj", "{5E1B6865-8E28-4B91-B355-96C60364B5FA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrueSky", "Engine\Intermediate\ProjectFiles\TrueSky.vcxproj", "{62AAA1D4-40C6-40A4-8FAC-33872972E04E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Editor|Win64 = Debug Editor|Win64
+		Debug Server|Win64 = Debug Server|Win64
+		Debug|Win64 = Debug|Win64
+		DebugGame Editor|Win64 = DebugGame Editor|Win64
+		DebugGame Server|Win64 = DebugGame Server|Win64
+		DebugGame|Win64 = DebugGame|Win64
+		Development Editor|Win64 = Development Editor|Win64
+		Development Server|Win64 = Development Server|Win64
+		Development|Win64 = Development|Win64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Debug Editor|Win64.ActiveCfg = Debug_Editor|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Debug Editor|Win64.Build.0 = Debug_Editor|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Debug Server|Win64.ActiveCfg = Development_Game|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Debug|Win64.ActiveCfg = Debug_Game|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Debug|Win64.Build.0 = Debug_Game|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.DebugGame Editor|Win64.ActiveCfg = DebugGame_Editor|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.DebugGame Editor|Win64.Build.0 = DebugGame_Editor|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.DebugGame Server|Win64.ActiveCfg = Development_Game|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.DebugGame|Win64.ActiveCfg = DebugGame_Game|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.DebugGame|Win64.Build.0 = DebugGame_Game|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Development Editor|Win64.ActiveCfg = Development_Editor|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Development Editor|Win64.Build.0 = Development_Editor|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Development Server|Win64.ActiveCfg = Development_Game|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Development|Win64.ActiveCfg = Development_Game|x64
+		{C0617D58-D954-447A-9105-0DACC87C9312}.Development|Win64.Build.0 = Development_Game|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Debug Editor|Win64.ActiveCfg = Debug_Editor|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Debug Editor|Win64.Build.0 = Debug_Editor|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Debug Server|Win64.ActiveCfg = Development_Game|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Debug|Win64.ActiveCfg = Debug_Game|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Debug|Win64.Build.0 = Debug_Game|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.DebugGame Editor|Win64.ActiveCfg = DebugGame_Editor|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.DebugGame Editor|Win64.Build.0 = DebugGame_Editor|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.DebugGame Server|Win64.ActiveCfg = Development_Game|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.DebugGame|Win64.ActiveCfg = DebugGame_Game|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.DebugGame|Win64.Build.0 = DebugGame_Game|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Development Editor|Win64.ActiveCfg = Development_Editor|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Development Editor|Win64.Build.0 = Development_Editor|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Development Server|Win64.ActiveCfg = Development_Game|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Development|Win64.ActiveCfg = Development_Game|x64
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA}.Development|Win64.Build.0 = Development_Game|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Debug Editor|Win64.ActiveCfg = Debug_Editor|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Debug Editor|Win64.Build.0 = Debug_Editor|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Debug Server|Win64.ActiveCfg = Development_Game|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Debug|Win64.ActiveCfg = Debug_Game|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Debug|Win64.Build.0 = Debug_Game|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.DebugGame Editor|Win64.ActiveCfg = DebugGame_Editor|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.DebugGame Editor|Win64.Build.0 = DebugGame_Editor|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.DebugGame Server|Win64.ActiveCfg = Development_Game|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.DebugGame|Win64.ActiveCfg = DebugGame_Game|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.DebugGame|Win64.Build.0 = DebugGame_Game|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Development Editor|Win64.ActiveCfg = Development_Editor|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Development Editor|Win64.Build.0 = Development_Editor|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Development Server|Win64.ActiveCfg = Development_Game|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Development|Win64.ActiveCfg = Development_Game|x64
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E}.Development|Win64.Build.0 = Development_Game|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C0617D58-D954-447A-9105-0DACC87C9312} = {2407ED29-B02C-4F18-B501-0087FB8040B2}
+		{5E1B6865-8E28-4B91-B355-96C60364B5FA} = {FD783C31-A8F3-41AA-83D6-14A64E931932}
+		{62AAA1D4-40C6-40A4-8FAC-33872972E04E} = {FD783C31-A8F3-41AA-83D6-14A64E931932}
+	EndGlobalSection
+EndGlobal
