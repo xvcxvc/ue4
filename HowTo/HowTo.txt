@@ -66,6 +66,14 @@ Engine/Source/Runtime/Windows/D3D11RHI/Public/D3D11RHIPrivate.h
 This is of course a temporary solution and hopefully will be fixed by Epic.
 
 
+-----------------------------------------------------------------------------------------------------------
+
+Update 2:
+
+* To successfully build current version of UE4 plugin, you need to copy "[HowTo]/Engine/Source/Runtime/Renderer/*" files into
+apropriate location in UE4. It contains modified Epic's source codes.
+
+
 
 
 
