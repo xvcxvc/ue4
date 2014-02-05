@@ -41,6 +41,41 @@ However UE4 plugin currently loads debug version (from .../Debug folder) only!
  [I don't know if dependencies are correctly set]
 
 
+-----------------------------------------------------------------------------------------------------------
+
+Update 1:
+
+* Folder structure in "HowTo" just points at places where .sln and .vcxproj files should go within installed UE4 structure.
+UE4.sln can be copied over already generated .sln file (not tested!). However, after copying TrueSkyPlugin folders/files
+into UE4 structure, GenerateProjectFiles.bat (from UE4) should generate correct .sln and .vcxproj
+-- so maybe it's better not to handle sln/vcxproj files manually but let UE4 to create them.
+
+* TrueSkyUI project has configurations to build EXE or DLL. Please setup your solution so it builds either Debug_DLL or
+Release_DLL ( after opening you solution go to Build -> Configuration Manager, choose debur/relase solution
+configuration and choose Debug_DLL/Release_DLL for TrueSkyUI )
+[exe is for testing purposes only]
+
+IMPORTANT!!!!!!
+
+* To build current version of UE4 TrueSkyPlugin, you must manually move following file:
+
+Engine/Source/Runtime/Windows/D3D11RHI/Private/D3D11RHIPrivate.h
+into
+Engine/Source/Runtime/Windows/D3D11RHI/Public/D3D11RHIPrivate.h
+
+This is of course a temporary solution and hopefully will be fixed by Epic.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

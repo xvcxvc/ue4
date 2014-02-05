@@ -8,13 +8,14 @@ namespace UnrealBuildTool.Rules
 		{
 			PublicIncludePaths.AddRange(
 				new string[] {
+					"Core"
 					// ... add public include paths required here ...
 				}
 				);
 
 			PrivateIncludePaths.AddRange(
 				new string[] {
-					"TrueSkyPlugin/Private",
+					"TrueSkyPlugin/Private"
 					// ... add other private include paths required here ...
 				}
 				);
@@ -25,6 +26,7 @@ namespace UnrealBuildTool.Rules
 					"Core",
 					"CoreUObject",
 					"Engine",
+					"UnrealEd",
 					"Slate",
 					"LevelEditor",
 					"MainFrame"
@@ -35,16 +37,14 @@ namespace UnrealBuildTool.Rules
 			PrivateDependencyModuleNames.AddRange(
 				new string[]
 				{
+                    "RHI",
+                    "D3D11RHI",
+                    "Renderer"
 					// ... add private dependencies that you statically link with here ...
 				}
 				);
 
-			DynamicallyLoadedModuleNames.AddRange(
-				new string[]
-				{
-					// ... add any modules that your module loads dynamically here ...
-				}
-				);
+            AddThirdPartyPrivateStaticDependencies("DX11");
 		}
 	}
 }

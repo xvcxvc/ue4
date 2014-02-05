@@ -3,6 +3,12 @@
 #include "TrueSkyPluginPrivatePCH.h"
 #include "LevelEditor.h"
 #include "IMainFrameModule.h"
+#include "GenericWindow.h"
+#include "WindowsWindow.h"
+#include "RendererInterface.h"
+#include "DynamicRHI.h"
+#include "D3D11RHIPrivate.h"
+
 
 class FTrueSkyPlugin : public ITrueSkyPlugin
 {
@@ -11,26 +17,60 @@ public:
 	/** IModuleInterface implementation */
 	virtual void StartupModule() OVERRIDE;
 	virtual void ShutdownModule() OVERRIDE;
+	virtual bool SupportsDynamicReloading() OVERRIDE;
+
+	/** Render delegate */
+	void RenderFrame( FPostOpaqueRenderParameters& RenderParameters );
 
 	/** Extend menu */
 	void FillMenu( FMenuBuilder& MenuBuilder );
 
+	/** Open UI */
+	void StartUI( const TCHAR* SimulPath, const TCHAR* QtPath );
+
+	/** Init rendering */
+	void InitRenderingInterface( const TCHAR* SimulPath, const TCHAR* QtPath );
+
+	/** Enable rendering */
+	void SetRenderingEnabled( bool Enabled );
+
 	/** Menu command */
 	void OnOpen();
+
+protected:
+
+	void		OnMainWindowClosed(const TSharedRef<SWindow>& Window);
 
 private:
 
 	TSharedPtr< FExtender > MenuExtender;
 
-	typedef void (* FOpenUI)();
+	typedef void (* FOpenUI)(HWND, RECT*, RECT*);
 	typedef void (* FCloseUI)();
 	typedef void (* FSetStyleSheetPath)(const TCHAR*);
+
+	typedef int (* FStaticInitInterface)( const char* shaderPath, const char* texturePath );
+	typedef int (* FStaticRenderFrame)( void* device, float* viewMatrix4x4, float* projMatrix4x4, void* halfResDepthBuffer );
+	typedef int (* FStaticTick)( float deltaTime );
+	typedef int (* FStaticOnDeviceChanged)( void * device );
 
 	FOpenUI					OpenUI;
 	FCloseUI				CloseUI;
 	FSetStyleSheetPath		SetStyleSheetPath;
 
-	TCHAR* PathEnv;
+	FStaticInitInterface	StaticInitInterface;
+	FStaticRenderFrame		StaticRenderFrame;
+	FStaticTick				StaticTick;
+	FStaticOnDeviceChanged	StaticOnDeviceChanged;
+
+	TCHAR*					PathEnv;
+	TSharedPtr<SWindow>		MainWindow;
+	bool					RenderingEnabled;
+
+	static WNDPROC			OrigMainWindowWndProc;
+	static LRESULT CALLBACK MainWindowWndProc(HWND, ::UINT, WPARAM, LPARAM);
+	static ::UINT			MessageId;
+
 };
 
 IMPLEMENT_MODULE( FTrueSkyPlugin, TrueSkyPlugin )
@@ -56,11 +96,17 @@ public:
 };
 
 
+bool FTrueSkyPlugin::SupportsDynamicReloading()
+{
+	return false;
+}
+
+
 void FTrueSkyPlugin::StartupModule()
 {
 	FTrueSkyCommands::Register();
- 	IMainFrameModule& MainFrameModule = IMainFrameModule::Get();
- 	const TSharedRef<FUICommandList>& CommandList = MainFrameModule.GetMainFrameCommandBindings();
+	IMainFrameModule& MainFrameModule = IMainFrameModule::Get();
+	const TSharedRef<FUICommandList>& CommandList = MainFrameModule.GetMainFrameCommandBindings();
 	CommandList->MapAction( FTrueSkyCommands::Get().Open, FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnOpen) );
 
 	MenuExtender = MakeShareable(new FExtender);
@@ -68,7 +114,31 @@ void FTrueSkyPlugin::StartupModule()
 	FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>( "LevelEditor" );
 	LevelEditorModule.GetMenuExtensibilityManager()->AddExtender(MenuExtender);
 
+	GetRendererModule().RegisterPostOpaqueRenderDelegate( FPostOpaqueRenderDelegate::CreateRaw(this, &FTrueSkyPlugin::RenderFrame) );
+
+	RenderingEnabled = false;
 	PathEnv = NULL;
+	MessageId = RegisterWindowMessage(L"RESIZE");
+}
+
+
+void FTrueSkyPlugin::SetRenderingEnabled( bool Enabled )
+{
+	RenderingEnabled = Enabled;
+}
+
+
+void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters )
+{	
+	//if( RenderingEnabled )
+	if( false )
+	{
+		FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
+		ID3D11Device * device = d3d11rhi->GetDevice();
+		ID3D11DeviceContext * context = d3d11rhi->GetDeviceContext();
+
+		StaticRenderFrame( device, NULL, NULL, NULL );
+	}
 }
 
 
@@ -99,6 +169,7 @@ void FTrueSkyPlugin::FillMenu( FMenuBuilder& MenuBuilder )
 	}
 	MenuBuilder.EndSection();
 }
+
 
 /** Return environment variable value */
 static TCHAR* GetEnvVariable( const TCHAR* const VariableName, int iEnvSize = 1024)
@@ -166,46 +237,59 @@ static const char* ConstructPathUTF8(const TCHAR* const BasePath, const TCHAR* c
 }
 
 
-
-void FTrueSkyPlugin::OnOpen()
+static HWND GetSWindowHWND(const TSharedPtr<SWindow>& Window)
 {
-#if PLATFORM_WINDOWS
-
-	const TCHAR* const SimulPath = GetEnvVariable(L"SIMUL");
-	const TCHAR* const QtPath = GetEnvVariable(L"QTDIR");
-	if ( SimulPath == NULL || QtPath == NULL )
+	if ( Window.IsValid() )
 	{
-		delete SimulPath;
-		delete QtPath;
-		return;
+		TSharedPtr<FWindowsWindow> WindowsWindow = StaticCastSharedPtr<FWindowsWindow>(Window->GetNativeWindow());
+		if ( WindowsWindow.IsValid() )
+		{
+			return WindowsWindow->GetHWnd();
+		}
 	}
+	return 0;
+}
 
-	if ( PathEnv == NULL )
+
+void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR* QtPath )
+{
+	const TCHAR* const DllPath = ConstructPath( SimulPath, L"\\exe\\x64\\VC11\\Debug\\UE4PluginRenderInterface.dll" );
+	check( DllPath );
+
+	void* const DllHandle = FPlatformProcess::GetDllHandle( DllPath );
+
+	if ( DllHandle != NULL )
 	{
-		const int iPathSize = 4096;
-		PathEnv = GetEnvVariable(L"PATH", iPathSize);
-		if ( PathEnv == NULL )
-		{
-			delete SimulPath;
-			delete QtPath;
-			return;
-		}
-		if ( wcslen(PathEnv) > 0 )
-		{
-			wcscat_s( PathEnv, iPathSize, L";" );
-			wcscat_s( PathEnv, iPathSize, QtPath ); wcscat_s( PathEnv, iPathSize, L"\\bin;" );
-			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64;" );
-			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64\\VC11\\Debug" );
-		}
-		else
-		{
-			wcscpy_s( PathEnv, iPathSize, QtPath ); wcscat_s( PathEnv, iPathSize, L"\\bin;" );
-			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64;" );
-			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64\\VC11\\Debug" );
-		}
-		SetEnvironmentVariable( L"PATH", PathEnv );
-	}
+		StaticInitInterface = (FStaticInitInterface)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticInitInterface") );
+		StaticRenderFrame = (FStaticRenderFrame)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticRenderFrame") );
+		StaticOnDeviceChanged = (FStaticOnDeviceChanged)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticOnDeviceChanged") );
 
+		if ( StaticInitInterface )
+		{
+			const char* const ShaderPath = ConstructPathUTF8( SimulPath, L"\\Platform\\DirectX11\\HLSL" );
+			const char* const ResourcePath = ConstructPathUTF8( SimulPath, L"\\Media\\Textures" );
+
+			StaticInitInterface( ShaderPath, ResourcePath );
+
+			if( StaticOnDeviceChanged != NULL )
+			{
+				FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
+				ID3D11Device * device = d3d11rhi->GetDevice();
+
+				if( device != NULL )
+				{
+					StaticOnDeviceChanged(device);
+				}
+			}
+
+			SetRenderingEnabled(true);
+		}
+	}
+}
+
+
+void FTrueSkyPlugin::StartUI( const TCHAR* SimulPath, const TCHAR* QtPath )
+{
 	const TCHAR* const DllPath = ConstructPath( SimulPath, L"\\exe\\x64\\VC11\\Debug\\TrueSkyUI.dll" );
 	check( DllPath );
 
@@ -225,14 +309,124 @@ void FTrueSkyPlugin::OnOpen()
 		}
 		if ( OpenUI )
 		{
-			OpenUI();
+			// Get HWND
+			IMainFrameModule& MainFrameModule = IMainFrameModule::Get();
+			TSharedPtr<SWindow> ParentWindow = MainFrameModule.GetParentWindow();
+			if ( ParentWindow.IsValid() )
+			{
+				if ( !MainWindow.IsValid() )
+				{
+					MainWindow = SNew(SWindow)
+						.Title( FText::FromString(TEXT("TrueSky")) )
+						.ClientSize( FVector2D(800.0f, 600.0f) )
+						.AutoCenter( EAutoCenter::PrimaryWorkArea )
+						.SizingRule( ESizingRule::UserSized )
+						//						.IsPopupWindow( true );
+						;
+
+					MainWindow->SetOnWindowClosed( FOnWindowClosed::CreateRaw(this, &FTrueSkyPlugin::OnMainWindowClosed) );
+
+					FSlateApplication::Get().AddWindowAsNativeChild( MainWindow.ToSharedRef(), ParentWindow.ToSharedRef() );
+				}
+
+				HWND MainWindowHWND = GetSWindowHWND(MainWindow);
+				if ( MainWindowHWND )
+				{
+					const LONG_PTR wndStyle = GetWindowLongPtr( MainWindowHWND, GWL_STYLE );
+					SetWindowLongPtr( MainWindowHWND, GWL_STYLE, wndStyle | WS_CLIPCHILDREN );
+
+					const FVector2D ClientSize = MainWindow->GetClientSizeInScreen();
+					const FMargin Margin = MainWindow->GetWindowBorderSize();
+					RECT WndRect;
+					WndRect.left = Margin.Left;
+					WndRect.top = Margin.Top + MainWindow->GetTitleBarSize().Get();
+					WndRect.right = ClientSize.X - Margin.Right;
+					WndRect.bottom = ClientSize.Y - Margin.Bottom;
+					RECT ParentRect;
+					ParentRect.left = 0;
+					ParentRect.top = 0;
+					ParentRect.right = ClientSize.X;
+					ParentRect.bottom = ClientSize.Y;
+
+					OpenUI( MainWindowHWND, &WndRect, &ParentRect );
+
+					// Overload main window's WndProc
+					OrigMainWindowWndProc = (WNDPROC)GetWindowLongPtr( MainWindowHWND, GWLP_WNDPROC );
+					SetWindowLongPtr( MainWindowHWND, GWLP_WNDPROC, (LONG_PTR)MainWindowWndProc );
+				}
+			}
 		}
 	}
+}
+
+
+void FTrueSkyPlugin::OnMainWindowClosed(const TSharedRef<SWindow>& Window)
+{
+}
+
+
+WNDPROC FTrueSkyPlugin::OrigMainWindowWndProc = NULL;
+::UINT FTrueSkyPlugin::MessageId = 0;
+
+LRESULT CALLBACK FTrueSkyPlugin::MainWindowWndProc(HWND hWnd, ::UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if ( uMsg == WM_SIZE )
+	{
+		if ( HWND ChildHWND = GetWindow(hWnd, GW_CHILD) ) 
+		{
+			PostMessage(ChildHWND, MessageId, wParam, lParam);
+		}
+	}
+	return CallWindowProc( OrigMainWindowWndProc, hWnd, uMsg, wParam, lParam );
+}
+
+
+void FTrueSkyPlugin::OnOpen()
+{
+	const TCHAR* const SimulPath = GetEnvVariable(L"SIMUL");
+	const TCHAR* const QtPath = GetEnvVariable(L"QTDIR");
+	if ( SimulPath == NULL || QtPath == NULL )
+	{
+		delete SimulPath;
+		delete QtPath;
+		return;
+	}
+
+	if ( PathEnv == NULL )
+	{
+		const int iPathSize = 4096;
+
+		PathEnv = GetEnvVariable(L"PATH", iPathSize);
+		if ( PathEnv == NULL )
+		{
+			return;
+		}
+
+		if ( wcslen(PathEnv) > 0 )
+		{
+			wcscat_s( PathEnv, iPathSize, L";" );
+			wcscat_s( PathEnv, iPathSize, QtPath ); wcscat_s( PathEnv, iPathSize, L"\\bin;" );
+			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64;" );
+			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64\\VC11\\Debug" );
+		}
+		else
+		{
+			wcscpy_s( PathEnv, iPathSize, QtPath ); wcscat_s( PathEnv, iPathSize, L"\\bin;" );
+			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64;" );
+			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64\\VC11\\Debug" );
+		}
+
+		SetEnvironmentVariable( L"PATH", PathEnv );
+	}
+
+	StartUI( SimulPath, QtPath );
+	InitRenderingInterface( SimulPath, QtPath );
 
 	delete QtPath;
 	delete SimulPath;
-	delete DllPath;
-
-#endif
 }
+
+
+
+
 
