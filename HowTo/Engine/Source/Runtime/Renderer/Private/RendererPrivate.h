@@ -43,7 +43,7 @@ public:
 	}
 
 	virtual void RegisterPostOpaqueRenderDelegate( const FPostOpaqueRenderDelegate& PostOpaqueRenderDelegate ) OVERRIDE;
-	virtual void RenderPostOpaqueExtensions() OVERRIDE;
+	virtual void RenderPostOpaqueExtensions( const FSceneView& View ) OVERRIDE;
 
 private:
 	TSet<FSceneInterface*> AllocatedScenes;

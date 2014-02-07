@@ -129,7 +129,7 @@ protected:
 	typedef void (* FSetSequence)(HWND, std::string&);
 
 	typedef int (* FStaticInitInterface)( const char* shaderPath, const char* texturePath );
-	typedef int (* FStaticRenderFrame)( void* device, float* viewMatrix4x4, float* projMatrix4x4, void* halfResDepthBuffer );
+	typedef int (* FStaticRenderFrame)( void* device, float* viewMatrix4x4, float* projMatrix4x4,  void* fullResDepthBuffer, void* halfResDepthBuffer, int viewportSizeX, int viewportSizeY );
 	typedef int (* FStaticTick)( float deltaTime );
 	typedef int (* FStaticOnDeviceChanged)( void * device );
 
@@ -148,6 +148,9 @@ protected:
 	TCHAR*					QtPath;
 
 	bool					RenderingEnabled;
+	bool					RendererInitialized;
+
+	float					CachedDeltaSeconds;
 
 	static LRESULT CALLBACK EditorWindowWndProc(HWND, ::UINT, WPARAM, LPARAM);
 	static ::UINT			MessageId;
@@ -222,10 +225,14 @@ void FTrueSkyPlugin::StartupModule()
 	SetSequence = NULL;
 
 	RenderingEnabled = false;
+	RendererInitialized = false;
 	StaticInitInterface = NULL;
 	StaticRenderFrame  = NULL;
 	StaticTick  = NULL;
 	StaticOnDeviceChanged = NULL;
+
+	//we need to pass through real DeltaSecond; from our scene Actor?
+	CachedDeltaSeconds = 0.0333f;
 
 	PathEnv = NULL;
 	SimulPath = NULL;
@@ -243,15 +250,31 @@ void FTrueSkyPlugin::SetRenderingEnabled( bool Enabled )
 
 void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters )
 {	
+	check(IsInRenderingThread());
+
 	if( RenderingEnabled )
 	{
-		StaticTick(0.0f);
+		StaticTick( CachedDeltaSeconds );
 
 		FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
 		ID3D11Device * device = d3d11rhi->GetDevice();
 		ID3D11DeviceContext * context = d3d11rhi->GetDeviceContext();
 
-		StaticRenderFrame( device, &(RenderParameters.ViewMatrix.M[0][0]), &(RenderParameters.ProjMatrix.M[0][0]), NULL );
+		FMatrix mirroredViewMatrix = RenderParameters.ViewMatrix;
+		mirroredViewMatrix.Mirror(EAxis::Z,EAxis::Y);
+
+		//unreal unit is 10cm
+		mirroredViewMatrix.M[3][0] *= 0.1f;
+		mirroredViewMatrix.M[3][1] *= 0.1f;
+		mirroredViewMatrix.M[3][2] *= 0.1f;
+		mirroredViewMatrix.M[3][3] *= 0.1f;
+
+		FD3D11TextureBase * depthTex = static_cast<FD3D11Texture2D*>(RenderParameters.DepthTexture);	
+		FD3D11TextureBase * halfDepthTex = static_cast<FD3D11Texture2D*>(RenderParameters.SmallDepthTexture);		
+
+		StaticRenderFrame( device, &(mirroredViewMatrix.M[0][0]), &(RenderParameters.ProjMatrix.M[0][0]), (void*)depthTex->GetShaderResourceView(), 
+						   (void*)halfDepthTex->GetShaderResourceView(), RenderParameters.ViewportRect.Width(),
+						   RenderParameters.ViewportRect.Height() );
 	}
 }
 
@@ -410,7 +433,7 @@ void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR
 			StaticOnDeviceChanged(device);
 		}
 
-		SetRenderingEnabled(true);
+		RendererInitialized = true;
 	}
 }
 
@@ -591,7 +614,15 @@ void FTrueSkyPlugin::InitPaths()
 void FTrueSkyPlugin::OnOpen()
 {
 	InitPaths();
-	InitRenderingInterface( SimulPath, QtPath );
+	if( RendererInitialized )
+	{
+		SetRenderingEnabled(!RenderingEnabled);
+	}
+	else
+	{
+		InitRenderingInterface( SimulPath, QtPath );
+		SetRenderingEnabled(true);
+	}
 }
 
 

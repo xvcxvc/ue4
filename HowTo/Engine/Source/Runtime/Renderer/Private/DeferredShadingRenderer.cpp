@@ -553,7 +553,19 @@ void FDeferredShadingSceneRenderer::Render()
 	// This needs to happen before occlusion tests, which makes use of the small depth buffer.
 	UpdateDownsampledDepthSurface();
 
-	GetRendererModule().RenderPostOpaqueExtensions();
+/*	if( Views.Num() > 0 )
+	{
+		GSceneRenderTargets.BeginRenderingSceneColor();
+
+//		FLinearColor ClearColor(0,0,0,1);
+//		RHIClear(true,ClearColor,true,0.f,true,0, FIntRect());
+
+		GetRendererModule().RenderPostOpaqueExtensions(Views[0]);
+
+		GSceneRenderTargets.FinishRenderingSceneColor();
+	}
+*/
+
 
 	// Issue occlusion queries
 	// This is done after the downsampled depth buffer is created so that it can be used for issuing queries
@@ -654,6 +666,22 @@ void FDeferredShadingSceneRenderer::Render()
 		}
 		RenderTranslucency();
 	}
+
+
+	if( Views.Num() > 0 )
+	{
+		GSceneRenderTargets.BeginRenderingSceneColor();
+
+//		FLinearColor ClearColor(0,0,0,1);
+//		RHIClear(true,ClearColor,true,0.f,true,0, FIntRect());
+
+		GetRendererModule().RenderPostOpaqueExtensions(Views[0]);
+
+		//GSceneRenderTargets.FinishRenderingSceneColor(false);
+	}
+
+
+
 
 	if (ViewFamily.EngineShowFlags.LightShafts)
 	{
@@ -883,7 +911,7 @@ FGlobalBoundShaderState DownsampleDepthBoundShaderState;
 /** Updates the downsized depth buffer with the current full resolution depth buffer. */
 void FDeferredShadingSceneRenderer::UpdateDownsampledDepthSurface()
 {
-	if (GSceneRenderTargets.UseDownsizedOcclusionQueries() && IsFeatureLevelSupported(GRHIShaderPlatform, ERHIFeatureLevel::SM3))
+	if(/*GSceneRenderTargets.UseDownsizedOcclusionQueries() && */IsFeatureLevelSupported(GRHIShaderPlatform, ERHIFeatureLevel::SM3))
 	{
 		RHISetRenderTarget(NULL, GSceneRenderTargets.GetSmallDepthSurface());
 

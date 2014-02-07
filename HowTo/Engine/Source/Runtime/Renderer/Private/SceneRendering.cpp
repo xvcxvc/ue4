@@ -836,11 +836,20 @@ void FRendererModule::RegisterPostOpaqueRenderDelegate( const FPostOpaqueRenderD
 	this->PostOpaqueRenderDelegate = PostOpaqueRenderDelegate;
 }
 
-void FRendererModule::RenderPostOpaqueExtensions()
+void FRendererModule::RenderPostOpaqueExtensions( const FSceneView& View )
 {
 	check(IsInRenderingThread());
 
 	FPostOpaqueRenderParameters RenderParameters;
+
+	RenderParameters.ViewMatrix = View.ViewMatrices.ViewMatrix;
+	RenderParameters.ProjMatrix = View.ViewMatrices.ProjMatrix;
+
+
+	RenderParameters.DepthTexture = GSceneRenderTargets.GetSceneDepthSurface()->GetTexture2D();
+	RenderParameters.SmallDepthTexture = GSceneRenderTargets.GetSmallDepthSurface()->GetTexture2D();
+	
+	RenderParameters.ViewportRect = View.ViewRect;
 
 	PostOpaqueRenderDelegate.ExecuteIfBound( RenderParameters );
 }

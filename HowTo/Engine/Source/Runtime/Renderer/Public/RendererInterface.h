@@ -357,11 +357,11 @@ struct FQueryVisualizeTexureInfo
 class FPostOpaqueRenderParameters
 {
 	public:
+		FIntRect ViewportRect;
 		FMatrix ViewMatrix;
 		FMatrix ProjMatrix;
-		void * ColorTexture;
-		void * DepthTexture;
-		void * SmallDepthTexture;
+		FRHITexture2D * DepthTexture;
+		FRHITexture2D * SmallDepthTexture;
 };
 
 
@@ -426,7 +426,7 @@ public:
 	virtual void UpdateMapNeedsLightingFullyRebuiltState(UWorld* World) = 0;
 
 	virtual void RegisterPostOpaqueRenderDelegate( const FPostOpaqueRenderDelegate& PostOpaqueRenderDelegate ) = 0;
-	virtual void RenderPostOpaqueExtensions() = 0;
+	virtual void RenderPostOpaqueExtensions( const FSceneView& View ) = 0;
 };
 
 
