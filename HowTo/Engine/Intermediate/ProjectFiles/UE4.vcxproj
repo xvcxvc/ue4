@@ -2,28 +2,260 @@
 
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup Label="ProjectConfigurations">
+		<ProjectConfiguration Include="Debug_Editor|Win32">
+			<Configuration>Debug_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
 		<ProjectConfiguration Include="Debug_Editor|x64">
 			<Configuration>Debug_Editor</Configuration>
 			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Debug_Game|Win32">
+			<Configuration>Debug_Game</Configuration>
+			<Platform>Win32</Platform>
 		</ProjectConfiguration>
 		<ProjectConfiguration Include="Debug_Game|x64">
 			<Configuration>Debug_Game</Configuration>
 			<Platform>x64</Platform>
 		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Debug_Editor|Win32">
+			<Configuration>Mac_Debug_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Debug_Editor|x64">
+			<Configuration>Mac_Debug_Editor</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Debug_Game|Win32">
+			<Configuration>Mac_Debug_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Debug_Game|x64">
+			<Configuration>Mac_Debug_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Debug_Editor|Win32">
+			<Configuration>IOS_Debug_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Debug_Editor|x64">
+			<Configuration>IOS_Debug_Editor</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Debug_Game|Win32">
+			<Configuration>IOS_Debug_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Debug_Game|x64">
+			<Configuration>IOS_Debug_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Debug_Editor|Win32">
+			<Configuration>WinRT_Debug_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Debug_Editor|x64">
+			<Configuration>WinRT_Debug_Editor</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Debug_Game|Win32">
+			<Configuration>WinRT_Debug_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Debug_Game|x64">
+			<Configuration>WinRT_Debug_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="DebugGame_Editor|Win32">
+			<Configuration>DebugGame_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
 		<ProjectConfiguration Include="DebugGame_Editor|x64">
 			<Configuration>DebugGame_Editor</Configuration>
 			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="DebugGame_Game|Win32">
+			<Configuration>DebugGame_Game</Configuration>
+			<Platform>Win32</Platform>
 		</ProjectConfiguration>
 		<ProjectConfiguration Include="DebugGame_Game|x64">
 			<Configuration>DebugGame_Game</Configuration>
 			<Platform>x64</Platform>
 		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_DebugGame_Editor|Win32">
+			<Configuration>Mac_DebugGame_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_DebugGame_Editor|x64">
+			<Configuration>Mac_DebugGame_Editor</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_DebugGame_Game|Win32">
+			<Configuration>Mac_DebugGame_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_DebugGame_Game|x64">
+			<Configuration>Mac_DebugGame_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_DebugGame_Editor|Win32">
+			<Configuration>IOS_DebugGame_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_DebugGame_Editor|x64">
+			<Configuration>IOS_DebugGame_Editor</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_DebugGame_Game|Win32">
+			<Configuration>IOS_DebugGame_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_DebugGame_Game|x64">
+			<Configuration>IOS_DebugGame_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_DebugGame_Editor|Win32">
+			<Configuration>WinRT_DebugGame_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_DebugGame_Editor|x64">
+			<Configuration>WinRT_DebugGame_Editor</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_DebugGame_Game|Win32">
+			<Configuration>WinRT_DebugGame_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_DebugGame_Game|x64">
+			<Configuration>WinRT_DebugGame_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Development_Editor|Win32">
+			<Configuration>Development_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
 		<ProjectConfiguration Include="Development_Editor|x64">
 			<Configuration>Development_Editor</Configuration>
 			<Platform>x64</Platform>
 		</ProjectConfiguration>
+		<ProjectConfiguration Include="Development_Game|Win32">
+			<Configuration>Development_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
 		<ProjectConfiguration Include="Development_Game|x64">
 			<Configuration>Development_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Development_Editor|Win32">
+			<Configuration>Mac_Development_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Development_Editor|x64">
+			<Configuration>Mac_Development_Editor</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Development_Game|Win32">
+			<Configuration>Mac_Development_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Development_Game|x64">
+			<Configuration>Mac_Development_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Development_Editor|Win32">
+			<Configuration>IOS_Development_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Development_Editor|x64">
+			<Configuration>IOS_Development_Editor</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Development_Game|Win32">
+			<Configuration>IOS_Development_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Development_Game|x64">
+			<Configuration>IOS_Development_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Development_Editor|Win32">
+			<Configuration>WinRT_Development_Editor</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Development_Editor|x64">
+			<Configuration>WinRT_Development_Editor</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Development_Game|Win32">
+			<Configuration>WinRT_Development_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Development_Game|x64">
+			<Configuration>WinRT_Development_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Shipping_Game|Win32">
+			<Configuration>Shipping_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Shipping_Game|x64">
+			<Configuration>Shipping_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Shipping_Game|Win32">
+			<Configuration>Mac_Shipping_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Shipping_Game|x64">
+			<Configuration>Mac_Shipping_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Shipping_Game|Win32">
+			<Configuration>IOS_Shipping_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Shipping_Game|x64">
+			<Configuration>IOS_Shipping_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Shipping_Game|Win32">
+			<Configuration>WinRT_Shipping_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Shipping_Game|x64">
+			<Configuration>WinRT_Shipping_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Test_Game|Win32">
+			<Configuration>Test_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Test_Game|x64">
+			<Configuration>Test_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Test_Game|Win32">
+			<Configuration>Mac_Test_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Mac_Test_Game|x64">
+			<Configuration>Mac_Test_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Test_Game|Win32">
+			<Configuration>IOS_Test_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="IOS_Test_Game|x64">
+			<Configuration>IOS_Test_Game</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Test_Game|Win32">
+			<Configuration>WinRT_Test_Game</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="WinRT_Test_Game|x64">
+			<Configuration>WinRT_Test_Game</Configuration>
 			<Platform>x64</Platform>
 		</ProjectConfiguration>
 	</ItemGroup>
@@ -5204,15 +5436,6 @@
 		<ClCompile Include="..\..\Source\Editor\WorldBrowser\Private\WorldViewModel.cpp" />
 		<ClInclude Include="..\..\Source\Editor\WorldBrowser\Private\WorldViewModel.h" />
 		<ClInclude Include="..\..\Source\Editor\WorldBrowser\Public\WorldBrowserModule.h" />
-		<None Include="..\..\Source\Programs\IOS\UnrealLaunchDaemon\UnrealLaunchDaemon.Build.cs" />
-		<None Include="..\..\Source\Programs\IOS\UnrealLaunchDaemon\UnrealLaunchDaemon.Target.cs" />
-		<None Include="..\..\Source\Programs\IOS\UnrealLaunchDaemon\UnrealLaunchDaemon.uproject" />
-		<ClCompile Include="..\..\Source\Programs\IOS\UnrealLaunchDaemon\Private\LaunchDaemonMessageHandler.cpp" />
-		<ClInclude Include="..\..\Source\Programs\IOS\UnrealLaunchDaemon\Private\LaunchDaemonMessageHandler.h" />
-		<ClInclude Include="..\..\Source\Programs\IOS\UnrealLaunchDaemon\Private\UnrealLaunchDaemon.h" />
-		<ClCompile Include="..\..\Source\Programs\IOS\UnrealLaunchDaemon\Private\UnrealLaunchDaemonApp.cpp" />
-		<ClInclude Include="..\..\Source\Programs\IOS\UnrealLaunchDaemon\Private\UnrealLaunchDaemonApp.h" />
-		<ClCompile Include="..\..\Source\Programs\IOS\UnrealLaunchDaemon\Private\IOS\IOSLaunchDaemonAppMain.cpp" />
 		<None Include="..\..\Source\Runtime\Analytics\Analytics\Analytics.Build.cs" />
 		<ClCompile Include="..\..\Source\Runtime\Analytics\Analytics\Private\Analytics.cpp" />
 		<ClInclude Include="..\..\Source\Runtime\Analytics\Analytics\Private\AnalyticsPrivatePCH.h" />
@@ -9095,7 +9318,6 @@
 		<ClCompile Include="..\..\Source\Runtime\Windows\D3D11RHI\Private\D3D11Query.cpp" />
 		<ClCompile Include="..\..\Source\Runtime\Windows\D3D11RHI\Private\D3D11RenderTarget.cpp" />
 		<ClCompile Include="..\..\Source\Runtime\Windows\D3D11RHI\Private\D3D11RHI.cpp" />
-		<ClInclude Include="..\..\Source\Runtime\Windows\D3D11RHI\Private\D3D11RHIPrivate.h" />
 		<ClCompile Include="..\..\Source\Runtime\Windows\D3D11RHI\Private\D3D11Shaders.cpp" />
 		<ClCompile Include="..\..\Source\Runtime\Windows\D3D11RHI\Private\D3D11State.cpp" />
 		<ClCompile Include="..\..\Source\Runtime\Windows\D3D11RHI\Private\D3D11StateCache.cpp" />
@@ -9115,6 +9337,7 @@
 		<ClInclude Include="..\..\Source\Runtime\Windows\D3D11RHI\Public\D3D11ConstantsRingBuffer.h" />
 		<ClInclude Include="..\..\Source\Runtime\Windows\D3D11RHI\Public\D3D11Resources.h" />
 		<ClInclude Include="..\..\Source\Runtime\Windows\D3D11RHI\Public\D3D11RHI.h" />
+		<ClInclude Include="..\..\Source\Runtime\Windows\D3D11RHI\Public\D3D11RHIPrivate.h" />
 		<ClInclude Include="..\..\Source\Runtime\Windows\D3D11RHI\Public\D3D11State.h" />
 		<ClInclude Include="..\..\Source\Runtime\Windows\D3D11RHI\Public\D3D11StateCache.h" />
 		<ClInclude Include="..\..\Source\Runtime\Windows\D3D11RHI\Public\D3D11Util.h" />
@@ -10313,8 +10536,14 @@
 		<None Include="..\..\Plugins\Runtime\WindowsMoviePlayer\WindowsMoviePlayer.uplugin" />
 		<None Include="..\..\Plugins\Runtime\WindowsMoviePlayer\Resources\Icon128.png" />
 		<None Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\TrueSkyPlugin.Build.cs" />
+		<ClInclude Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Classes\TrueSkySequenceAsset.h" />
+		<ClCompile Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Private\AssetTypeActions_TrueSkySequence.cpp" />
+		<ClInclude Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Private\AssetTypeActions_TrueSkySequence.h" />
 		<ClCompile Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Private\TrueSkyPlugin.cpp" />
 		<ClInclude Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Private\TrueSkyPluginPrivatePCH.h" />
+		<ClCompile Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Private\TrueSkySequenceAsset.cpp" />
+		<ClCompile Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Private\TrueSkySequenceFactory.cpp" />
+		<ClInclude Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Private\TrueSkySequenceFactory.h" />
 		<ClInclude Include="..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Public\ITrueSkyPlugin.h" />
 		<None Include="..\..\Plugins\TrueSkyPlugin\TrueSkyPlugin.uplugin" />
 		<None Include="..\..\Plugins\TrueSkyPlugin\Resources\Icon128.png" />
@@ -10324,11 +10553,51 @@
 		<Keyword>MakeFileProj</Keyword>
 		<RootNamespace>UE4</RootNamespace>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Editor|x64'" Label="Configuration">
 		<ConfigurationType>Makefile</ConfigurationType>
 		<PlatformToolset>v110</PlatformToolset>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Game|x64'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Debug_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Debug_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Debug_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Debug_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Game|Win32'" Label="Configuration">
 		<ConfigurationType>Makefile</ConfigurationType>
 		<PlatformToolset>v110</PlatformToolset>
 	</PropertyGroup>
@@ -10340,6 +10609,38 @@
 		<ConfigurationType>Makefile</ConfigurationType>
 		<PlatformToolset>v110</PlatformToolset>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_DebugGame_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_DebugGame_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_DebugGame_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_DebugGame_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Editor|x64'" Label="Configuration">
 		<ConfigurationType>Makefile</ConfigurationType>
 		<PlatformToolset>v110</PlatformToolset>
@@ -10348,10 +10649,108 @@
 		<ConfigurationType>Makefile</ConfigurationType>
 		<PlatformToolset>v110</PlatformToolset>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Development_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Development_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Development_Editor|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Development_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Game|x64'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Shipping_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Shipping_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Shipping_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test_Game|x64'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Test_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Test_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Test_Game|Win32'" Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<PlatformToolset>v110</PlatformToolset>
+	</PropertyGroup>
 	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
 	<ImportGroup Label="ExtensionSettings" />
 	<PropertyGroup Label="UserMacros" />
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor Win32 Debug</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor Win32 Debug</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor Win32 Debug</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win32\UE4Editor-Win32-Debug.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Win32 Debug</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Win32 Debug</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win32 Debug</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win32\UE4Game-Win32-Debug.exe</NMakeOutput>
+	</PropertyGroup>
 	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Editor|x64'" Label="PropertySheets">
 		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
 	</ImportGroup>
@@ -10385,6 +10784,142 @@
 		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Win64 Debug</NMakeReBuildCommandLine>
 		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win64 Debug</NMakeCleanCommandLine>
 		<NMakeOutput>..\..\Binaries\Win64\UE4Game-Win64-Debug.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor Mac Debug</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor Mac Debug</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor Mac Debug</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Mac\UE4Editor-Mac-Debug</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Debug_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Mac Debug</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Mac Debug</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Mac Debug</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Mac\UE4Game-Mac-Debug</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Debug_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Debug_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor IOS Debug</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor IOS Debug</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor IOS Debug</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\IOS\UE4Editor-IOS-Debug</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Debug_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Debug_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game IOS Debug</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game IOS Debug</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game IOS Debug</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\IOS\UE4Game-IOS-Debug</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Debug_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Debug_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor WinRT Debug</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor WinRT Debug</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor WinRT Debug</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\WinRT\UE4Editor-WinRT-Debug.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Debug_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Debug_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game WinRT Debug</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game WinRT Debug</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game WinRT Debug</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\WinRT\UE4Game-WinRT-Debug.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor Win32 DebugGame</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor Win32 DebugGame</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor Win32 DebugGame</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win32\UE4Editor-Win32-DebugGame.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Win32 DebugGame</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Win32 DebugGame</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win32 DebugGame</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win32\UE4Game-Win32-DebugGame.exe</NMakeOutput>
 	</PropertyGroup>
 	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Editor|x64'" Label="PropertySheets">
 		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -10420,6 +10955,142 @@
 		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win64 DebugGame</NMakeCleanCommandLine>
 		<NMakeOutput>..\..\Binaries\Win64\UE4Game-Win64-DebugGame.exe</NMakeOutput>
 	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor Mac DebugGame</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor Mac DebugGame</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor Mac DebugGame</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Mac\UE4Editor-Mac-DebugGame</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_DebugGame_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Mac DebugGame</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Mac DebugGame</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Mac DebugGame</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Mac\UE4Game-Mac-DebugGame</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='IOS_DebugGame_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_DebugGame_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor IOS DebugGame</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor IOS DebugGame</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor IOS DebugGame</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\IOS\UE4Editor-IOS-DebugGame</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='IOS_DebugGame_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_DebugGame_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game IOS DebugGame</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game IOS DebugGame</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game IOS DebugGame</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\IOS\UE4Game-IOS-DebugGame</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_DebugGame_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_DebugGame_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor WinRT DebugGame</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor WinRT DebugGame</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor WinRT DebugGame</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\WinRT\UE4Editor-WinRT-DebugGame.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_DebugGame_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_DebugGame_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game WinRT DebugGame</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game WinRT DebugGame</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game WinRT DebugGame</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\WinRT\UE4Game-WinRT-DebugGame.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor Win32 Development</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor Win32 Development</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor Win32 Development</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win32\UE4Editor.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Win32 Development</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Win32 Development</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win32 Development</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win32\UE4Game.exe</NMakeOutput>
+	</PropertyGroup>
 	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development_Editor|x64'" Label="PropertySheets">
 		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
 	</ImportGroup>
@@ -10454,9 +11125,281 @@
 		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win64 Development</NMakeCleanCommandLine>
 		<NMakeOutput>..\..\Binaries\Win64\UE4Game.exe</NMakeOutput>
 	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor Mac Development</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor Mac Development</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor Mac Development</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Mac\UE4Editor</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Development_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Mac Development</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Mac Development</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Mac Development</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Mac\UE4Game</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Development_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Development_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor IOS Development</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor IOS Development</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor IOS Development</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\IOS\UE4Editor</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Development_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Development_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game IOS Development</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game IOS Development</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game IOS Development</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\IOS\UE4Game</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Development_Editor|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Development_Editor|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Editor WinRT Development</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Editor WinRT Development</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Editor WinRT Development</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\WinRT\UE4Editor.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Development_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Development_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game WinRT Development</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game WinRT Development</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game WinRT Development</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\WinRT\UE4Game.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Win32 Shipping</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Win32 Shipping</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win32 Shipping</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win32\UE4Game-Win32-Shipping.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Game|x64'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping_Game|x64'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Win64 Shipping</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Win64 Shipping</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win64 Shipping</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win64\UE4Game-Win64-Shipping.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Shipping_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Shipping_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Mac Shipping</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Mac Shipping</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Mac Shipping</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Mac\UE4Game-Mac-Shipping</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Shipping_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Shipping_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game IOS Shipping</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game IOS Shipping</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game IOS Shipping</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\IOS\UE4Game-IOS-Shipping</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Shipping_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Shipping_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game WinRT Shipping</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game WinRT Shipping</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game WinRT Shipping</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\WinRT\UE4Game-WinRT-Shipping.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Test_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Win32 Test</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Win32 Test</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win32 Test</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win32\UE4Game-Win32-Test.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Test_Game|x64'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test_Game|x64'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Win64 Test</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Win64 Test</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Win64 Test</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Win64\UE4Game-Win64-Test.exe</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Test_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mac_Test_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game Mac Test</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game Mac Test</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game Mac Test</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\Mac\UE4Game-Mac-Test</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Test_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IOS_Test_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game IOS Test</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game IOS Test</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game IOS Test</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\IOS\UE4Game-IOS-Test</NMakeOutput>
+	</PropertyGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Test_Game|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	</ImportGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRT_Test_Game|Win32'">
+		<IncludePath />
+		<ReferencePath />
+		<LibraryPath />
+		<LibraryWPath />
+		<SourcePath />
+		<ExcludePath />
+		<OutDir>..\BuildData\Unused\</OutDir>
+		<IntDir>..\BuildData\Unused\</IntDir>
+		<NMakeBuildCommandLine>..\..\Build\BatchFiles\Build.bat UE4Game WinRT Test</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>..\..\Build\BatchFiles\Rebuild.bat UE4Game WinRT Test</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>..\..\Build\BatchFiles\Clean.bat UE4Game WinRT Test</NMakeCleanCommandLine>
+		<NMakeOutput>..\..\Binaries\WinRT\UE4Game-WinRT-Test.exe</NMakeOutput>
+	</PropertyGroup>
 	<PropertyGroup>
-		<NMakePreprocessorDefinitions>$(NMakePreprocessorDefinitions);UE_EDITOR=1;IS_PROGRAM=1;UNICODE;_UNICODE;__UNREAL__;IS_MONOLITHIC=1;WITH_ENGINE=1;WITH_UNREAL_DEVELOPER_TOOLS=1;WITH_COREUOBJECT=1;USE_STATS_WITHOUT_ENGINE=1;USE_LOGGING_IN_SHIPPING=0;UE_BUILD_MINIMAL=1;WITH_EDITOR=1;WITH_SERVER_CODE=1;UBT_COMPILED_PLATFORM=Win64;WIN32=1;_WIN32_WINNT=0x0502;WINVER=0x0502;PLATFORM_WINDOWS=1;NDEBUG=1;UE_BUILD_DEVELOPMENT=1;LAUNCH_API=;MESSAGING_API=;COREUOBJECT_API=;UE_ENABLE_ICU=1;WITH_VS_PERF_PROFILER=1;WITH_DIRECTXMATH=0;CORE_API=;NETWORKING_API=;SOCKETS_PACKAGE=1;SOCKETS_API=;SESSIONSERVICES_API=;PROFILERSERVICE_API=;PROFILERCLIENT_API=;WITH_PHYSX=1;WITH_APEX=1;USE_NETWORK_PROFILER=1;WITH_RECAST=1;WITH_SPEEDTREE=0;ENGINE_API=;INPUTCORE_API=;RENDERCORE_API=;RHI_API=;SHADERCORE_API=;SLATE_API=;ASSETREGISTRY_API=;ENGINEMESSAGES_API=;ENGINESETTINGS_API=;SYNTHBENCHMARK_API=;RENDERER_API=;WITH_SIMPLYGON=0;UNREALED_API=;SANDBOXFILE_API=;BLUEPRINTGRAPH_API=;KISMETCOMPILER_API=;ANIMGRAPH_API=;BSPMODE_API=;UNREALEDMESSAGES_API=;DOCUMENTATION_API=;SOURCECONTROL_API=;XAUDIO2_API=;USERFEEDBACK_API=;PAKFILE_API=;MOVIEPLAYER_API=;SLATERHIRENDERER_API=;NETWORKFILE_API=;STREAMINGFILE_API=;AUTOMATIONCONTROLLER_API=;AUTOMATIONWORKER_API=;ONLINESUBSYSTEM_PACKAGE=1;ONLINESUBSYSTEM_API=;TASKGRAPH_API=;BLANKPLUGIN_API=;PERFORCESOURCECONTROL_API=;SUBVERSIONSOURCECONTROL_API=;XMLPARSER_API=;UOBJECTPLUGIN_API=;EPICCONTENT_API=;HTTP_PACKAGE=1;HTTP_API=;WITH_UNREALPNG=1;WITH_UNREALJPEG=1;IMAGEWRAPPER_API=;LEVELEDITOR_API=;WORKSPACEMENUSTRUCTURE_API=;TARGETPLATFORM_API=;EPICSURVEY_API=;ANALYTICS_API=;MAINFRAME_API=;INTROTUTORIALS_API=;GRAPHEDITOR_API=;MESSAGELOG_API=;KISMET_API=;PLACEMENTMODE_API=;PLUGINSEDITOR_API=;EDITORSTYLE_API=;MATHEXPRESSIONS_API=;PAPER2D_API=;WITH_BOX2D=1;PAPER2DEDITOR_API=;ASSETTOOLS_API=;KISMETWIDGETS_API=;PROPERTYEDITOR_API=;CONTENTBROWSER_API=;PAPERJSONIMPORTER_API=;SMARTSNAPPING_API=;VIEWPORTSNAPPING_API=;PHYA_API=;SLATECOMPONENTWRAPPERRUNTIME_API=;SLATECOMPONENTWRAPPEREDITOR_API=;MESSAGINGDEBUGGER_API=;OCULUSRIFT_API=;HEADMOUNTEDDISPLAY_API=;CUSTOMMESHCOMPONENT_API=;SOUNDVISUALIZATIONS_API=;WITH_KISSFFT=1;WINDOWSMOVIEPLAYER_API=;TRUESKYPLUGIN_API=;__TBBMALLOC_BUILD=1;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;U_NO_DEFAULT_INCLUDE_UTF_HEADERS=1;UNISTR_FROM_CHAR_EXPLICIT=explicit;UNISTR_FROM_STRING_EXPLICIT=explicit;DERIVEDDATACACHE_API=;VSACCESSOR_API=;IMAGECORE_API=;VECTORVM_API=;RAWMESH_API=;COLLISIONANALYZER_API=;LOGVISUALIZER_API=;WITH_OGGVORBIS=1;WITH_FIXED_AREA_ENTERING_COST=1;CRASHTRACKER_API=;TEXTURECOMPRESSOR_API=;MESHUTILITIES_API=;WITH_FREETYPE=1;SETTINGS_API=;TEXTUREFORMATDXT_API=;TEXTUREFORMATUNCOMPRESSED_API=;AUDIOFORMATADPCM_API=;AUDIOFORMATOGG_API=;PHYSXFORMATS_API=;SHADERFORMATD3D_API=;SHADERPREPROCESSOR_API=;WITH_D3DX_LIBS=1;NULLDRV_API=;D3D11RHI_API=;OPENGLDRV_API=;SHADERFORMATOPENGL_API=;DESKTOPPLATFORM_API=;DIRECTORYWATCHER_API=;EDITORSETTINGSVIEWER_API=;INPUTBINDINGEDITOR_API=;NETWORKFILESYSTEM_API=;PROJECTSETTINGSVIEWER_API=;SOURCECONTROLWINDOWS_API=;TARGETDEVICESERVICES_API=;LAUNCHERSERVICES_API=;LAUNCHERAUTOMATEDSERVICE_API=;SETTINGSEDITOR_API=;SOUNDCUEEDITOR_API=;SOUNDCLASSEDITOR_API=;SWARMINTERFACE_API=;STATSVIEWER_API=;MATERIALEDITOR_API=;FBXSDK_NEW_API;FBXSDK_SHARED;CLASSVIEWER_API=;COLLECTIONMANAGER_API=;NIAGARAEDITOR_API=;GAMEPROJECTGENERATION_API=;BEHAVIORTREEEDITOR_API=;ENVIRONMENTQUERYEDITOR_API=;EDITORWIDGETS_API=;REFERENCEVIEWER_API=;CURVEASSETEDITOR_API=;PERSONA_API=;FONTEDITOR_API=;MOVIESCENECORE_API=;MOVIESCENETOOLS_API=;FUNCTIONALTESTING_API=;MOVIESCENECORETYPES_API=;SEQUENCER_API=;SEQUENCERWIDGETS_API=;DEVICEPROFILESERVICES_API=;ACTORSCRATCHPAD_API=;TRANSLATIONEDITOR_API=;OUTPUTLOG_API=;SCENEOUTLINER_API=;DEVICEMANAGER_API=;SESSIONFRONTEND_API=;SESSIONLAUNCHER_API=;AUTOMATIONWINDOW_API=;SCREENSHOTCOMPARISON_API=;SCREENSHOTCOMPARISONTOOLS_API=;PROFILER_API=;SESSIONMESSAGES_API=;AUTOMATIONMESSAGES_API=;PROFILERMESSAGES_API=;LAYERS_API=;LEVELS_API=;WORLDBROWSER_API=;TASKBROWSER_API=;NEWLEVELDIALOG_API=;DEVICEPROFILEEDITOR_API=;LODSETTINGSEDITOR_API=;CURVETABLEEDITOR_API=;DATATABLEEDITOR_API=;DESTRUCTIBLEMESHEDITOR_API=;STATICMESHEDITOR_API=;TEXTUREEDITOR_API=;CASCADE_API=;DISTCURVEEDITOR_API=;MATINEE_API=;LANDSCAPEEDITOR_API=;DETAILCUSTOMIZATIONS_API=;COMPONENTVISUALIZERS_API=;PACKAGESDIALOG_API=;PREFERENCESEDITOR_API=;PHAT_API=;GEOMETRYMODE_API=;TEXTUREALIGNMODE_API=;FOLIAGEEDIT_API=;PACKAGEDEPENDENCYINFO_API=;BLUTILITY_API=;MESHPAINT_API=;CAMERAEDITOR_API=;CAMERADEBUGGER_API=;PLISTEDITOR_API=;BLANKMODULE_API=;WINDOWSTARGETPLATFORM_API=;WINDOWSNOEDITORTARGETPLATFORM_API=;WINDOWSSERVERTARGETPLATFORM_API=;ANALYTICSSWRVE_API=;ANALYTICSET_API=;ANALYTICSMULTICAST_API=;REALTIMEPROFILER_API=;TOOLBOX_API=;GAMMAUI_API=;MODULEUI_API=;ONLINESUBSYSTEMMCP_PACKAGE=1;ONLINESUBSYSTEMMCP_API=;UE_GAME=1;UE4GAME=1;WITH_EDITORONLY_DATA=0;UE_ENGINE_DIRECTORY=../../../Engine/;BUILDPATCHSERVICES_API=;FRIENDSANDCHAT_API=;COMMUNITYPORTALSERVICES_API=;STANDALONERENDERER_API=;WITH_DATABASE_SUPPORT=1;MINIDUMPDIAGNOSTICS=1;CRASHDEBUGHELPER_API=;ALLOW_LOG_FILE=0;HACK_HEADER_GENERATOR=1;REMOTEAGENT_API=;REMOTEAGENTUI_API=;ONLINESUBSYSTEMUTILS_PACKAGE=1;ONLINESUBSYSTEMUTILS_API=;ONLINESUBSYSTEMNULL_PACKAGE=1;ONLINESUBSYSTEMNULL_API=;ONLINESUBSYSTEMAMAZON_API=;ONLINESUBSYSTEMSTEAM_PACKAGE=1;WITH_STEAMGC=0;ONLINESUBSYSTEMSTEAM_API=;ONLINESUBSYSTEMFACEBOOK_PACKAGE=1;ONLINESUBSYSTEMFACEBOOK_API=;UE_SERVER=1;USE_NULL_RHI=1</NMakePreprocessorDefinitions>
-		<NMakeIncludeSearchPath>$(NMakeIncludeSearchPath);..\..\Source;..\..\Source\Runtime\Launch\Private;..\BuildData\Include\Launch;..\..\Source\Runtime\Launch\Public\;..\BuildData\Include\Messaging;..\..\Source\Runtime\Messaging\Public\;..\..\Source\Runtime\Messaging\Public\Common;..\..\Source\Runtime\Messaging\Public\Interfaces;..\..\Source\Runtime\CoreUObject\Classes\;..\BuildData\Include\CoreUObject;..\..\Source\Runtime\CoreUObject\Public\;..\..\Source\Runtime\CoreUObject\Public\Misc;..\..\Source\Runtime\CoreUObject\Public\Serialization;..\..\Source\Runtime\CoreUObject\Public\Templates;..\..\Source\Runtime\CoreUObject\Public\UObject;..\..\Source\Runtime\Core\Public;..\..\Source\Runtime\Core\Public\Internationalization;..\..\Source\Runtime\Core\Public\Async;..\..\Source\Runtime\Core\Public\Concurrency;..\..\Source\Runtime\Core\Public\Containers;..\..\Source\Runtime\Core\Public\GenericPlatform;..\..\Source\Runtime\Core\Public\HAL;..\..\Source\Runtime\Core\Public\Math;..\..\Source\Runtime\Core\Public\Misc;..\..\Source\Runtime\Core\Public\Modules;..\..\Source\Runtime\Core\Public\Modules\Boilerplate;..\..\Source\Runtime\Core\Public\ProfilingDebugging;..\..\Source\Runtime\Core\Public\Serialization;..\..\Source\Runtime\Core\Public\Serialization\Json;..\..\Source\Runtime\Core\Public\Stats;..\..\Source\Runtime\Core\Public\Templates;..\..\Source\Runtime\Core\Public\UObject;..\..\Source\Runtime\Core\Public\Windows;..\BuildData\Include\Networking;..\..\Source\Runtime\Networking\Public\;..\..\Source\Runtime\Networking\Public\Common;..\..\Source\Runtime\Networking\Public\Interfaces;..\..\Source\Runtime\Networking\Public\Interfaces\IPv4;..\..\Source\Runtime\Networking\Public\Interfaces\Steam;..\BuildData\Include\Sockets;..\..\Source\Runtime\Sockets\Public\;..\BuildData\Include\SessionServices;..\..\Source\Developer\SessionServices\Public\;..\..\Source\Developer\SessionServices\Public\Interfaces;..\BuildData\Include\ProfilerService;..\..\Source\Developer\ProfilerService\Public\;..\..\Source\Developer\ProfilerService\Public\Interfaces;..\BuildData\Include\ProfilerClient;..\..\Source\Developer\ProfilerClient\Public\;..\..\Source\Developer\ProfilerClient\Public\Interfaces;..\..\Source\Runtime\Engine\Classes\;..\BuildData\Include\Engine;..\..\Source\Runtime\Engine\Public\;..\..\Source\Runtime\Engine\Public\AI;..\..\Source\Runtime\Engine\Public\Landscape;..\..\Source\Runtime\Engine\Public\Net;..\..\Source\Runtime\Engine\Public\Slate;..\..\Source\Runtime\InputCore\Classes\;..\BuildData\Include\InputCore;..\..\Source\Runtime\InputCore\Public\;..\BuildData\Include\RenderCore;..\..\Source\Runtime\RenderCore\Public\;..\BuildData\Include\RHI;..\..\Source\Runtime\RHI\Public\;..\BuildData\Include\ShaderCore;..\..\Source\Runtime\ShaderCore\Public\;..\..\Source\Runtime\Slate\Classes\;..\BuildData\Include\Slate;..\..\Source\Runtime\Slate\Public\;..\..\Source\Runtime\Slate\Public\Docking;..\..\Source\Runtime\Slate\Public\DockingFramework;..\..\Source\Runtime\Slate\Public\IOS;..\..\Source\Runtime\Slate\Public\MultiBox;..\..\Source\Runtime\Slate\Public\TableView;..\..\Source\Runtime\Slate\Public\Testing;..\..\Source\Runtime\Slate\Public\TutorialSystem;..\BuildData\Include\AssetRegistry;..\..\Source\Runtime\AssetRegistry\Public\;..\..\Source\Runtime\EngineMessages\Classes\;..\BuildData\Include\EngineMessages;..\..\Source\Runtime\EngineMessages\Public\;..\..\Source\Runtime\EngineSettings\Classes\;..\BuildData\Include\EngineSettings;..\..\Source\Runtime\EngineSettings\Public\;..\BuildData\Include\SynthBenchmark;..\..\Source\Developer\SynthBenchmark\Public\;..\BuildData\Include\Renderer;..\..\Source\Runtime\Renderer\Public\;..\..\Source\Programs\UnrealLightmass\Public;..\..\Source\Editor\UnrealEd\Classes\;..\BuildData\Include\UnrealEd;..\..\Source\Editor\UnrealEd\Public\;..\..\Source\Editor\UnrealEd\Public\Animation;..\..\Source\Editor\UnrealEd\Public\Commandlets;..\..\Source\Editor\UnrealEd\Public\Dialogs;..\..\Source\Editor\UnrealEd\Public\Documentation;..\..\Source\Editor\UnrealEd\Public\DragAndDrop;..\..\Source\Editor\UnrealEd\Public\Features;..\..\Source\Editor\UnrealEd\Public\Kismet2;..\..\Source\Editor\UnrealEd\Public\Layers;..\..\Source\Editor\UnrealEd\Public\Toolkits;..\BuildData\Include\SandboxFile;..\..\Source\Runtime\SandboxFile\Public\;..\..\Source\Editor\BlueprintGraph\Classes\;..\BuildData\Include\BlueprintGraph;..\..\Source\Editor\BlueprintGraph\Public\;..\BuildData\Include\KismetCompiler;..\..\Source\Editor\KismetCompiler\Public\;..\..\Source\Editor\AnimGraph\Classes\;..\BuildData\Include\AnimGraph;..\..\Source\Editor\AnimGraph\Public\;..\BuildData\Include\BspMode;..\..\Source\Editor\BspMode\Public\;..\..\Source\Editor\UnrealEdMessages\Classes\;..\BuildData\Include\UnrealEdMessages;..\..\Source\Editor\UnrealEdMessages\Public\;..\BuildData\Include\Documentation;..\..\Source\Editor\Documentation\Public\;..\BuildData\Include\SourceControl;..\..\Source\Developer\SourceControl\Public\;..\BuildData\Include\XAudio2;..\..\Source\Runtime\Windows\XAudio2\Public\;..\BuildData\Include\UserFeedback;..\..\Source\Editor\UserFeedback\Public\;..\BuildData\Include\PakFile;..\..\Source\Runtime\PakFile\Public\;..\BuildData\Include\MoviePlayer;..\..\Source\Runtime\MoviePlayer\Public\;..\BuildData\Include\SlateRHIRenderer;..\..\Source\Runtime\SlateRHIRenderer\Public\;..\..\Source\Runtime\CoreUObject\Public\Interfaces;..\BuildData\Include\NetworkFile;..\..\Source\Runtime\NetworkFile\Public\;..\BuildData\Include\StreamingFile;..\..\Source\Runtime\StreamingFile\Public\;..\BuildData\Include\AutomationController;..\..\Source\Developer\AutomationController\Public\;..\..\Source\Developer\AutomationController\Public\Interfaces;..\BuildData\Include\AutomationWorker;..\..\Source\Runtime\AutomationWorker\Public\;..\..\Source\Runtime\AutomationWorker\Public\Interfaces;..\..\Source\Runtime\Online\OnlineSubsystem\Public\Interfaces;..\BuildData\Include\OnlineSubsystem;..\..\Source\Runtime\Online\OnlineSubsystem\Public\;..\BuildData\Include\TaskGraph;..\..\Source\Developer\TaskGraph\Public\;..\..\Plugins\Developer\BlankPlugin\Source;..\..\Plugins\Developer\BlankPlugin\Source\Developer\BlankPlugin\Private;..\..\Plugins\Developer\BlankPlugin\Intermediate\BuildData\Include\BlankPlugin;..\..\Plugins\Developer\BlankPlugin\Source\BlankPlugin\Public\;..\..\Plugins\Developer\PerforceSourceControl\Source;..\..\Plugins\Developer\PerforceSourceControl\Intermediate\BuildData\Include\PerforceSourceControl;..\..\Source\ThirdParty\Perforce\p4api-2013.1-BETA\include;..\..\Plugins\Developer\SubversionSourceControl\Source;..\..\Plugins\Developer\SubversionSourceControl\Intermediate\BuildData\Include\SubversionSourceControl;..\..\Source\Editor\XmlParser\Public;..\BuildData\Include\XmlParser;..\..\Source\Developer\XmlParser\Public\;..\..\Plugins\Developer\UObjectPlugin\Source;..\..\Plugins\Developer\UObjectPlugin\Source\Developer\UObjectPlugin\Private;..\..\Plugins\Developer\UObjectPlugin\Source\UObjectPlugin\Classes\;..\..\Plugins\Developer\UObjectPlugin\Intermediate\BuildData\Include\UObjectPlugin;..\..\Plugins\Developer\UObjectPlugin\Source\UObjectPlugin\Public\;..\..\Plugins\Editor\EpicContent\Source;..\..\Plugins\Editor\EpicContent\Intermediate\BuildData\Include\EpicContent;..\..\Plugins\Editor\EpicContent\Source\EpicContent\Public\;..\BuildData\Include\HTTP;..\..\Source\Runtime\Online\HTTP\Public\;..\..\Source\Runtime\Online\HTTP\Public\Interfaces;..\BuildData\Include\ImageWrapper;..\..\Source\Developer\ImageWrapper\Public\;..\..\Source\Developer\ImageWrapper\Public\Interfaces;..\BuildData\Include\LevelEditor;..\..\Source\Editor\LevelEditor\Public\;..\BuildData\Include\WorkspaceMenuStructure;..\..\Source\Editor\WorkspaceMenuStructure\Public\;..\BuildData\Include\TargetPlatform;..\..\Source\Developer\TargetPlatform\Public\;..\..\Source\Developer\TargetPlatform\Public\Common;..\..\Source\Developer\TargetPlatform\Public\Interfaces;..\..\Plugins\Editor\EpicSurvey\Source;..\..\Plugins\Editor\EpicSurvey\Intermediate\BuildData\Include\EpicSurvey;..\..\Plugins\Editor\EpicSurvey\Source\EpicSurvey\Public\;..\BuildData\Include\Analytics;..\..\Source\Runtime\Analytics\Analytics\Public\;..\..\Source\Runtime\Analytics\Analytics\Public\Interfaces;..\BuildData\Include\MainFrame;..\..\Source\Editor\MainFrame\Public\;..\..\Source\Editor\MainFrame\Public\Interfaces;..\..\Plugins\Editor\IntroTutorials\Source;..\..\Plugins\Editor\IntroTutorials\Source\Editor\IntroTutorials\Private;..\..\Plugins\Editor\IntroTutorials\Source\IntroTutorials\Classes\;..\..\Plugins\Editor\IntroTutorials\Intermediate\BuildData\Include\IntroTutorials;..\..\Plugins\Editor\IntroTutorials\Source\IntroTutorials\Public\;..\BuildData\Include\GraphEditor;..\..\Source\Editor\GraphEditor\Public\;..\BuildData\Include\MessageLog;..\..\Source\Developer\MessageLog\Public\;..\BuildData\Include\Kismet;..\..\Source\Editor\Kismet\Public\;..\..\Source\Editor\Kismet\Public\WorkflowOrientedApp;..\BuildData\Include\PlacementMode;..\..\Source\Editor\PlacementMode\Public\;..\..\Plugins\Editor\PluginsEditor\Source;..\..\Plugins\Editor\PluginsEditor\Intermediate\BuildData\Include\PluginsEditor;..\..\Plugins\Editor\PluginsEditor\Source\PluginsEditor\Public\;..\BuildData\Include\EditorStyle;..\..\Source\Editor\EditorStyle\Public\;..\..\Plugins\Experimental\MathExpressions\Source;..\..\Plugins\Experimental\MathExpressions\Source\MathExpressions\Classes\;..\..\Plugins\Experimental\MathExpressions\Intermediate\BuildData\Include\MathExpressions;..\..\Plugins\Experimental\MathExpressions\Source\MathExpressions\Public\;..\..\Plugins\Experimental\Paper2D\Source;..\..\Plugins\Experimental\Paper2D\Source\Paper2D\Private;..\..\Plugins\Experimental\Paper2D\Source\Paper2D\Classes\;..\..\Plugins\Experimental\Paper2D\Intermediate\BuildData\Include\Paper2D;..\..\Plugins\Experimental\Paper2D\Source\Paper2D\Public\;..\..\Plugins\Experimental\Paper2D\Source\ThirdParty\Box2D\Box2D_v2.2.1;..\..\Plugins\Experimental\Paper2D\Source\Paper2DEditor\Private;..\..\Plugins\Experimental\Paper2D\Source\Paper2DEditor\Classes\;..\..\Plugins\Experimental\Paper2D\Intermediate\BuildData\Include\Paper2DEditor;..\..\Plugins\Experimental\Paper2D\Source\Paper2DEditor\Public\;..\BuildData\Include\AssetTools;..\..\Source\Developer\AssetTools\Public\;..\BuildData\Include\KismetWidgets;..\..\Source\Editor\KismetWidgets\Public\;..\BuildData\Include\PropertyEditor;..\..\Source\Editor\PropertyEditor\Public\;..\BuildData\Include\ContentBrowser;..\..\Source\Editor\ContentBrowser\Public\;..\..\Plugins\Experimental\Paper2D\Source\PaperJsonImporter\Classes\;..\..\Plugins\Experimental\Paper2D\Intermediate\BuildData\Include\PaperJsonImporter;..\..\Plugins\Experimental\Paper2D\Intermediate\BuildData\Include\SmartSnapping;..\BuildData\Include\ViewportSnapping;..\..\Source\Editor\ViewportSnapping\Public\;..\..\Plugins\Experimental\Phya\Source;..\..\Plugins\Experimental\Phya\Source\Phya\Private;..\..\Plugins\Experimental\Phya\Source\Phya\Private\PhyaLib\include;..\..\Plugins\Experimental\Phya\Source\Phya\Classes\;..\..\Plugins\Experimental\Phya\Intermediate\BuildData\Include\Phya;..\..\Plugins\Experimental\Phya\Source\Phya\Public\;..\..\Plugins\Experimental\SlateComponentWrappers\Source;..\..\Plugins\Experimental\SlateComponentWrappers\Source\SlateComponentWrapperRuntime\Private;..\..\Plugins\Experimental\SlateComponentWrappers\Source\SlateComponentWrapperRuntime\Classes\;..\..\Plugins\Experimental\SlateComponentWrappers\Intermediate\BuildData\Include\SlateComponentWrapperRuntime;..\..\Plugins\Experimental\SlateComponentWrappers\Source\SlateComponentWrapperEditor\Private;..\..\Plugins\Experimental\SlateComponentWrappers\Intermediate\BuildData\Include\SlateComponentWrapperEditor;..\..\Plugins\Messaging\MessagingDebugger\Source;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Models;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Styles;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Breakpoints;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Details;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Endpoints;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Graph;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\History;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Interceptors;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Types;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Toolbar;..\..\Plugins\Messaging\MessagingDebugger\Intermediate\BuildData\Include\MessagingDebugger;..\..\Plugins\OculusRift\Source;..\..\Plugins\OculusRift\Source\OculusRift\Private;..\..\Plugins\OculusRift\Intermediate\BuildData\Include\OculusRift;..\..\Plugins\OculusRift\Source\OculusRift\Public\;..\..\Source\Runtime\HeadMountedDisplay\Public;..\BuildData\Include\HeadMountedDisplay;..\..\Source\Runtime\HeadMountedDisplay\Public\;..\..\Source\ThirdParty\Oculus\LibOVR_025\Include;..\..\Plugins\Runtime\CustomMeshComponent\Source;..\..\Plugins\Runtime\CustomMeshComponent\Source\CustommeshComponent\Private;..\..\Plugins\Runtime\CustomMeshComponent\Source\CustomMeshComponent\Classes\;..\..\Plugins\Runtime\CustomMeshComponent\Intermediate\BuildData\Include\CustomMeshComponent;..\..\Plugins\Runtime\CustomMeshComponent\Source\CustomMeshComponent\Public\;..\..\Plugins\Runtime\SoundVisualizations\Source;..\..\Plugins\Runtime\SoundVisualizations\Source\SoundVisualizations\Private;..\..\Plugins\Runtime\SoundVisualizations\Source\SoundVisualizations\Classes\;..\..\Plugins\Runtime\SoundVisualizations\Intermediate\BuildData\Include\SoundVisualizations;..\..\Plugins\Runtime\SoundVisualizations\Source\SoundVisualizations\Public\;..\..\Source\ThirdParty\Kiss_FFT\kiss_fft129;..\..\Plugins\Runtime\WindowsMoviePlayer\Source;..\..\Plugins\Runtime\WindowsMoviePlayer\Source\Runtime\WindowsMoviePlayer\Private;..\..\Plugins\Runtime\WindowsMoviePlayer\Intermediate\BuildData\Include\WindowsMoviePlayer;..\..\Plugins\Runtime\WindowsMoviePlayer\Source\WindowsMoviePlayer\Public\;..\..\Plugins\TrueSkyPlugin\Source;..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Private;..\..\Plugins\TrueSkyPlugin\Intermediate\BuildData\Include\TrueSkyPlugin;..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Public\;..\..\Source\Developer\DerivedDataCache\Public;..\..\Source\Developer\SynthBenchmark\Public;..\..\Source\Runtime\Core\Private;..\..\Source\Runtime\Core\Private\Misc;..\..\Source\Runtime\Core\Private\Serialization\Json;..\..\Source\Runtime\Core\Private\Internationalization;..\..\Source\Runtime\Core\Private\Internationalization\Cultures;..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 11.0\Team Tools\Performance Tools\x64\PerfSDK;..\..\Source\ThirdParty\zlib\zlib-1.2.5\inc;..\..\Source\ThirdParty\IntelTBB\IntelTBB-4.0\Include;$(DXSDK_DIR)/include;$(CommonProgramFiles);..\..\Source\ThirdParty\ICU\icu4c-51_2\include\;..\BuildData\Include\DerivedDataCache;..\..\Source\Developer\DerivedDataCache\Public\;..\BuildData\Include\VSAccessor;..\..\Source\Developer\Windows\VSAccessor\Public\;..\..\Source\Runtime\CoreUObject\Private;..\..\Source\Runtime\Online\OnlineSubsystem\Private;..\BuildData\Include\ImageCore;..\..\Source\Developer\ImageCore\Public\;..\..\Source\Runtime\Sockets\Private;..\..\Source\Developer\TextureCompressor\Public;..\..\Source\Runtime\Online\OnlineSubsystem\Public;..\BuildData\Include\VectorVM;..\..\Source\Runtime\VectorVM\Public\;..\..\Source\Developer\RawMesh\Public;..\BuildData\Include\RawMesh;..\..\Source\Developer\RawMesh\Public\;..\BuildData\Include\CollisionAnalyzer;..\..\Source\Developer\CollisionAnalyzer\Public\;..\..\Source\Developer\TaskGraph\Public;..\..\Source\Runtime\Engine\Classes;..\BuildData\Include\LogVisualizer;..\..\Source\Developer\LogVisualizer\Public\;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\foundation;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\cooking;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\common;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\extensions;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\geometry;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\vehicle;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\foundation\windows;..\..\Source\ThirdParty\PhysX\APEX-1.3\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\framework\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\framework\public\PhysX3;..\..\Source\ThirdParty\PhysX\APEX-1.3\module\destructible\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\module\clothing\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\module\legacy\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\NxParameterized\public;..\..\Source\ThirdParty\Ogg\libogg-1.2.2\include;..\..\Source\ThirdParty\Vorbis\libvorbis-1.3.2\include;..\..\Source\ThirdParty\DirectShow\DirectShow-1.0.0\Public;..\..\Source\ThirdParty\Recast\Recast\Include;..\..\Source\ThirdParty\Recast\Detour\Include;..\..\Source\ThirdParty\Recast\DetourTileCache\Include;..\..\Source\ThirdParty\Recast\RecastDemo\Include;..\BuildData\Include\CrashTracker;..\..\Source\Developer\CrashTracker\Public\;..\..\Source\Developer\CrashTracker\Public\Interfaces;..\BuildData\Include\TextureCompressor;..\..\Source\Developer\TextureCompressor\Public\;..\BuildData\Include\MeshUtilities;..\..\Source\Developer\MeshUtilities\Public\;..\..\Source\Runtime\Networking\Private;..\..\Source\ThirdParty\FreeType2\FreeType2-2.4.12\Include;..\BuildData\Include\Settings;..\..\Source\Developer\Settings\Public\;..\..\Source\Developer\Settings\Public\Interfaces;..\..\Source\Developer\Settings\Private;..\..\Source\Developer\Settings\Private\Widgets;..\BuildData\Include\TextureFormatDXT;..\..\Source\ThirdParty\nvTextureTools\nvTextureTools-2.0.6\src\src;..\..\Source\Developer\ImageWrapper\Private;..\..\Source\ThirdParty\libPNG\libPNG-1.5.2;..\..\Source\ThirdParty\libJPG;..\BuildData\Include\TextureFormatUncompressed;..\BuildData\Include\AudioFormatADPCM;..\BuildData\Include\AudioFormatOgg;..\BuildData\Include\PhysXFormats;..\BuildData\Include\ShaderFormatD3D;..\BuildData\Include\ShaderPreprocessor;..\..\Source\Developer\ShaderPreprocessor\Public\;..\..\Source\Runtime\NullDrv\Private;..\BuildData\Include\NullDrv;..\..\Source\Runtime\NullDrv\Public\;..\..\Source\Runtime\Windows\D3D11RHI\Private;..\BuildData\Include\D3D11RHI;..\..\Source\Runtime\Windows\D3D11RHI\Public\;..\..\Source\Runtime\OpenGLDrv\Private;..\BuildData\Include\OpenGLDrv;..\..\Source\Runtime\OpenGLDrv\Public\;..\..\Source\ThirdParty\OpenGL;..\..\Source\ThirdParty\MCPP\mcpp-2.7.2\inc;..\BuildData\Include\ShaderFormatOpenGL;..\..\Source\ThirdParty\HLSLCC\hlslcc\src\hlslcc_lib;..\..\Source\Editor\WorkspaceMenuStructure\Private;..\BuildData\Include\DesktopPlatform;..\..\Source\Developer\DesktopPlatform\Public\;..\..\Source\Editor\UnrealEd\Private;..\..\Source\Editor\UnrealEd\Private\Settings;..\..\Source\Editor\PackagesDialog\Public;..\..\Source\Developer\TargetPlatform\Public;..\BuildData\Include\DirectoryWatcher;..\..\Source\Developer\DirectoryWatcher\Public\;..\BuildData\Include\EditorSettingsViewer;..\BuildData\Include\InputBindingEditor;..\..\Source\Editor\InputBindingEditor\Public\;..\..\Source\Editor\InputBindingEditor\Public\Interfaces;..\..\Source\Runtime\NetworkFileSystem\Public;..\..\Source\Runtime\NetworkFileSystem\Public\Interfaces;..\BuildData\Include\NetworkFileSystem;..\..\Source\Runtime\NetworkFileSystem\Public\;..\BuildData\Include\ProjectSettingsViewer;..\BuildData\Include\SourceControlWindows;..\..\Source\Editor\SourceControlWindows\Public\;..\..\Source\Developer\TargetDeviceServices\Classes\;..\BuildData\Include\TargetDeviceServices;..\..\Source\Developer\TargetDeviceServices\Public\;..\..\Source\Developer\TargetDeviceServices\Public\Interfaces;..\BuildData\Include\LauncherServices;..\..\Source\Developer\LauncherServices\Public\;..\..\Source\Developer\LauncherServices\Public\Common;..\..\Source\Developer\LauncherServices\Public\Interfaces;..\BuildData\Include\LauncherAutomatedService;..\..\Source\Runtime\LauncherAutomatedService\Public\;..\..\Source\Runtime\LauncherAutomatedService\Public\Interfaces;..\BuildData\Include\SettingsEditor;..\..\Source\Developer\SettingsEditor\Public\;..\..\Source\Developer\SettingsEditor\Public\Interfaces;..\BuildData\Include\SoundCueEditor;..\..\Source\Editor\SoundCueEditor\Public\;..\BuildData\Include\SoundClassEditor;..\..\Source\Editor\SoundClassEditor\Public\;..\..\Source\Editor\SwarmInterface\Public;..\BuildData\Include\SwarmInterface;..\..\Source\Editor\SwarmInterface\Public\;..\..\Source\Editor\StatsViewer\Classes\;..\BuildData\Include\StatsViewer;..\..\Source\Editor\StatsViewer\Public\;..\BuildData\Include\MaterialEditor;..\..\Source\Editor\MaterialEditor\Public\;..\..\Source\ThirdParty\HACD\HACD_1.0\public;..\..\Source\ThirdParty\FBX\2013.3\include;..\..\Source\ThirdParty\FBX\2013.3\include\fbxsdk;..\BuildData\Include\ClassViewer;..\..\Source\Editor\ClassViewer\Public\;..\BuildData\Include\CollectionManager;..\..\Source\Developer\CollectionManager\Public\;..\BuildData\Include\NiagaraEditor;..\..\Source\Editor\NiagaraEditor\Public\;..\..\Source\Editor\GameProjectGeneration\Classes\;..\BuildData\Include\GameProjectGeneration;..\..\Source\Editor\GameProjectGeneration\Public\;..\..\Source\Editor\BehaviorTreeEditor\Classes\;..\BuildData\Include\BehaviorTreeEditor;..\..\Source\Editor\BehaviorTreeEditor\Public\;..\..\Source\Editor\EnvironmentQueryEditor\Classes\;..\BuildData\Include\EnvironmentQueryEditor;..\..\Source\Editor\EnvironmentQueryEditor\Public\;..\..\Source\Developer\DirectoryWatcher\Private;..\..\Source\Editor\EditorSettingsViewer\Private;..\..\Source\Editor\InputBindingEditor\Private;..\..\Source\Editor\InputBindingEditor\Private\Widgets;..\..\Source\Developer\MessageLog\Private;..\..\Source\Developer\MessageLog\Private\Presentation;..\..\Source\Developer\MessageLog\Private\UserInterface;..\..\Source\Developer\MessageLog\Private\Model;..\..\Source\Developer\Documentation\Private;..\..\Source\Developer\SettingsEditor\Private;..\..\Source\Developer\SettingsEditor\Private\Models;..\..\Source\Developer\SettingsEditor\Private\Widgets;..\..\Source\Developer\DesktopPlatform\Private;..\..\Source\Editor\PropertyEditor\Private;..\..\Source\Editor\PropertyEditor\Private\Presentation;..\..\Source\Editor\PropertyEditor\Private\Presentation\PropertyTable;..\..\Source\Editor\PropertyEditor\Private\Presentation\PropertyEditor;..\..\Source\Editor\PropertyEditor\Private\Presentation\PropertyDetails;..\..\Source\Editor\PropertyEditor\Private\UserInterface;..\..\Source\Editor\PropertyEditor\Private\UserInterface\PropertyTable;..\..\Source\Editor\PropertyEditor\Private\UserInterface\PropertyEditor;..\..\Source\Editor\PropertyEditor\Private\UserInterface\PropertyTree;..\..\Source\Editor\PropertyEditor\Private\UserInterface\PropertyDetails;..\BuildData\Include\EditorWidgets;..\..\Source\Editor\EditorWidgets\Public\;..\..\Source\Editor\ReferenceViewer\Classes\;..\BuildData\Include\ReferenceViewer;..\..\Source\Editor\ReferenceViewer\Public\;..\..\Source\Developer\SourceControl\Private;..\..\Source\Developer\AssetTools\Private;..\BuildData\Include\CurveAssetEditor;..\..\Source\Editor\CurveAssetEditor\Public\;..\BuildData\Include\Persona;..\..\Source\Editor\Persona\Public\;..\BuildData\Include\FontEditor;..\..\Source\Editor\FontEditor\Public\;..\..\Source\Editor\Kismet\Private;..\..\Source\Editor\GraphEditor\Private;..\..\Source\Editor\GraphEditor\Private\AnimationPins;..\..\Source\Editor\GraphEditor\Private\AnimationStateNodes;..\..\Source\Editor\GraphEditor\Private\KismetNodes;..\..\Source\Editor\GraphEditor\Private\KismetPins;..\..\Source\Editor\GraphEditor\Private\MaterialNodes;..\..\Source\Editor\GraphEditor\Private\MaterialPins;..\..\Source\Editor\GraphEditor\Private\NoRedist;..\..\Source\Editor\GraphEditor\Private\SoundNodes;..\..\Source\Editor\KismetWidgets\Private;..\..\Source\Editor\BlueprintGraph\Private;..\..\Source\Editor\KismetCompiler\Public;..\..\Source\Runtime\MovieSceneCore\Classes\;..\BuildData\Include\MovieSceneCore;..\..\Source\Runtime\MovieSceneCore\Public\;..\..\Source\Developer\MovieSceneTools\Classes\;..\BuildData\Include\MovieSceneTools;..\..\Source\Developer\MovieSceneTools\Public\;..\..\Source\Developer\FunctionalTesting\Classes\;..\BuildData\Include\FunctionalTesting;..\..\Source\Developer\FunctionalTesting\Public\;..\..\Source\Runtime\MovieSceneCore\Private;..\..\Source\Developer\MovieSceneTools\Private;..\..\Source\Runtime\MovieSceneCoreTypes\Classes\;..\BuildData\Include\MovieSceneCoreTypes;..\..\Source\Runtime\MovieSceneCoreTypes\Public\;..\BuildData\Include\Sequencer;..\..\Source\Editor\Sequencer\Public\;..\..\Source\Runtime\MovieSceneCoreTypes\Private;..\..\Source\Runtime\MovieSceneCoreTypes\Private\Instances;..\..\Source\Editor\Sequencer\Private;..\BuildData\Include\SequencerWidgets;..\..\Source\Editor\SequencerWidgets\Public\;..\..\Source\Editor\SequencerWidgets\Private;..\..\Source\MessageLog\Public;..\..\Source\Stats\Public;..\..\Source\Developer\FunctionalTesting\Private;..\..\Source\Editor\AnimGraph\Private;..\BuildData\Include\DeviceProfileServices;..\..\Source\Editor\DeviceProfileServices\Public\;..\BuildData\Include\ActorScratchPad;..\..\Source\Editor\ActorScratchPad\Public\;..\..\Source\Editor\StatsViewer\Private;..\..\Source\Editor\StatsViewer\Private\StatsPages;..\..\Source\Editor\StatsViewer\Private\StatsEntries;..\..\Source\Editor\DeviceProfileServices\Private;..\..\Source\Runtime\Messaging\Private;..\..\Source\Runtime\Messaging\Private\Bus;..\..\Source\Runtime\Messaging\Private\Bridge;..\..\Source\Runtime\Messaging\Private\Serialization;..\..\Source\Runtime\Messaging\Private\Tests\Bus;..\..\Source\Runtime\Messaging\Private\Transports;..\..\Source\Runtime\Messaging\Private\Transports\Udp;..\..\Source\Editor\MainFrame\Private;..\..\Source\Editor\MainFrame\Private\Frame;..\..\Source\Editor\MainFrame\Private\Menus;..\BuildData\Include\TranslationEditor;..\..\Source\Editor\TranslationEditor\Public\;..\BuildData\Include\OutputLog;..\..\Source\Developer\OutputLog\Public\;..\..\Source\Developer\CrashTracker\Private;..\..\Source\Runtime\EngineSettings\Private;..\BuildData\Include\SceneOutliner;..\..\Source\Editor\SceneOutliner\Public\;..\..\Source\Developer\DeviceManager\Private;..\..\Source\Developer\DeviceManager\Private\Models;..\..\Source\Developer\DeviceManager\Private\Widgets;..\..\Source\Developer\DeviceManager\Private\Widgets\Apps;..\..\Source\Developer\DeviceManager\Private\Widgets\Browser;..\..\Source\Developer\DeviceManager\Private\Widgets\Details;..\..\Source\Developer\DeviceManager\Private\Widgets\Processes;..\BuildData\Include\DeviceManager;..\..\Source\Developer\DeviceManager\Public\;..\..\Source\Developer\DeviceManager\Public\Interfaces;..\..\Source\Developer\SessionFrontend\Private;..\..\Source\Developer\SessionFrontend\Private\Models;..\..\Source\Developer\SessionFrontend\Private\Widgets;..\..\Source\Developer\SessionFrontend\Private\Widgets\Browser;..\..\Source\Developer\SessionFrontend\Private\Widgets\Console;..\BuildData\Include\SessionFrontend;..\..\Source\Developer\SessionFrontend\Public\;..\..\Source\Developer\SessionFrontend\Public\Interfaces;..\BuildData\Include\SessionLauncher;..\..\Source\Developer\SessionLauncher\Public\;..\..\Source\Developer\SessionLauncher\Public\Interfaces;..\BuildData\Include\AutomationWindow;..\..\Source\Developer\AutomationWindow\Public\;..\..\Source\Developer\AutomationWindow\Public\Interfaces;..\BuildData\Include\ScreenShotComparison;..\..\Source\Developer\ScreenShotComparison\Public\;..\..\Source\Developer\ScreenShotComparison\Public\Interfaces;..\BuildData\Include\ScreenShotComparisonTools;..\..\Source\Developer\ScreenShotComparisonTools\Public\;..\..\Source\Developer\ScreenShotComparisonTools\Public\Interfaces;..\..\Source\Developer\Profiler\Public;..\..\Source\Developer\Profiler\Public\Interfaces;..\BuildData\Include\Profiler;..\..\Source\Developer\Profiler\Public\;..\..\Source\Developer\LauncherServices\Private;..\..\Source\Developer\LauncherServices\Private\Devices;..\..\Source\Developer\LauncherServices\Private\Games;..\..\Source\Developer\LauncherServices\Private\Launcher;..\..\Source\Developer\LauncherServices\Private\Profiles;..\..\Source\Developer\SessionMessages\Classes\;..\BuildData\Include\SessionMessages;..\..\Source\Developer\SessionMessages\Public\;..\..\Source\Editor\SessionMessages\Private;..\..\Source\Editor\UnrealEdMessages\Private;..\..\Source\Developer\SessionLauncher\Private;..\..\Source\Developer\SessionLauncher\Private\Models;..\..\Source\Developer\SessionLauncher\Private\Widgets;..\..\Source\Developer\SessionLauncher\Private\Widgets\Build;..\..\Source\Developer\SessionLauncher\Private\Widgets\Cook;..\..\Source\Developer\SessionLauncher\Private\Widgets\Deploy;..\..\Source\Developer\SessionLauncher\Private\Widgets\Launch;..\..\Source\Developer\SessionLauncher\Private\Widgets\Package;..\..\Source\Developer\SessionLauncher\Private\Widgets\Project;..\..\Source\Developer\SessionLauncher\Private\Widgets\Shared;..\..\Source\Editor\EngineMessages\Private;..\..\Source\Runtime\AutomationController\Private;..\..\Source\Runtime\AutomationMessages\Classes\;..\BuildData\Include\AutomationMessages;..\..\Source\Runtime\AutomationMessages\Public\;..\..\Source\Editor\AutomationMessages\Private;..\..\Source\Developer\ScreenShotComparison\Private;..\..\Source\Developer\ScreenShotComparison\Private\Widgets;..\..\Source\Developer\ScreenShotComparison\Private\Models;..\..\Source\Developer\ScreenShotComparisonTools\Private;..\..\Source\Developer\Profiler\Private;..\..\Source\Developer\Profiler\Private\Widgets;..\..\Source\Developer\ProfilerMessages\Classes\;..\BuildData\Include\ProfilerMessages;..\..\Source\Developer\ProfilerMessages\Public\;..\..\Source\Editor\ProfilerMessages\Private;..\BuildData\Include\Layers;..\..\Source\Editor\Layers\Public\;..\BuildData\Include\Levels;..\..\Source\Editor\Levels\Public\;..\..\Source\Editor\WorldBrowser\Public;..\..\Source\Editor\WorldBrowser\Classes\;..\BuildData\Include\WorldBrowser;..\..\Source\Editor\WorldBrowser\Public\;..\BuildData\Include\TaskBrowser;..\..\Source\Editor\TaskBrowser\Public\;..\BuildData\Include\NewLevelDialog;..\..\Source\Editor\NewLevelDialog\Public\;..\..\Source\Editor\DeviceProfileEditor\Private;..\..\Source\Editor\DeviceProfileEditor\Private\DetailsPanel;..\..\Source\Editor\UnrealEd\Public;..\BuildData\Include\DeviceProfileEditor;..\..\Source\Editor\DeviceProfileEditor\Public\;..\BuildData\Include\LODSettingsEditor;..\..\Source\Editor\LODSettingsEditor\Public\;..\..\Source\Editor\LODSettingsEditor\Private;..\BuildData\Include\CurveTableEditor;..\..\Source\Editor\CurveTableEditor\Public\;..\BuildData\Include\DataTableEditor;..\..\Source\Editor\DataTableEditor\Public\;..\..\Source\Editor\DestructibleMeshEditor\Classes\;..\BuildData\Include\DestructibleMeshEditor;..\..\Source\Editor\DestructibleMeshEditor\Public\;..\..\Source\Editor\Persona\Private;..\..\Source\Runtime\NetworkFileSystem\Private;..\..\Source\Runtime\NetworkFileSystem\Private\Simple;..\..\Source\Runtime\NetworkFileSystem\Private\Streaming;..\..\Source\Editor\ProjectSettingsViewer\Private;..\..\Source\Runtime\LauncherAutomatedService\Private;..\BuildData\Include\StaticMeshEditor;..\..\Source\Editor\StaticMeshEditor\Public\;..\..\Source\ThirdParty\nvTriStrip\nvTriStrip-1.0.0\Inc;..\..\Source\ThirdParty\ForsythTriOO\Src;..\BuildData\Include\TextureEditor;..\..\Source\Editor\TextureEditor\Public\;..\..\Source\Editor\DistCurveEditor\Public;..\..\Source\Editor\Cascade\Classes\;..\BuildData\Include\Cascade;..\..\Source\Editor\Cascade\Public\;..\BuildData\Include\DistCurveEditor;..\..\Source\Editor\DistCurveEditor\Public\;..\..\Source\Developer\DesktopPlatform\Public;..\..\Source\Editor\Matinee\Classes\;..\BuildData\Include\Matinee;..\..\Source\Editor\Matinee\Public\;..\..\Source\Editor\LandscapeEditor\Classes\;..\BuildData\Include\LandscapeEditor;..\..\Source\Editor\LandscapeEditor\Public\;..\..\Source\Editor\DetailCustomizations\Private;..\BuildData\Include\DetailCustomizations;..\..\Source\Editor\DetailCustomizations\Public\;..\..\Source\Editor\ComponentVisualizers\Private;..\BuildData\Include\ComponentVisualizers;..\..\Source\Editor\ComponentVisualizers\Public\;..\BuildData\Include\PackagesDialog;..\..\Source\Editor\PackagesDialog\Public\;..\BuildData\Include\PreferencesEditor;..\..\Source\Editor\PreferencesEditor\Public\;..\..\Source\Editor\PhAT\Classes\;..\BuildData\Include\PhAT;..\..\Source\Editor\PhAT\Public\;..\..\Source\Editor\GeometryMode\Classes\;..\BuildData\Include\GeometryMode;..\..\Source\Editor\GeometryMode\Public\;..\BuildData\Include\TextureAlignMode;..\..\Source\Editor\TextureAlignMode\Public\;..\BuildData\Include\FoliageEdit;..\..\Source\Editor\FoliageEdit\Public\;..\BuildData\Include\PackageDependencyInfo;..\..\Source\Developer\PackageDependencyInfo\Public\;..\..\Source\Editor\Blutility\Private;..\..\Source\Editor\Blutility\Classes\;..\BuildData\Include\Blutility;..\..\Source\Editor\Blutility\Public\;..\BuildData\Include\MeshPaint;..\..\Source\Editor\MeshPaint\Public\;..\BuildData\Include\CameraEditor;..\..\Source\Editor\CameraEditor\Public\;..\BuildData\Include\CameraDebugger;..\..\Source\Developer\CameraDebugger\Public\;..\BuildData\Include\PListEditor;..\..\Source\Editor\PListEditor\Public\;..\..\Source\Developer\SynthBenchmark\Private;..\..\Source\Developer\BlankModule\Private;..\BuildData\Include\BlankModule;..\..\Source\Developer\BlankModule\Public\;..\..\Source\Developer\WindowsTargetPlatform\Classes;..\..\Source\Developer\Windows\WindowsTargetPlatform\Classes\;..\BuildData\Include\WindowsTargetPlatform;..\..\Source\Developer\Windows\WindowsTargetPlatform\Private;..\BuildData\Include\WindowsNoEditorTargetPlatform;..\BuildData\Include\WindowsServerTargetPlatform;..\BuildData\Include\AnalyticsSwrve;..\..\Source\Runtime\Analytics\AnalyticsSwrve\Public\;..\..\Source\Runtime\Online\HTTP\Private;..\BuildData\Include\AnalyticsET;..\..\Source\Runtime\Analytics\AnalyticsET\Public\;..\BuildData\Include\AnalyticsMulticast;..\..\Source\Runtime\Analytics\AnalyticsMulticast\Public\;..\..\Source\Runtime\MoviePlayer\Private;..\..\Source\Runtime\SlateRHIRenderer\Private;..\..\Source\Runtime\Renderer\Private;..\..\Source\Runtime\Renderer\Private\CompositionLighting;..\..\Source\Runtime\Renderer\Private\PostProcess;..\BuildData\Include\RealtimeProfiler;..\..\Source\Runtime\AutomationWorker\Private;..\BuildData\Include\Toolbox;..\..\Source\Developer\Toolbox\Public\;..\BuildData\Include\GammaUI;..\..\Source\Developer\GammaUI\Public\;..\BuildData\Include\ModuleUI;..\..\Source\Developer\ModuleUI\Public\;..\..\Source\Runtime\Online\OnlineSubsystemMcp\Private;..\BuildData\Include\OnlineSubsystemMcp;..\..\Source\Runtime\Online\OnlineSubsystemMcp\Public\;..\..\Source\Developer\BuildPatchServices\Private;..\BuildData\Include\BuildPatchServices;..\..\Source\Developer\BuildPatchServices\Public\;..\..\Source\Developer\BuildPatchServices\Public\Interfaces;..\..\Source\Developer\FriendsAndChat\Private;..\..\Source\Developer\FriendsAndChat\Private\UI\Widgets;..\..\Source\Developer\FriendsAndChat\Private\Models;..\..\Source\Developer\FriendsAndChat\Classes\;..\BuildData\Include\FriendsAndChat;..\..\Source\Developer\FriendsAndChat\Public\;..\..\Source\Developer\FriendsAndChat\Public\Interfaces;..\..\Source\Developer\CommunityPortalServices\Private;..\..\Source\Developer\CommunityPortalServices\Private\UI\Style;..\..\Source\Developer\CommunityPortalServices\Private\UI\Widgets;..\..\Source\Developer\CommunityPortalServices\Private\Analytics;..\..\Source\Developer\CommunityPortalServices\Private\Commandlet;..\..\Source\Developer\CommunityPortalServices\Private\Online;..\BuildData\Include\CommunityPortalServices;..\..\Source\Developer\CommunityPortalServices\Public\;..\..\Source\Developer\CommunityPortalServices\Public\Interfaces;..\..\Source\Developer\StandaloneRenderer\Private;..\BuildData\Include\StandaloneRenderer;..\..\Source\Developer\StandaloneRenderer\Public\;..\..\Source\Developer\StandaloneRenderer\Public\IOS;..\..\Source\Developer\CrashDebugHelper\Private;..\BuildData\Include\CrashDebugHelper;..\..\Source\Developer\CrashDebugHelper\Public\;..\BuildData\Include\RemoteAgent;..\..\Source\Developer\RemoteAgent\Public\;..\..\Source\Developer\RemoteAgentUI\Private;..\..\Source\Developer\RemoteAgentUI\Private\Widgets;..\BuildData\Include\RemoteAgentUI;..\..\Source\Developer\RemoteAgentUI\Public\;..\..\Source\Runtime\Online\OnlineSubsystemUtils\Private;..\..\Source\Runtime\Online\OnlineSubsystemUtils\Classes\;..\BuildData\Include\OnlineSubsystemUtils;..\..\Source\Runtime\Online\OnlineSubsystemUtils\Public\;..\BuildData\Include\OnlineSubsystemNull;..\..\Source\Runtime\Online\OnlineSubsystemNull\Public\;..\BuildData\Include\OnlineSubsystemAmazon;..\..\Source\Runtime\Online\OnlineSubsystemAmazon\Public\;..\..\Source\Runtime\Online\OnlineSubsystemSteam\Classes\;..\BuildData\Include\OnlineSubsystemSteam;..\..\Source\Runtime\Online\OnlineSubsystemSteam\Public\;..\..\Source\ThirdParty\Steamworks\Steamv126\sdk\public;..\..\Source\Runtime\Online\OnlineSubsystemFacebook\Private;..\..\Source\Runtime\Online\OnlineSubsystemFacebook\Private\Windows;..\BuildData\Include\OnlineSubsystemFacebook;..\..\Source\Runtime\Online\OnlineSubsystemFacebook\Public\</NMakeIncludeSearchPath>
+		<NMakePreprocessorDefinitions>$(NMakePreprocessorDefinitions);UE_EDITOR=1;IS_PROGRAM=1;UNICODE;_UNICODE;__UNREAL__;IS_MONOLITHIC=1;WITH_ENGINE=1;WITH_UNREAL_DEVELOPER_TOOLS=1;WITH_COREUOBJECT=1;USE_STATS_WITHOUT_ENGINE=1;USE_LOGGING_IN_SHIPPING=0;UE_BUILD_MINIMAL=1;WITH_EDITOR=1;WITH_SERVER_CODE=1;UBT_COMPILED_PLATFORM=Win64;WIN32=1;_WIN32_WINNT=0x0502;WINVER=0x0502;PLATFORM_WINDOWS=1;NDEBUG=1;UE_BUILD_DEVELOPMENT=1;LAUNCH_API=;MESSAGING_API=;COREUOBJECT_API=;UE_ENABLE_ICU=1;WITH_VS_PERF_PROFILER=1;WITH_DIRECTXMATH=0;CORE_API=;NETWORKING_API=;SOCKETS_PACKAGE=1;SOCKETS_API=;SESSIONSERVICES_API=;PROFILERSERVICE_API=;PROFILERCLIENT_API=;WITH_PHYSX=1;WITH_APEX=1;USE_NETWORK_PROFILER=1;WITH_RECAST=1;WITH_SPEEDTREE=0;ENGINE_API=;INPUTCORE_API=;RENDERCORE_API=;RHI_API=;SHADERCORE_API=;SLATE_API=;ASSETREGISTRY_API=;ENGINEMESSAGES_API=;ENGINESETTINGS_API=;SYNTHBENCHMARK_API=;RENDERER_API=;WITH_SIMPLYGON=0;UNREALED_API=;SANDBOXFILE_API=;BLUEPRINTGRAPH_API=;KISMETCOMPILER_API=;ANIMGRAPH_API=;BSPMODE_API=;UNREALEDMESSAGES_API=;DOCUMENTATION_API=;SOURCECONTROL_API=;XAUDIO2_API=;USERFEEDBACK_API=;PAKFILE_API=;MOVIEPLAYER_API=;SLATERHIRENDERER_API=;NETWORKFILE_API=;STREAMINGFILE_API=;AUTOMATIONCONTROLLER_API=;AUTOMATIONWORKER_API=;ONLINESUBSYSTEM_PACKAGE=1;ONLINESUBSYSTEM_API=;TASKGRAPH_API=;BLANKPLUGIN_API=;PERFORCESOURCECONTROL_API=;SUBVERSIONSOURCECONTROL_API=;XMLPARSER_API=;UOBJECTPLUGIN_API=;EPICCONTENT_API=;HTTP_PACKAGE=1;HTTP_API=;WITH_UNREALPNG=1;WITH_UNREALJPEG=1;IMAGEWRAPPER_API=;LEVELEDITOR_API=;WORKSPACEMENUSTRUCTURE_API=;TARGETPLATFORM_API=;EPICSURVEY_API=;ANALYTICS_API=;MAINFRAME_API=;INTROTUTORIALS_API=;GRAPHEDITOR_API=;MESSAGELOG_API=;KISMET_API=;PLACEMENTMODE_API=;PLUGINSEDITOR_API=;EDITORSTYLE_API=;MATHEXPRESSIONS_API=;PAPER2D_API=;WITH_BOX2D=1;PAPER2DEDITOR_API=;ASSETTOOLS_API=;KISMETWIDGETS_API=;PROPERTYEDITOR_API=;CONTENTBROWSER_API=;PAPERJSONIMPORTER_API=;SMARTSNAPPING_API=;VIEWPORTSNAPPING_API=;PHYA_API=;SLATECOMPONENTWRAPPERRUNTIME_API=;SLATECOMPONENTWRAPPEREDITOR_API=;MESSAGINGDEBUGGER_API=;OCULUSRIFT_API=;HEADMOUNTEDDISPLAY_API=;CUSTOMMESHCOMPONENT_API=;SOUNDVISUALIZATIONS_API=;WITH_KISSFFT=1;WINDOWSMOVIEPLAYER_API=;TRUESKYPLUGIN_API=;COLLECTIONMANAGER_API=;D3D11RHI_API=;WITH_D3DX_LIBS=1;__TBBMALLOC_BUILD=1;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;U_NO_DEFAULT_INCLUDE_UTF_HEADERS=1;UNISTR_FROM_CHAR_EXPLICIT=explicit;UNISTR_FROM_STRING_EXPLICIT=explicit;DERIVEDDATACACHE_API=;VSACCESSOR_API=;IMAGECORE_API=;VECTORVM_API=;RAWMESH_API=;COLLISIONANALYZER_API=;LOGVISUALIZER_API=;WITH_OGGVORBIS=1;WITH_FIXED_AREA_ENTERING_COST=1;CRASHTRACKER_API=;TEXTURECOMPRESSOR_API=;MESHUTILITIES_API=;WITH_FREETYPE=1;SETTINGS_API=;TEXTUREFORMATDXT_API=;TEXTUREFORMATUNCOMPRESSED_API=;AUDIOFORMATADPCM_API=;AUDIOFORMATOGG_API=;PHYSXFORMATS_API=;TEXTUREFORMATPVR_API=;SHADERFORMATD3D_API=;SHADERPREPROCESSOR_API=;NULLDRV_API=;OPENGLDRV_API=;SHADERFORMATOPENGL_API=;DESKTOPPLATFORM_API=;DIRECTORYWATCHER_API=;EDITORSETTINGSVIEWER_API=;INPUTBINDINGEDITOR_API=;NETWORKFILESYSTEM_API=;PROJECTSETTINGSVIEWER_API=;SOURCECONTROLWINDOWS_API=;TARGETDEVICESERVICES_API=;LAUNCHERSERVICES_API=;LAUNCHERAUTOMATEDSERVICE_API=;SETTINGSEDITOR_API=;SOUNDCUEEDITOR_API=;SOUNDCLASSEDITOR_API=;SWARMINTERFACE_API=;STATSVIEWER_API=;MATERIALEDITOR_API=;FBXSDK_NEW_API;FBXSDK_SHARED;CLASSVIEWER_API=;NIAGARAEDITOR_API=;GAMEPROJECTGENERATION_API=;BEHAVIORTREEEDITOR_API=;ENVIRONMENTQUERYEDITOR_API=;EDITORWIDGETS_API=;REFERENCEVIEWER_API=;CURVEASSETEDITOR_API=;PERSONA_API=;FONTEDITOR_API=;MOVIESCENECORE_API=;MOVIESCENETOOLS_API=;FUNCTIONALTESTING_API=;MOVIESCENECORETYPES_API=;SEQUENCER_API=;SEQUENCERWIDGETS_API=;DEVICEPROFILESERVICES_API=;ACTORSCRATCHPAD_API=;TRANSLATIONEDITOR_API=;OUTPUTLOG_API=;SCENEOUTLINER_API=;DEVICEMANAGER_API=;SESSIONFRONTEND_API=;SESSIONLAUNCHER_API=;AUTOMATIONWINDOW_API=;SCREENSHOTCOMPARISON_API=;SCREENSHOTCOMPARISONTOOLS_API=;PROFILER_API=;SESSIONMESSAGES_API=;AUTOMATIONMESSAGES_API=;PROFILERMESSAGES_API=;LAYERS_API=;LEVELS_API=;WORLDBROWSER_API=;TASKBROWSER_API=;NEWLEVELDIALOG_API=;DEVICEPROFILEEDITOR_API=;LODSETTINGSEDITOR_API=;CURVETABLEEDITOR_API=;DATATABLEEDITOR_API=;DESTRUCTIBLEMESHEDITOR_API=;STATICMESHEDITOR_API=;TEXTUREEDITOR_API=;CASCADE_API=;DISTCURVEEDITOR_API=;MATINEE_API=;LANDSCAPEEDITOR_API=;DETAILCUSTOMIZATIONS_API=;COMPONENTVISUALIZERS_API=;PACKAGESDIALOG_API=;PREFERENCESEDITOR_API=;PHAT_API=;GEOMETRYMODE_API=;TEXTUREALIGNMODE_API=;FOLIAGEEDIT_API=;PACKAGEDEPENDENCYINFO_API=;BLUTILITY_API=;MESHPAINT_API=;CAMERAEDITOR_API=;CAMERADEBUGGER_API=;PLISTEDITOR_API=;BLANKMODULE_API=;WINDOWSTARGETPLATFORM_API=;WINDOWSNOEDITORTARGETPLATFORM_API=;WINDOWSSERVERTARGETPLATFORM_API=;ANALYTICSSWRVE_API=;ANALYTICSET_API=;ANALYTICSMULTICAST_API=;ANDROIDTARGETPLATFORM_API=;IOSTARGETPLATFORM_API=;LAUNCHDAEMONMESSAGES_API=;HTML5TARGETPLATFORM_API=;LINUXTARGETPLATFORM_API=;REALTIMEPROFILER_API=;TOOLBOX_API=;GAMMAUI_API=;MODULEUI_API=;ONLINESUBSYSTEMMCP_PACKAGE=1;ONLINESUBSYSTEMMCP_API=;UE_GAME=1;UE4GAME=1;WITH_EDITORONLY_DATA=0;UE_ENGINE_DIRECTORY=../../../Engine/;BUILDPATCHSERVICES_API=;FRIENDSANDCHAT_API=;COMMUNITYPORTALSERVICES_API=;STANDALONERENDERER_API=;WITH_DATABASE_SUPPORT=1;MINIDUMPDIAGNOSTICS=1;CRASHDEBUGHELPER_API=;ALLOW_LOG_FILE=0;HACK_HEADER_GENERATOR=1;REMOTEAGENT_API=;REMOTEAGENTUI_API=;ONLINESUBSYSTEMUTILS_PACKAGE=1;ONLINESUBSYSTEMUTILS_API=;ONLINESUBSYSTEMNULL_PACKAGE=1;ONLINESUBSYSTEMNULL_API=;ONLINESUBSYSTEMAMAZON_API=;ONLINESUBSYSTEMSTEAM_PACKAGE=1;WITH_STEAMGC=0;ONLINESUBSYSTEMSTEAM_API=;ONLINESUBSYSTEMFACEBOOK_PACKAGE=1;ONLINESUBSYSTEMFACEBOOK_API=;UE_SERVER=1;USE_NULL_RHI=1</NMakePreprocessorDefinitions>
+		<NMakeIncludeSearchPath>$(NMakeIncludeSearchPath);..\..\Source;..\..\Source\Runtime\Launch\Private;..\BuildData\Include\Launch;..\..\Source\Runtime\Launch\Public\;..\BuildData\Include\Messaging;..\..\Source\Runtime\Messaging\Public\;..\..\Source\Runtime\Messaging\Public\Common;..\..\Source\Runtime\Messaging\Public\Interfaces;..\..\Source\Runtime\CoreUObject\Classes\;..\BuildData\Include\CoreUObject;..\..\Source\Runtime\CoreUObject\Public\;..\..\Source\Runtime\CoreUObject\Public\Misc;..\..\Source\Runtime\CoreUObject\Public\Serialization;..\..\Source\Runtime\CoreUObject\Public\Templates;..\..\Source\Runtime\CoreUObject\Public\UObject;..\..\Source\Runtime\Core\Public;..\..\Source\Runtime\Core\Public\Internationalization;..\..\Source\Runtime\Core\Public\Async;..\..\Source\Runtime\Core\Public\Concurrency;..\..\Source\Runtime\Core\Public\Containers;..\..\Source\Runtime\Core\Public\GenericPlatform;..\..\Source\Runtime\Core\Public\HAL;..\..\Source\Runtime\Core\Public\Math;..\..\Source\Runtime\Core\Public\Misc;..\..\Source\Runtime\Core\Public\Modules;..\..\Source\Runtime\Core\Public\Modules\Boilerplate;..\..\Source\Runtime\Core\Public\ProfilingDebugging;..\..\Source\Runtime\Core\Public\Serialization;..\..\Source\Runtime\Core\Public\Serialization\Json;..\..\Source\Runtime\Core\Public\Stats;..\..\Source\Runtime\Core\Public\Templates;..\..\Source\Runtime\Core\Public\UObject;..\..\Source\Runtime\Core\Public\Windows;..\BuildData\Include\Networking;..\..\Source\Runtime\Networking\Public\;..\..\Source\Runtime\Networking\Public\Common;..\..\Source\Runtime\Networking\Public\Interfaces;..\..\Source\Runtime\Networking\Public\Interfaces\IPv4;..\..\Source\Runtime\Networking\Public\Interfaces\Steam;..\BuildData\Include\Sockets;..\..\Source\Runtime\Sockets\Public\;..\BuildData\Include\SessionServices;..\..\Source\Developer\SessionServices\Public\;..\..\Source\Developer\SessionServices\Public\Interfaces;..\BuildData\Include\ProfilerService;..\..\Source\Developer\ProfilerService\Public\;..\..\Source\Developer\ProfilerService\Public\Interfaces;..\BuildData\Include\ProfilerClient;..\..\Source\Developer\ProfilerClient\Public\;..\..\Source\Developer\ProfilerClient\Public\Interfaces;..\..\Source\Runtime\Engine\Classes\;..\BuildData\Include\Engine;..\..\Source\Runtime\Engine\Public\;..\..\Source\Runtime\Engine\Public\AI;..\..\Source\Runtime\Engine\Public\Landscape;..\..\Source\Runtime\Engine\Public\Net;..\..\Source\Runtime\Engine\Public\Slate;..\..\Source\Runtime\InputCore\Classes\;..\BuildData\Include\InputCore;..\..\Source\Runtime\InputCore\Public\;..\BuildData\Include\RenderCore;..\..\Source\Runtime\RenderCore\Public\;..\BuildData\Include\RHI;..\..\Source\Runtime\RHI\Public\;..\BuildData\Include\ShaderCore;..\..\Source\Runtime\ShaderCore\Public\;..\..\Source\Runtime\Slate\Classes\;..\BuildData\Include\Slate;..\..\Source\Runtime\Slate\Public\;..\..\Source\Runtime\Slate\Public\Docking;..\..\Source\Runtime\Slate\Public\DockingFramework;..\..\Source\Runtime\Slate\Public\IOS;..\..\Source\Runtime\Slate\Public\MultiBox;..\..\Source\Runtime\Slate\Public\TableView;..\..\Source\Runtime\Slate\Public\Testing;..\..\Source\Runtime\Slate\Public\TutorialSystem;..\BuildData\Include\AssetRegistry;..\..\Source\Runtime\AssetRegistry\Public\;..\..\Source\Runtime\EngineMessages\Classes\;..\BuildData\Include\EngineMessages;..\..\Source\Runtime\EngineMessages\Public\;..\..\Source\Runtime\EngineSettings\Classes\;..\BuildData\Include\EngineSettings;..\..\Source\Runtime\EngineSettings\Public\;..\BuildData\Include\SynthBenchmark;..\..\Source\Developer\SynthBenchmark\Public\;..\BuildData\Include\Renderer;..\..\Source\Runtime\Renderer\Public\;..\..\Source\Programs\UnrealLightmass\Public;..\..\Source\Editor\UnrealEd\Classes\;..\BuildData\Include\UnrealEd;..\..\Source\Editor\UnrealEd\Public\;..\..\Source\Editor\UnrealEd\Public\Animation;..\..\Source\Editor\UnrealEd\Public\Commandlets;..\..\Source\Editor\UnrealEd\Public\Dialogs;..\..\Source\Editor\UnrealEd\Public\Documentation;..\..\Source\Editor\UnrealEd\Public\DragAndDrop;..\..\Source\Editor\UnrealEd\Public\Features;..\..\Source\Editor\UnrealEd\Public\Kismet2;..\..\Source\Editor\UnrealEd\Public\Layers;..\..\Source\Editor\UnrealEd\Public\Toolkits;..\BuildData\Include\SandboxFile;..\..\Source\Runtime\SandboxFile\Public\;..\..\Source\Editor\BlueprintGraph\Classes\;..\BuildData\Include\BlueprintGraph;..\..\Source\Editor\BlueprintGraph\Public\;..\BuildData\Include\KismetCompiler;..\..\Source\Editor\KismetCompiler\Public\;..\..\Source\Editor\AnimGraph\Classes\;..\BuildData\Include\AnimGraph;..\..\Source\Editor\AnimGraph\Public\;..\BuildData\Include\BspMode;..\..\Source\Editor\BspMode\Public\;..\..\Source\Editor\UnrealEdMessages\Classes\;..\BuildData\Include\UnrealEdMessages;..\..\Source\Editor\UnrealEdMessages\Public\;..\BuildData\Include\Documentation;..\..\Source\Editor\Documentation\Public\;..\BuildData\Include\SourceControl;..\..\Source\Developer\SourceControl\Public\;..\BuildData\Include\XAudio2;..\..\Source\Runtime\Windows\XAudio2\Public\;..\BuildData\Include\UserFeedback;..\..\Source\Editor\UserFeedback\Public\;..\BuildData\Include\PakFile;..\..\Source\Runtime\PakFile\Public\;..\BuildData\Include\MoviePlayer;..\..\Source\Runtime\MoviePlayer\Public\;..\BuildData\Include\SlateRHIRenderer;..\..\Source\Runtime\SlateRHIRenderer\Public\;..\..\Source\Runtime\CoreUObject\Public\Interfaces;..\BuildData\Include\NetworkFile;..\..\Source\Runtime\NetworkFile\Public\;..\BuildData\Include\StreamingFile;..\..\Source\Runtime\StreamingFile\Public\;..\BuildData\Include\AutomationController;..\..\Source\Developer\AutomationController\Public\;..\..\Source\Developer\AutomationController\Public\Interfaces;..\BuildData\Include\AutomationWorker;..\..\Source\Runtime\AutomationWorker\Public\;..\..\Source\Runtime\AutomationWorker\Public\Interfaces;..\..\Source\Runtime\Online\OnlineSubsystem\Public\Interfaces;..\BuildData\Include\OnlineSubsystem;..\..\Source\Runtime\Online\OnlineSubsystem\Public\;..\BuildData\Include\TaskGraph;..\..\Source\Developer\TaskGraph\Public\;..\..\Plugins\Developer\BlankPlugin\Source;..\..\Plugins\Developer\BlankPlugin\Source\Developer\BlankPlugin\Private;..\..\Plugins\Developer\BlankPlugin\Intermediate\BuildData\Include\BlankPlugin;..\..\Plugins\Developer\BlankPlugin\Source\BlankPlugin\Public\;..\..\Plugins\Developer\PerforceSourceControl\Source;..\..\Plugins\Developer\PerforceSourceControl\Intermediate\BuildData\Include\PerforceSourceControl;..\..\Source\ThirdParty\Perforce\p4api-2013.1-BETA\include;..\..\Plugins\Developer\SubversionSourceControl\Source;..\..\Plugins\Developer\SubversionSourceControl\Intermediate\BuildData\Include\SubversionSourceControl;..\..\Source\Editor\XmlParser\Public;..\BuildData\Include\XmlParser;..\..\Source\Developer\XmlParser\Public\;..\..\Plugins\Developer\UObjectPlugin\Source;..\..\Plugins\Developer\UObjectPlugin\Source\Developer\UObjectPlugin\Private;..\..\Plugins\Developer\UObjectPlugin\Source\UObjectPlugin\Classes\;..\..\Plugins\Developer\UObjectPlugin\Intermediate\BuildData\Include\UObjectPlugin;..\..\Plugins\Developer\UObjectPlugin\Source\UObjectPlugin\Public\;..\..\Plugins\Editor\EpicContent\Source;..\..\Plugins\Editor\EpicContent\Intermediate\BuildData\Include\EpicContent;..\..\Plugins\Editor\EpicContent\Source\EpicContent\Public\;..\BuildData\Include\HTTP;..\..\Source\Runtime\Online\HTTP\Public\;..\..\Source\Runtime\Online\HTTP\Public\Interfaces;..\BuildData\Include\ImageWrapper;..\..\Source\Developer\ImageWrapper\Public\;..\..\Source\Developer\ImageWrapper\Public\Interfaces;..\BuildData\Include\LevelEditor;..\..\Source\Editor\LevelEditor\Public\;..\BuildData\Include\WorkspaceMenuStructure;..\..\Source\Editor\WorkspaceMenuStructure\Public\;..\BuildData\Include\TargetPlatform;..\..\Source\Developer\TargetPlatform\Public\;..\..\Source\Developer\TargetPlatform\Public\Common;..\..\Source\Developer\TargetPlatform\Public\Interfaces;..\..\Plugins\Editor\EpicSurvey\Source;..\..\Plugins\Editor\EpicSurvey\Intermediate\BuildData\Include\EpicSurvey;..\..\Plugins\Editor\EpicSurvey\Source\EpicSurvey\Public\;..\BuildData\Include\Analytics;..\..\Source\Runtime\Analytics\Analytics\Public\;..\..\Source\Runtime\Analytics\Analytics\Public\Interfaces;..\BuildData\Include\MainFrame;..\..\Source\Editor\MainFrame\Public\;..\..\Source\Editor\MainFrame\Public\Interfaces;..\..\Plugins\Editor\IntroTutorials\Source;..\..\Plugins\Editor\IntroTutorials\Source\Editor\IntroTutorials\Private;..\..\Plugins\Editor\IntroTutorials\Source\IntroTutorials\Classes\;..\..\Plugins\Editor\IntroTutorials\Intermediate\BuildData\Include\IntroTutorials;..\..\Plugins\Editor\IntroTutorials\Source\IntroTutorials\Public\;..\BuildData\Include\GraphEditor;..\..\Source\Editor\GraphEditor\Public\;..\BuildData\Include\MessageLog;..\..\Source\Developer\MessageLog\Public\;..\BuildData\Include\Kismet;..\..\Source\Editor\Kismet\Public\;..\..\Source\Editor\Kismet\Public\WorkflowOrientedApp;..\BuildData\Include\PlacementMode;..\..\Source\Editor\PlacementMode\Public\;..\..\Plugins\Editor\PluginsEditor\Source;..\..\Plugins\Editor\PluginsEditor\Intermediate\BuildData\Include\PluginsEditor;..\..\Plugins\Editor\PluginsEditor\Source\PluginsEditor\Public\;..\BuildData\Include\EditorStyle;..\..\Source\Editor\EditorStyle\Public\;..\..\Plugins\Experimental\MathExpressions\Source;..\..\Plugins\Experimental\MathExpressions\Source\MathExpressions\Classes\;..\..\Plugins\Experimental\MathExpressions\Intermediate\BuildData\Include\MathExpressions;..\..\Plugins\Experimental\MathExpressions\Source\MathExpressions\Public\;..\..\Plugins\Experimental\Paper2D\Source;..\..\Plugins\Experimental\Paper2D\Source\Paper2D\Private;..\..\Plugins\Experimental\Paper2D\Source\Paper2D\Classes\;..\..\Plugins\Experimental\Paper2D\Intermediate\BuildData\Include\Paper2D;..\..\Plugins\Experimental\Paper2D\Source\Paper2D\Public\;..\..\Plugins\Experimental\Paper2D\Source\ThirdParty\Box2D\Box2D_v2.2.1;..\..\Plugins\Experimental\Paper2D\Source\Paper2DEditor\Private;..\..\Plugins\Experimental\Paper2D\Source\Paper2DEditor\Classes\;..\..\Plugins\Experimental\Paper2D\Intermediate\BuildData\Include\Paper2DEditor;..\..\Plugins\Experimental\Paper2D\Source\Paper2DEditor\Public\;..\BuildData\Include\AssetTools;..\..\Source\Developer\AssetTools\Public\;..\BuildData\Include\KismetWidgets;..\..\Source\Editor\KismetWidgets\Public\;..\BuildData\Include\PropertyEditor;..\..\Source\Editor\PropertyEditor\Public\;..\BuildData\Include\ContentBrowser;..\..\Source\Editor\ContentBrowser\Public\;..\..\Plugins\Experimental\Paper2D\Source\PaperJsonImporter\Classes\;..\..\Plugins\Experimental\Paper2D\Intermediate\BuildData\Include\PaperJsonImporter;..\..\Plugins\Experimental\Paper2D\Intermediate\BuildData\Include\SmartSnapping;..\BuildData\Include\ViewportSnapping;..\..\Source\Editor\ViewportSnapping\Public\;..\..\Plugins\Experimental\Phya\Source;..\..\Plugins\Experimental\Phya\Source\Phya\Private;..\..\Plugins\Experimental\Phya\Source\Phya\Private\PhyaLib\include;..\..\Plugins\Experimental\Phya\Source\Phya\Classes\;..\..\Plugins\Experimental\Phya\Intermediate\BuildData\Include\Phya;..\..\Plugins\Experimental\Phya\Source\Phya\Public\;..\..\Plugins\Experimental\SlateComponentWrappers\Source;..\..\Plugins\Experimental\SlateComponentWrappers\Source\SlateComponentWrapperRuntime\Private;..\..\Plugins\Experimental\SlateComponentWrappers\Source\SlateComponentWrapperRuntime\Classes\;..\..\Plugins\Experimental\SlateComponentWrappers\Intermediate\BuildData\Include\SlateComponentWrapperRuntime;..\..\Plugins\Experimental\SlateComponentWrappers\Source\SlateComponentWrapperEditor\Private;..\..\Plugins\Experimental\SlateComponentWrappers\Intermediate\BuildData\Include\SlateComponentWrapperEditor;..\..\Plugins\Messaging\MessagingDebugger\Source;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Models;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Styles;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Breakpoints;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Details;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Endpoints;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Graph;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\History;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Interceptors;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Types;..\..\Plugins\Messaging\MessagingDebugger\Source\MessagingDebugger\Private\Widgets\Toolbar;..\..\Plugins\Messaging\MessagingDebugger\Intermediate\BuildData\Include\MessagingDebugger;..\..\Plugins\OculusRift\Source;..\..\Plugins\OculusRift\Source\OculusRift\Private;..\..\Plugins\OculusRift\Intermediate\BuildData\Include\OculusRift;..\..\Plugins\OculusRift\Source\OculusRift\Public\;..\..\Source\Runtime\HeadMountedDisplay\Public;..\BuildData\Include\HeadMountedDisplay;..\..\Source\Runtime\HeadMountedDisplay\Public\;..\..\Source\ThirdParty\Oculus\LibOVR_025\Include;..\..\Plugins\Runtime\CustomMeshComponent\Source;..\..\Plugins\Runtime\CustomMeshComponent\Source\CustommeshComponent\Private;..\..\Plugins\Runtime\CustomMeshComponent\Source\CustomMeshComponent\Classes\;..\..\Plugins\Runtime\CustomMeshComponent\Intermediate\BuildData\Include\CustomMeshComponent;..\..\Plugins\Runtime\CustomMeshComponent\Source\CustomMeshComponent\Public\;..\..\Plugins\Runtime\SoundVisualizations\Source;..\..\Plugins\Runtime\SoundVisualizations\Source\SoundVisualizations\Private;..\..\Plugins\Runtime\SoundVisualizations\Source\SoundVisualizations\Classes\;..\..\Plugins\Runtime\SoundVisualizations\Intermediate\BuildData\Include\SoundVisualizations;..\..\Plugins\Runtime\SoundVisualizations\Source\SoundVisualizations\Public\;..\..\Source\ThirdParty\Kiss_FFT\kiss_fft129;..\..\Plugins\Runtime\WindowsMoviePlayer\Source;..\..\Plugins\Runtime\WindowsMoviePlayer\Source\Runtime\WindowsMoviePlayer\Private;..\..\Plugins\Runtime\WindowsMoviePlayer\Intermediate\BuildData\Include\WindowsMoviePlayer;..\..\Plugins\Runtime\WindowsMoviePlayer\Source\WindowsMoviePlayer\Public\;..\..\Plugins\TrueSkyPlugin\Source;..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Private;..\..\Source\Core;..\..\Source\Developer\AssetTools\Private;..\..\Source\Editor\PlacementMode\Private;..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Classes\;..\..\Plugins\TrueSkyPlugin\Intermediate\BuildData\Include\TrueSkyPlugin;..\..\Plugins\TrueSkyPlugin\Source\TrueSkyPlugin\Public\;..\BuildData\Include\CollectionManager;..\..\Source\Developer\CollectionManager\Public\;..\BuildData\Include\D3D11RHI;..\..\Source\Runtime\Windows\D3D11RHI\Public\;$(DXSDK_DIR)/include;..\..\Source\Developer\DerivedDataCache\Public;..\..\Source\Developer\SynthBenchmark\Public;..\..\Source\Runtime\Core\Private;..\..\Source\Runtime\Core\Private\Misc;..\..\Source\Runtime\Core\Private\Serialization\Json;..\..\Source\Runtime\Core\Private\Internationalization;..\..\Source\Runtime\Core\Private\Internationalization\Cultures;..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 11.0\Team Tools\Performance Tools\x64\PerfSDK;..\..\Source\ThirdParty\zlib\zlib-1.2.5\inc;..\..\Source\ThirdParty\IntelTBB\IntelTBB-4.0\Include;$(CommonProgramFiles);..\..\Source\ThirdParty\ICU\icu4c-51_2\include\;..\BuildData\Include\DerivedDataCache;..\..\Source\Developer\DerivedDataCache\Public\;..\BuildData\Include\VSAccessor;..\..\Source\Developer\Windows\VSAccessor\Public\;..\..\Source\Runtime\CoreUObject\Private;..\..\Source\Runtime\Online\OnlineSubsystem\Private;..\BuildData\Include\ImageCore;..\..\Source\Developer\ImageCore\Public\;..\..\Source\Runtime\Sockets\Private;..\..\Source\Developer\TextureCompressor\Public;..\..\Source\Runtime\Online\OnlineSubsystem\Public;..\BuildData\Include\VectorVM;..\..\Source\Runtime\VectorVM\Public\;..\..\Source\Developer\RawMesh\Public;..\BuildData\Include\RawMesh;..\..\Source\Developer\RawMesh\Public\;..\BuildData\Include\CollisionAnalyzer;..\..\Source\Developer\CollisionAnalyzer\Public\;..\..\Source\Developer\TaskGraph\Public;..\..\Source\Runtime\Engine\Classes;..\BuildData\Include\LogVisualizer;..\..\Source\Developer\LogVisualizer\Public\;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\foundation;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\cooking;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\common;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\extensions;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\geometry;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\vehicle;..\..\Source\ThirdParty\PhysX\PhysX-3.3\include\foundation\windows;..\..\Source\ThirdParty\PhysX\APEX-1.3\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\framework\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\framework\public\PhysX3;..\..\Source\ThirdParty\PhysX\APEX-1.3\module\destructible\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\module\clothing\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\module\legacy\public;..\..\Source\ThirdParty\PhysX\APEX-1.3\NxParameterized\public;..\..\Source\ThirdParty\Ogg\libogg-1.2.2\include;..\..\Source\ThirdParty\Vorbis\libvorbis-1.3.2\include;..\..\Source\ThirdParty\DirectShow\DirectShow-1.0.0\Public;..\..\Source\ThirdParty\Recast\Recast\Include;..\..\Source\ThirdParty\Recast\Detour\Include;..\..\Source\ThirdParty\Recast\DetourTileCache\Include;..\..\Source\ThirdParty\Recast\RecastDemo\Include;..\BuildData\Include\CrashTracker;..\..\Source\Developer\CrashTracker\Public\;..\..\Source\Developer\CrashTracker\Public\Interfaces;..\BuildData\Include\TextureCompressor;..\..\Source\Developer\TextureCompressor\Public\;..\BuildData\Include\MeshUtilities;..\..\Source\Developer\MeshUtilities\Public\;..\..\Source\Runtime\Networking\Private;..\..\Source\ThirdParty\FreeType2\FreeType2-2.4.12\Include;..\BuildData\Include\Settings;..\..\Source\Developer\Settings\Public\;..\..\Source\Developer\Settings\Public\Interfaces;..\..\Source\Developer\Settings\Private;..\..\Source\Developer\Settings\Private\Widgets;..\BuildData\Include\TextureFormatDXT;..\..\Source\ThirdParty\nvTextureTools\nvTextureTools-2.0.6\src\src;..\..\Source\Developer\ImageWrapper\Private;..\..\Source\ThirdParty\libPNG\libPNG-1.5.2;..\..\Source\ThirdParty\libJPG;..\BuildData\Include\TextureFormatUncompressed;..\BuildData\Include\AudioFormatADPCM;..\BuildData\Include\AudioFormatOgg;..\BuildData\Include\PhysXFormats;..\BuildData\Include\TextureFormatPVR;..\BuildData\Include\ShaderFormatD3D;..\BuildData\Include\ShaderPreprocessor;..\..\Source\Developer\ShaderPreprocessor\Public\;..\..\Source\Runtime\NullDrv\Private;..\BuildData\Include\NullDrv;..\..\Source\Runtime\NullDrv\Public\;..\..\Source\Runtime\Windows\D3D11RHI\Private;..\..\Source\Runtime\OpenGLDrv\Private;..\BuildData\Include\OpenGLDrv;..\..\Source\Runtime\OpenGLDrv\Public\;..\..\Source\ThirdParty\OpenGL;..\..\Source\ThirdParty\MCPP\mcpp-2.7.2\inc;..\BuildData\Include\ShaderFormatOpenGL;..\..\Source\ThirdParty\HLSLCC\hlslcc\src\hlslcc_lib;..\..\Source\Editor\WorkspaceMenuStructure\Private;..\BuildData\Include\DesktopPlatform;..\..\Source\Developer\DesktopPlatform\Public\;..\..\Source\Editor\UnrealEd\Private;..\..\Source\Editor\UnrealEd\Private\Settings;..\..\Source\Editor\PackagesDialog\Public;..\..\Source\Developer\TargetPlatform\Public;..\BuildData\Include\DirectoryWatcher;..\..\Source\Developer\DirectoryWatcher\Public\;..\BuildData\Include\EditorSettingsViewer;..\BuildData\Include\InputBindingEditor;..\..\Source\Editor\InputBindingEditor\Public\;..\..\Source\Editor\InputBindingEditor\Public\Interfaces;..\..\Source\Runtime\NetworkFileSystem\Public;..\..\Source\Runtime\NetworkFileSystem\Public\Interfaces;..\BuildData\Include\NetworkFileSystem;..\..\Source\Runtime\NetworkFileSystem\Public\;..\BuildData\Include\ProjectSettingsViewer;..\BuildData\Include\SourceControlWindows;..\..\Source\Editor\SourceControlWindows\Public\;..\..\Source\Developer\TargetDeviceServices\Classes\;..\BuildData\Include\TargetDeviceServices;..\..\Source\Developer\TargetDeviceServices\Public\;..\..\Source\Developer\TargetDeviceServices\Public\Interfaces;..\BuildData\Include\LauncherServices;..\..\Source\Developer\LauncherServices\Public\;..\..\Source\Developer\LauncherServices\Public\Common;..\..\Source\Developer\LauncherServices\Public\Interfaces;..\BuildData\Include\LauncherAutomatedService;..\..\Source\Runtime\LauncherAutomatedService\Public\;..\..\Source\Runtime\LauncherAutomatedService\Public\Interfaces;..\BuildData\Include\SettingsEditor;..\..\Source\Developer\SettingsEditor\Public\;..\..\Source\Developer\SettingsEditor\Public\Interfaces;..\BuildData\Include\SoundCueEditor;..\..\Source\Editor\SoundCueEditor\Public\;..\BuildData\Include\SoundClassEditor;..\..\Source\Editor\SoundClassEditor\Public\;..\..\Source\Editor\SwarmInterface\Public;..\BuildData\Include\SwarmInterface;..\..\Source\Editor\SwarmInterface\Public\;..\..\Source\Editor\StatsViewer\Classes\;..\BuildData\Include\StatsViewer;..\..\Source\Editor\StatsViewer\Public\;..\BuildData\Include\MaterialEditor;..\..\Source\Editor\MaterialEditor\Public\;..\..\Source\ThirdParty\HACD\HACD_1.0\public;..\..\Source\ThirdParty\FBX\2013.3\include;..\..\Source\ThirdParty\FBX\2013.3\include\fbxsdk;..\BuildData\Include\ClassViewer;..\..\Source\Editor\ClassViewer\Public\;..\BuildData\Include\NiagaraEditor;..\..\Source\Editor\NiagaraEditor\Public\;..\..\Source\Editor\GameProjectGeneration\Classes\;..\BuildData\Include\GameProjectGeneration;..\..\Source\Editor\GameProjectGeneration\Public\;..\..\Source\Editor\BehaviorTreeEditor\Classes\;..\BuildData\Include\BehaviorTreeEditor;..\..\Source\Editor\BehaviorTreeEditor\Public\;..\..\Source\Editor\EnvironmentQueryEditor\Classes\;..\BuildData\Include\EnvironmentQueryEditor;..\..\Source\Editor\EnvironmentQueryEditor\Public\;..\..\Source\Developer\DirectoryWatcher\Private;..\..\Source\Editor\EditorSettingsViewer\Private;..\..\Source\Editor\InputBindingEditor\Private;..\..\Source\Editor\InputBindingEditor\Private\Widgets;..\..\Source\Developer\MessageLog\Private;..\..\Source\Developer\MessageLog\Private\Presentation;..\..\Source\Developer\MessageLog\Private\UserInterface;..\..\Source\Developer\MessageLog\Private\Model;..\..\Source\Developer\Documentation\Private;..\..\Source\Developer\SettingsEditor\Private;..\..\Source\Developer\SettingsEditor\Private\Models;..\..\Source\Developer\SettingsEditor\Private\Widgets;..\..\Source\Developer\DesktopPlatform\Private;..\..\Source\Editor\PropertyEditor\Private;..\..\Source\Editor\PropertyEditor\Private\Presentation;..\..\Source\Editor\PropertyEditor\Private\Presentation\PropertyTable;..\..\Source\Editor\PropertyEditor\Private\Presentation\PropertyEditor;..\..\Source\Editor\PropertyEditor\Private\Presentation\PropertyDetails;..\..\Source\Editor\PropertyEditor\Private\UserInterface;..\..\Source\Editor\PropertyEditor\Private\UserInterface\PropertyTable;..\..\Source\Editor\PropertyEditor\Private\UserInterface\PropertyEditor;..\..\Source\Editor\PropertyEditor\Private\UserInterface\PropertyTree;..\..\Source\Editor\PropertyEditor\Private\UserInterface\PropertyDetails;..\BuildData\Include\EditorWidgets;..\..\Source\Editor\EditorWidgets\Public\;..\..\Source\Editor\ReferenceViewer\Classes\;..\BuildData\Include\ReferenceViewer;..\..\Source\Editor\ReferenceViewer\Public\;..\..\Source\Developer\SourceControl\Private;..\BuildData\Include\CurveAssetEditor;..\..\Source\Editor\CurveAssetEditor\Public\;..\BuildData\Include\Persona;..\..\Source\Editor\Persona\Public\;..\BuildData\Include\FontEditor;..\..\Source\Editor\FontEditor\Public\;..\..\Source\Editor\Kismet\Private;..\..\Source\Editor\GraphEditor\Private;..\..\Source\Editor\GraphEditor\Private\AnimationPins;..\..\Source\Editor\GraphEditor\Private\AnimationStateNodes;..\..\Source\Editor\GraphEditor\Private\KismetNodes;..\..\Source\Editor\GraphEditor\Private\KismetPins;..\..\Source\Editor\GraphEditor\Private\MaterialNodes;..\..\Source\Editor\GraphEditor\Private\MaterialPins;..\..\Source\Editor\GraphEditor\Private\NoRedist;..\..\Source\Editor\GraphEditor\Private\SoundNodes;..\..\Source\Editor\KismetWidgets\Private;..\..\Source\Editor\BlueprintGraph\Private;..\..\Source\Editor\KismetCompiler\Public;..\..\Source\Runtime\MovieSceneCore\Classes\;..\BuildData\Include\MovieSceneCore;..\..\Source\Runtime\MovieSceneCore\Public\;..\..\Source\Developer\MovieSceneTools\Classes\;..\BuildData\Include\MovieSceneTools;..\..\Source\Developer\MovieSceneTools\Public\;..\..\Source\Developer\FunctionalTesting\Classes\;..\BuildData\Include\FunctionalTesting;..\..\Source\Developer\FunctionalTesting\Public\;..\..\Source\Runtime\MovieSceneCore\Private;..\..\Source\Developer\MovieSceneTools\Private;..\..\Source\Runtime\MovieSceneCoreTypes\Classes\;..\BuildData\Include\MovieSceneCoreTypes;..\..\Source\Runtime\MovieSceneCoreTypes\Public\;..\BuildData\Include\Sequencer;..\..\Source\Editor\Sequencer\Public\;..\..\Source\Runtime\MovieSceneCoreTypes\Private;..\..\Source\Runtime\MovieSceneCoreTypes\Private\Instances;..\..\Source\Editor\Sequencer\Private;..\BuildData\Include\SequencerWidgets;..\..\Source\Editor\SequencerWidgets\Public\;..\..\Source\Editor\SequencerWidgets\Private;..\..\Source\MessageLog\Public;..\..\Source\Stats\Public;..\..\Source\Developer\FunctionalTesting\Private;..\..\Source\Editor\AnimGraph\Private;..\BuildData\Include\DeviceProfileServices;..\..\Source\Editor\DeviceProfileServices\Public\;..\BuildData\Include\ActorScratchPad;..\..\Source\Editor\ActorScratchPad\Public\;..\..\Source\Editor\StatsViewer\Private;..\..\Source\Editor\StatsViewer\Private\StatsPages;..\..\Source\Editor\StatsViewer\Private\StatsEntries;..\..\Source\Editor\DeviceProfileServices\Private;..\..\Source\Runtime\Messaging\Private;..\..\Source\Runtime\Messaging\Private\Bus;..\..\Source\Runtime\Messaging\Private\Bridge;..\..\Source\Runtime\Messaging\Private\Serialization;..\..\Source\Runtime\Messaging\Private\Tests\Bus;..\..\Source\Runtime\Messaging\Private\Transports;..\..\Source\Runtime\Messaging\Private\Transports\Udp;..\..\Source\Editor\MainFrame\Private;..\..\Source\Editor\MainFrame\Private\Frame;..\..\Source\Editor\MainFrame\Private\Menus;..\BuildData\Include\TranslationEditor;..\..\Source\Editor\TranslationEditor\Public\;..\BuildData\Include\OutputLog;..\..\Source\Developer\OutputLog\Public\;..\..\Source\Developer\CrashTracker\Private;..\..\Source\Runtime\EngineSettings\Private;..\BuildData\Include\SceneOutliner;..\..\Source\Editor\SceneOutliner\Public\;..\..\Source\Developer\DeviceManager\Private;..\..\Source\Developer\DeviceManager\Private\Models;..\..\Source\Developer\DeviceManager\Private\Widgets;..\..\Source\Developer\DeviceManager\Private\Widgets\Apps;..\..\Source\Developer\DeviceManager\Private\Widgets\Browser;..\..\Source\Developer\DeviceManager\Private\Widgets\Details;..\..\Source\Developer\DeviceManager\Private\Widgets\Processes;..\BuildData\Include\DeviceManager;..\..\Source\Developer\DeviceManager\Public\;..\..\Source\Developer\DeviceManager\Public\Interfaces;..\..\Source\Developer\SessionFrontend\Private;..\..\Source\Developer\SessionFrontend\Private\Models;..\..\Source\Developer\SessionFrontend\Private\Widgets;..\..\Source\Developer\SessionFrontend\Private\Widgets\Browser;..\..\Source\Developer\SessionFrontend\Private\Widgets\Console;..\BuildData\Include\SessionFrontend;..\..\Source\Developer\SessionFrontend\Public\;..\..\Source\Developer\SessionFrontend\Public\Interfaces;..\BuildData\Include\SessionLauncher;..\..\Source\Developer\SessionLauncher\Public\;..\..\Source\Developer\SessionLauncher\Public\Interfaces;..\BuildData\Include\AutomationWindow;..\..\Source\Developer\AutomationWindow\Public\;..\..\Source\Developer\AutomationWindow\Public\Interfaces;..\BuildData\Include\ScreenShotComparison;..\..\Source\Developer\ScreenShotComparison\Public\;..\..\Source\Developer\ScreenShotComparison\Public\Interfaces;..\BuildData\Include\ScreenShotComparisonTools;..\..\Source\Developer\ScreenShotComparisonTools\Public\;..\..\Source\Developer\ScreenShotComparisonTools\Public\Interfaces;..\..\Source\Developer\Profiler\Public;..\..\Source\Developer\Profiler\Public\Interfaces;..\BuildData\Include\Profiler;..\..\Source\Developer\Profiler\Public\;..\..\Source\Developer\LauncherServices\Private;..\..\Source\Developer\LauncherServices\Private\Devices;..\..\Source\Developer\LauncherServices\Private\Games;..\..\Source\Developer\LauncherServices\Private\Launcher;..\..\Source\Developer\LauncherServices\Private\Profiles;..\..\Source\Developer\SessionMessages\Classes\;..\BuildData\Include\SessionMessages;..\..\Source\Developer\SessionMessages\Public\;..\..\Source\Editor\SessionMessages\Private;..\..\Source\Editor\UnrealEdMessages\Private;..\..\Source\Developer\SessionLauncher\Private;..\..\Source\Developer\SessionLauncher\Private\Models;..\..\Source\Developer\SessionLauncher\Private\Widgets;..\..\Source\Developer\SessionLauncher\Private\Widgets\Build;..\..\Source\Developer\SessionLauncher\Private\Widgets\Cook;..\..\Source\Developer\SessionLauncher\Private\Widgets\Deploy;..\..\Source\Developer\SessionLauncher\Private\Widgets\Launch;..\..\Source\Developer\SessionLauncher\Private\Widgets\Package;..\..\Source\Developer\SessionLauncher\Private\Widgets\Project;..\..\Source\Developer\SessionLauncher\Private\Widgets\Shared;..\..\Source\Editor\EngineMessages\Private;..\..\Source\Runtime\AutomationController\Private;..\..\Source\Runtime\AutomationMessages\Classes\;..\BuildData\Include\AutomationMessages;..\..\Source\Runtime\AutomationMessages\Public\;..\..\Source\Editor\AutomationMessages\Private;..\..\Source\Developer\ScreenShotComparison\Private;..\..\Source\Developer\ScreenShotComparison\Private\Widgets;..\..\Source\Developer\ScreenShotComparison\Private\Models;..\..\Source\Developer\ScreenShotComparisonTools\Private;..\..\Source\Developer\Profiler\Private;..\..\Source\Developer\Profiler\Private\Widgets;..\..\Source\Developer\ProfilerMessages\Classes\;..\BuildData\Include\ProfilerMessages;..\..\Source\Developer\ProfilerMessages\Public\;..\..\Source\Editor\ProfilerMessages\Private;..\BuildData\Include\Layers;..\..\Source\Editor\Layers\Public\;..\BuildData\Include\Levels;..\..\Source\Editor\Levels\Public\;..\..\Source\Editor\WorldBrowser\Public;..\..\Source\Editor\WorldBrowser\Classes\;..\BuildData\Include\WorldBrowser;..\..\Source\Editor\WorldBrowser\Public\;..\BuildData\Include\TaskBrowser;..\..\Source\Editor\TaskBrowser\Public\;..\BuildData\Include\NewLevelDialog;..\..\Source\Editor\NewLevelDialog\Public\;..\..\Source\Editor\DeviceProfileEditor\Private;..\..\Source\Editor\DeviceProfileEditor\Private\DetailsPanel;..\..\Source\Editor\UnrealEd\Public;..\BuildData\Include\DeviceProfileEditor;..\..\Source\Editor\DeviceProfileEditor\Public\;..\BuildData\Include\LODSettingsEditor;..\..\Source\Editor\LODSettingsEditor\Public\;..\..\Source\Editor\LODSettingsEditor\Private;..\BuildData\Include\CurveTableEditor;..\..\Source\Editor\CurveTableEditor\Public\;..\BuildData\Include\DataTableEditor;..\..\Source\Editor\DataTableEditor\Public\;..\..\Source\Editor\DestructibleMeshEditor\Classes\;..\BuildData\Include\DestructibleMeshEditor;..\..\Source\Editor\DestructibleMeshEditor\Public\;..\..\Source\Editor\Persona\Private;..\..\Source\Runtime\NetworkFileSystem\Private;..\..\Source\Runtime\NetworkFileSystem\Private\Simple;..\..\Source\Runtime\NetworkFileSystem\Private\Streaming;..\..\Source\Editor\ProjectSettingsViewer\Private;..\..\Source\Runtime\LauncherAutomatedService\Private;..\BuildData\Include\StaticMeshEditor;..\..\Source\Editor\StaticMeshEditor\Public\;..\..\Source\ThirdParty\nvTriStrip\nvTriStrip-1.0.0\Inc;..\..\Source\ThirdParty\ForsythTriOO\Src;..\BuildData\Include\TextureEditor;..\..\Source\Editor\TextureEditor\Public\;..\..\Source\Editor\DistCurveEditor\Public;..\..\Source\Editor\Cascade\Classes\;..\BuildData\Include\Cascade;..\..\Source\Editor\Cascade\Public\;..\BuildData\Include\DistCurveEditor;..\..\Source\Editor\DistCurveEditor\Public\;..\..\Source\Developer\DesktopPlatform\Public;..\..\Source\Editor\Matinee\Classes\;..\BuildData\Include\Matinee;..\..\Source\Editor\Matinee\Public\;..\..\Source\Editor\LandscapeEditor\Classes\;..\BuildData\Include\LandscapeEditor;..\..\Source\Editor\LandscapeEditor\Public\;..\..\Source\Editor\DetailCustomizations\Private;..\BuildData\Include\DetailCustomizations;..\..\Source\Editor\DetailCustomizations\Public\;..\..\Source\Editor\ComponentVisualizers\Private;..\BuildData\Include\ComponentVisualizers;..\..\Source\Editor\ComponentVisualizers\Public\;..\BuildData\Include\PackagesDialog;..\..\Source\Editor\PackagesDialog\Public\;..\BuildData\Include\PreferencesEditor;..\..\Source\Editor\PreferencesEditor\Public\;..\..\Source\Editor\PhAT\Classes\;..\BuildData\Include\PhAT;..\..\Source\Editor\PhAT\Public\;..\..\Source\Editor\GeometryMode\Classes\;..\BuildData\Include\GeometryMode;..\..\Source\Editor\GeometryMode\Public\;..\BuildData\Include\TextureAlignMode;..\..\Source\Editor\TextureAlignMode\Public\;..\BuildData\Include\FoliageEdit;..\..\Source\Editor\FoliageEdit\Public\;..\BuildData\Include\PackageDependencyInfo;..\..\Source\Developer\PackageDependencyInfo\Public\;..\..\Source\Editor\Blutility\Private;..\..\Source\Editor\Blutility\Classes\;..\BuildData\Include\Blutility;..\..\Source\Editor\Blutility\Public\;..\BuildData\Include\MeshPaint;..\..\Source\Editor\MeshPaint\Public\;..\BuildData\Include\CameraEditor;..\..\Source\Editor\CameraEditor\Public\;..\BuildData\Include\CameraDebugger;..\..\Source\Developer\CameraDebugger\Public\;..\BuildData\Include\PListEditor;..\..\Source\Editor\PListEditor\Public\;..\..\Source\Developer\SynthBenchmark\Private;..\..\Source\Developer\BlankModule\Private;..\BuildData\Include\BlankModule;..\..\Source\Developer\BlankModule\Public\;..\..\Source\Developer\WindowsTargetPlatform\Classes;..\..\Source\Developer\Windows\WindowsTargetPlatform\Classes\;..\BuildData\Include\WindowsTargetPlatform;..\..\Source\Developer\Windows\WindowsTargetPlatform\Private;..\BuildData\Include\WindowsNoEditorTargetPlatform;..\BuildData\Include\WindowsServerTargetPlatform;..\BuildData\Include\AnalyticsSwrve;..\..\Source\Runtime\Analytics\AnalyticsSwrve\Public\;..\..\Source\Runtime\Online\HTTP\Private;..\BuildData\Include\AnalyticsET;..\..\Source\Runtime\Analytics\AnalyticsET\Public\;..\BuildData\Include\AnalyticsMulticast;..\..\Source\Runtime\Analytics\AnalyticsMulticast\Public\;..\..\Source\Developer\AndroidTargetPlatform\Classes;..\..\Source\Runtime\Core\Public\Android;..\..\Source\Developer\Android\AndroidTargetPlatform\Classes\;..\BuildData\Include\AndroidTargetPlatform;..\..\Source\Developer\IOSTargetPlatform\Classes;..\..\Source\Runtime\Core\Public\Apple;..\..\Source\Runtime\Core\Public\IOS;..\..\Source\Developer\iOS\IOSTargetPlatform\Classes\;..\BuildData\Include\IOSTargetPlatform;..\..\Source\Runtime\IOS\LaunchDaemonMessages\Classes\;..\BuildData\Include\LaunchDaemonMessages;..\..\Source\Runtime\IOS\LaunchDaemonMessages\Public\;..\..\Source\Developer\HTML5TargetPlatform\Classes;..\..\Source\Developer\HTML5\HTML5TargetPlatform\Classes\;..\BuildData\Include\HTML5TargetPlatform;..\..\Source\Developer\Linux\LinuxTargetPlatform\Classes\;..\BuildData\Include\LinuxTargetPlatform;..\..\Source\Runtime\MoviePlayer\Private;..\..\Source\Runtime\SlateRHIRenderer\Private;..\..\Source\Runtime\Renderer\Private;..\..\Source\Runtime\Renderer\Private\CompositionLighting;..\..\Source\Runtime\Renderer\Private\PostProcess;..\BuildData\Include\RealtimeProfiler;..\..\Source\Runtime\AutomationWorker\Private;..\BuildData\Include\Toolbox;..\..\Source\Developer\Toolbox\Public\;..\BuildData\Include\GammaUI;..\..\Source\Developer\GammaUI\Public\;..\BuildData\Include\ModuleUI;..\..\Source\Developer\ModuleUI\Public\;..\..\Source\Runtime\Online\OnlineSubsystemMcp\Private;..\BuildData\Include\OnlineSubsystemMcp;..\..\Source\Runtime\Online\OnlineSubsystemMcp\Public\;..\..\Source\Developer\BuildPatchServices\Private;..\BuildData\Include\BuildPatchServices;..\..\Source\Developer\BuildPatchServices\Public\;..\..\Source\Developer\BuildPatchServices\Public\Interfaces;..\..\Source\Developer\FriendsAndChat\Private;..\..\Source\Developer\FriendsAndChat\Private\UI\Widgets;..\..\Source\Developer\FriendsAndChat\Private\Models;..\..\Source\Developer\FriendsAndChat\Classes\;..\BuildData\Include\FriendsAndChat;..\..\Source\Developer\FriendsAndChat\Public\;..\..\Source\Developer\FriendsAndChat\Public\Interfaces;..\..\Source\Developer\CommunityPortalServices\Private;..\..\Source\Developer\CommunityPortalServices\Private\UI\Style;..\..\Source\Developer\CommunityPortalServices\Private\UI\Widgets;..\..\Source\Developer\CommunityPortalServices\Private\Analytics;..\..\Source\Developer\CommunityPortalServices\Private\Commandlet;..\..\Source\Developer\CommunityPortalServices\Private\Online;..\BuildData\Include\CommunityPortalServices;..\..\Source\Developer\CommunityPortalServices\Public\;..\..\Source\Developer\CommunityPortalServices\Public\Interfaces;..\..\Source\Developer\StandaloneRenderer\Private;..\BuildData\Include\StandaloneRenderer;..\..\Source\Developer\StandaloneRenderer\Public\;..\..\Source\Developer\StandaloneRenderer\Public\IOS;..\..\Source\Developer\CrashDebugHelper\Private;..\BuildData\Include\CrashDebugHelper;..\..\Source\Developer\CrashDebugHelper\Public\;..\BuildData\Include\RemoteAgent;..\..\Source\Developer\RemoteAgent\Public\;..\..\Source\Developer\RemoteAgentUI\Private;..\..\Source\Developer\RemoteAgentUI\Private\Widgets;..\BuildData\Include\RemoteAgentUI;..\..\Source\Developer\RemoteAgentUI\Public\;..\..\Source\Runtime\Online\OnlineSubsystemUtils\Private;..\..\Source\Runtime\Online\OnlineSubsystemUtils\Classes\;..\BuildData\Include\OnlineSubsystemUtils;..\..\Source\Runtime\Online\OnlineSubsystemUtils\Public\;..\BuildData\Include\OnlineSubsystemNull;..\..\Source\Runtime\Online\OnlineSubsystemNull\Public\;..\BuildData\Include\OnlineSubsystemAmazon;..\..\Source\Runtime\Online\OnlineSubsystemAmazon\Public\;..\..\Source\Runtime\Online\OnlineSubsystemSteam\Classes\;..\BuildData\Include\OnlineSubsystemSteam;..\..\Source\Runtime\Online\OnlineSubsystemSteam\Public\;..\..\Source\ThirdParty\Steamworks\Steamv126\sdk\public;..\..\Source\Runtime\Online\OnlineSubsystemFacebook\Private;..\..\Source\Runtime\Online\OnlineSubsystemFacebook\Private\Windows;..\BuildData\Include\OnlineSubsystemFacebook;..\..\Source\Runtime\Online\OnlineSubsystemFacebook\Public\</NMakeIncludeSearchPath>
 		<NMakeForcedIncludes>$(NMakeForcedIncludes)</NMakeForcedIncludes>
 		<NMakeAssemblySearchPath>$(NMakeAssemblySearchPath)</NMakeAssemblySearchPath>
 		<NMakeForcedUsingAssemblies>$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>

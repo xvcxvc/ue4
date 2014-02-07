@@ -8,7 +8,9 @@ namespace UnrealBuildTool.Rules
 		{
 			PublicIncludePaths.AddRange(
 				new string[] {
-					"Core"
+					"Core",
+                    "Developer/AssetTools/Private",
+                    "Editor/PlacementMode/Private",
 					// ... add public include paths required here ...
 				}
 				);
@@ -29,7 +31,12 @@ namespace UnrealBuildTool.Rules
 					"UnrealEd",
 					"Slate",
 					"LevelEditor",
-					"MainFrame"
+					"MainFrame",
+                    "AssetTools",
+                    "PlacementMode",
+                    "UnrealEd",
+                    "CollectionManager",
+                    "ContentBrowser",
 					// ... add other public dependencies that you statically link with here ...
 				}
 				);

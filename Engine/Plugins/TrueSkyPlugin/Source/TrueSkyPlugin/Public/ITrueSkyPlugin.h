@@ -34,5 +34,7 @@ public:
 	{
 		return FModuleManager::Get().IsModuleLoaded( "TrueSkyPlugin" );
 	}
+
+	virtual void OpenEditor(class UTrueSkySequenceAsset* const TrueSkySequence) = 0;
 };
 
