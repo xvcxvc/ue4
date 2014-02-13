@@ -23,7 +23,7 @@ class FMaterial;
 
 // Shortcut for the allocator used by scene rendering.
 class SceneRenderingAllocator
-	: public TMemStackAllocator<GRenderingThreadMemStack>
+	: public TMemStackAllocator<>
 {
 };
 
@@ -176,6 +176,7 @@ public:
 		return Extent.X != 0 && Extent.Y != 0 && Depth != 0;
 	}
 
+	// @return true if this texture is a texture array
 	bool IsArray() const
 	{
 		return bIsArray;
@@ -255,6 +256,13 @@ public:
 		}
 	}
 
+	// useful when compositing graph takes an input as output format
+	void Reset()
+	{
+		// Usually we don't want to propagate MSAA samples.
+		NumSamples = 1;
+	}
+
 	/** In pixels, (0,0) if not set, (x,0) for cube maps, todo: make 3d int vector for volume textures */
 	FIntPoint Extent;
 	/** 0, unless it's texture array or volume texture */
@@ -266,9 +274,8 @@ public:
 	bool bIsArray;
 
 	/** Number of mips */
-	
 	uint16 NumMips;
-	/** Number of msaa samples, default:1  */
+	/** Number of MSAA samples, default: 1  */
 	uint16 NumSamples;
 	/** Texture format e.g. PF_B8G8R8A8 */
 	EPixelFormat Format;

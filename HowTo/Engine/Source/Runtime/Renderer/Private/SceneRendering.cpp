@@ -119,6 +119,67 @@ FViewInfo::~FViewInfo()
 	}
 }
 
+void FViewInfo::SetupSkyIrradianceEnvironmentMapConstants(FVector4* OutSkyIrradianceEnvironmentMap) const
+{
+	FScene* Scene = (FScene*)Family->Scene;
+
+	if (Scene 
+		&& Scene->SkyLight 
+		&& Family->EngineShowFlags.SkyLighting)
+	{
+		const FSHVectorRGB3& SkyIrradiance = Scene->SkyLight->IrradianceEnvironmentMap;
+
+		const float SqrtPI = FMath::Sqrt(PI);
+		const float Coefficient0 = 1.0f / (2 * SqrtPI);
+		const float Coefficient1 = FMath::Sqrt(3) / (3 * SqrtPI);
+		const float Coefficient2 = FMath::Sqrt(15) / (8 * SqrtPI);
+		const float Coefficient3 = FMath::Sqrt(5) / (16 * SqrtPI);
+		const float Coefficient4 = .5f * Coefficient2;
+
+		// Pack the SH coefficients in a way that makes applying the lighting use the least shader instructions
+		// This has the diffuse convolution coefficients baked in
+		// See "Stupid Spherical Harmonics (SH) Tricks"
+		OutSkyIrradianceEnvironmentMap[0].X = -Coefficient1 * SkyIrradiance.R.V[3];
+		OutSkyIrradianceEnvironmentMap[0].Y = -Coefficient1 * SkyIrradiance.R.V[1];
+		OutSkyIrradianceEnvironmentMap[0].Z = Coefficient1 * SkyIrradiance.R.V[2];
+		OutSkyIrradianceEnvironmentMap[0].W = Coefficient0 * SkyIrradiance.R.V[0] - Coefficient3 * SkyIrradiance.R.V[6];
+
+		OutSkyIrradianceEnvironmentMap[1].X = -Coefficient1 * SkyIrradiance.G.V[3];
+		OutSkyIrradianceEnvironmentMap[1].Y = -Coefficient1 * SkyIrradiance.G.V[1];
+		OutSkyIrradianceEnvironmentMap[1].Z = Coefficient1 * SkyIrradiance.G.V[2];
+		OutSkyIrradianceEnvironmentMap[1].W = Coefficient0 * SkyIrradiance.G.V[0] - Coefficient3 * SkyIrradiance.G.V[6];
+
+		OutSkyIrradianceEnvironmentMap[2].X = -Coefficient1 * SkyIrradiance.B.V[3];
+		OutSkyIrradianceEnvironmentMap[2].Y = -Coefficient1 * SkyIrradiance.B.V[1];
+		OutSkyIrradianceEnvironmentMap[2].Z = Coefficient1 * SkyIrradiance.B.V[2];
+		OutSkyIrradianceEnvironmentMap[2].W = Coefficient0 * SkyIrradiance.B.V[0] - Coefficient3 * SkyIrradiance.B.V[6];
+
+		OutSkyIrradianceEnvironmentMap[3].X = Coefficient2 * SkyIrradiance.R.V[4];
+		OutSkyIrradianceEnvironmentMap[3].Y = -Coefficient2 * SkyIrradiance.R.V[5];
+		OutSkyIrradianceEnvironmentMap[3].Z = 3 * Coefficient3 * SkyIrradiance.R.V[6];
+		OutSkyIrradianceEnvironmentMap[3].W = -Coefficient2 * SkyIrradiance.R.V[7];
+
+		OutSkyIrradianceEnvironmentMap[4].X = Coefficient2 * SkyIrradiance.G.V[4];
+		OutSkyIrradianceEnvironmentMap[4].Y = -Coefficient2 * SkyIrradiance.G.V[5];
+		OutSkyIrradianceEnvironmentMap[4].Z = 3 * Coefficient3 * SkyIrradiance.G.V[6];
+		OutSkyIrradianceEnvironmentMap[4].W = -Coefficient2 * SkyIrradiance.G.V[7];
+
+		OutSkyIrradianceEnvironmentMap[5].X = Coefficient2 * SkyIrradiance.B.V[4];
+		OutSkyIrradianceEnvironmentMap[5].Y = -Coefficient2 * SkyIrradiance.B.V[5];
+		OutSkyIrradianceEnvironmentMap[5].Z = 3 * Coefficient3 * SkyIrradiance.B.V[6];
+		OutSkyIrradianceEnvironmentMap[5].W = -Coefficient2 * SkyIrradiance.B.V[7];
+
+		OutSkyIrradianceEnvironmentMap[6].X = Coefficient4 * SkyIrradiance.R.V[8];
+		OutSkyIrradianceEnvironmentMap[6].Y = Coefficient4 * SkyIrradiance.G.V[8];
+		OutSkyIrradianceEnvironmentMap[6].Z = Coefficient4 * SkyIrradiance.B.V[8];
+		OutSkyIrradianceEnvironmentMap[6].W = 1;
+	}
+	else
+	{
+		FMemory::Memzero(OutSkyIrradianceEnvironmentMap, sizeof(FVector4) * 7);
+	}
+}
+
 /** Creates the view's uniform buffer given a set of view transforms. */
 TUniformBufferRef<FViewUniformShaderParameters> FViewInfo::CreateUniformBuffer(
 	const FMatrix& EffectiveTranslatedViewMatrix, 
@@ -205,7 +266,6 @@ TUniformBufferRef<FViewUniformShaderParameters> FViewInfo::CreateUniformBuffer(
 
 		ViewUniformShaderParameters.AdaptiveTessellationFactor = 0.5f * float(ViewRect.Height()) / TessellationAdaptivePixelsPerEdge;
 	}
-
 
 	if (Family->Scene)
 	{
@@ -338,8 +398,8 @@ TUniformBufferRef<FViewUniformShaderParameters> FViewInfo::CreateUniformBuffer(
 
 	{
 		// Enables toggle of HDR Mosaic mode without recompile of all PC shaders during ES2 emulation.
-		static IConsoleVariable* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Mobile32bpp")); 
-		ViewUniformShaderParameters.HdrMosaic = CVar->GetInt() == 1 ? 1.0f : 0.0f;
+		static const auto CVar = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Mobile32bpp")); 
+		ViewUniformShaderParameters.HdrMosaic = CVar->GetValueOnRenderThread() == 1 ? 1.0f : 0.0f;
 	}
 	
 	FVector2D OneScenePixelUVSize = FVector2D(1.0f / BufferSize.X, 1.0f / BufferSize.Y);
@@ -348,6 +408,22 @@ TUniformBufferRef<FViewUniformShaderParameters> FViewInfo::CreateUniformBuffer(
 								(((float)ViewRect.Max.X / BufferSize.X) - OneScenePixelUVSize.X) , 
 								(((float)ViewRect.Max.Y / BufferSize.Y) - OneScenePixelUVSize.Y) );
 	ViewUniformShaderParameters.SceneTextureMinMax = SceneTexMinMax;
+
+	if (Family->Scene && ((FScene*)Family->Scene)->SkyLight)
+	{
+		FScene* Scene = (FScene*)Family->Scene;
+		ViewUniformShaderParameters.SkyLightColor = Scene->SkyLight->LightColor;
+		ViewUniformShaderParameters.SkyLightParameters = Scene->SkyLight->bCastShadows && Scene->SkyLight->bPrecomputedLightingIsValid ? 1 : 0;
+	}
+	else
+	{
+		ViewUniformShaderParameters.SkyLightColor = FLinearColor::Black;
+		ViewUniformShaderParameters.SkyLightParameters = 0;
+	}
+
+	// Make sure there's no padding since we're going to cast to FVector4*
+	checkSlow(sizeof(ViewUniformShaderParameters.SkyIrradianceEnvironmentMap) == sizeof(FVector4) * 7);
+	SetupSkyIrradianceEnvironmentMapConstants((FVector4*)&ViewUniformShaderParameters.SkyIrradianceEnvironmentMap);
 
 	return TUniformBufferRef<FViewUniformShaderParameters>::CreateUniformBufferImmediate(ViewUniformShaderParameters, UniformBuffer_SingleUse);
 }
@@ -378,7 +454,7 @@ void FViewInfo::InitRHIResources()
 	}
 }
 
-TRefCountPtr<IPooledRenderTarget> FViewInfo::GetEyeAdaptation() const
+IPooledRenderTarget* FViewInfo::GetEyeAdaptation() const
 {
 	FSceneViewState* ViewState = (FSceneViewState*)State;
 
@@ -403,14 +479,14 @@ TRefCountPtr<IPooledRenderTarget> FViewInfo::GetEyeAdaptation() const
 
 	if (ViewState)
 	{
-		return ViewState->GetEyeAdaptation();
+		TRefCountPtr<IPooledRenderTarget>& EyeAdaptRef = ViewState->GetEyeAdaptation();
+		if( IsValidRef(EyeAdaptRef) )
+		{
+			return EyeAdaptRef.GetReference();
+		}
 	}
-	else
-	{
-		return NULL;
-	}
+	return NULL;
 }
-
 /*-----------------------------------------------------------------------------
 	FSceneRenderer
 -----------------------------------------------------------------------------*/
@@ -418,6 +494,7 @@ TRefCountPtr<IPooledRenderTarget> FViewInfo::GetEyeAdaptation() const
 FSceneRenderer::FSceneRenderer(const FSceneViewFamily* InViewFamily,FHitProxyConsumer* HitProxyConsumer)
 :	Scene(InViewFamily->Scene ? InViewFamily->Scene->GetRenderScene() : NULL)
 ,	ViewFamily(*InViewFamily)
+,	bUsedPrecomputedVisibility(false)
 ,	FrameNumber(GFrameNumber)
 {
 	check(Scene != NULL);
@@ -509,13 +586,13 @@ void FSceneRenderer::RenderFinish()
 		// mostly view independent but to be safe we use the first view
 		const FViewInfo& View = Views[0];
 
-		FMemMark Mark(GRenderingThreadMemStack);
+		FMemMark Mark(FMemStack::Get());
 		FRenderingCompositePassContext CompositeContext(View);
 
 		FRenderingCompositeOutputRef BusyWait;
 		{
 			// for debugging purpose, can be controlled by console variable
-			FRenderingCompositePass* Node = CompositeContext.Graph.RegisterPass(new(GRenderingThreadMemStack) FRCPassPostProcessBusyWait());
+			FRenderingCompositePass* Node = CompositeContext.Graph.RegisterPass(new(FMemStack::Get()) FRCPassPostProcessBusyWait());
 			BusyWait = FRenderingCompositeOutputRef(Node);
 		}		
 		
@@ -536,42 +613,50 @@ void FSceneRenderer::RenderFinish()
 
 			// display a message saying we're frozen
 			FSceneViewState* ViewState = (FSceneViewState*)View.State;
-			if (ViewState && (ViewState->HasViewParent()
-				|| ViewState->bIsFrozen
-				))
+			bool bViewParentOrFrozen = ViewState && (ViewState->HasViewParent() || ViewState->bIsFrozen);
+			bool bNeedsPrecomputedVisibility = !bUsedPrecomputedVisibility && GRHIFeatureLevel == ERHIFeatureLevel::ES2;
+			if (bViewParentOrFrozen || bNeedsPrecomputedVisibility)
 			{
-				if ( ViewState->bIsFrozen )
+				// this is a helper class for FCanvas to be able to get screen size
+				class FRenderTargetTemp : public FRenderTarget
 				{
-					// this is a helper class for FCanvas to be able to get screen size
-					class FRenderTargetTemp : public FRenderTarget
+				public:
+					FViewInfo& View;
+
+					FRenderTargetTemp(FViewInfo& InView) : View(InView)
 					{
-					public:
-						FViewInfo& View;
+					}
+					virtual FIntPoint GetSizeXY() const
+					{
+						return View.ViewRect.Size();
+					};
+					virtual const FTexture2DRHIRef& GetRenderTargetTexture() const
+					{
+						return View.Family->RenderTarget->GetRenderTargetTexture();
+					}
+				} TempRenderTarget(View);
 
-						FRenderTargetTemp(FViewInfo& InView) : View(InView)
-						{
-						}
-						virtual FIntPoint GetSizeXY() const
-						{
-							return View.ViewRect.Size();
-						};
-						virtual const FTexture2DRHIRef& GetRenderTargetTexture() const
-						{
-							return View.Family->RenderTarget->GetRenderTargetTexture();
-						}
-					} TempRenderTarget(View);
-
-					// create a temporary FCanvas object with the temp render target
-					// so it can get the screen size
-					FCanvas Canvas(&TempRenderTarget, NULL, View.Family->CurrentRealTime, View.Family->CurrentWorldTime, View.Family->DeltaWorldTime);
+				// create a temporary FCanvas object with the temp render target
+				// so it can get the screen size
+				int32 Y = 130;
+				FCanvas Canvas(&TempRenderTarget, NULL, View.Family->CurrentRealTime, View.Family->CurrentWorldTime, View.Family->DeltaWorldTime);
+				if (bViewParentOrFrozen)
+				{
 					const FString StateText =
 						ViewState->bIsFrozen ?
 						Localize(TEXT("ViewportStatus"),TEXT("RenderingFrozenE"))
 						:
 						Localize(TEXT("ViewportStatus"),TEXT("OcclusionChild"));
-					Canvas.DrawShadowedString( 10, 130, *StateText, GetStatsFont(), FLinearColor(0.8,1.0,0.2,1.0));
-					Canvas.Flush();
+					Canvas.DrawShadowedString( 10, Y, *StateText, GetStatsFont(), FLinearColor(0.8,1.0,0.2,1.0));
+					Y += 14;
 				}
+				if (bNeedsPrecomputedVisibility)
+				{
+					FText Message = NSLOCTEXT("Renderer", "NoPrecomputedVisibility", "NO PRECOMPUTED VISIBILITY");
+					Canvas.DrawShadowedString( 10, Y, *Message.ToString(), GetStatsFont(), FLinearColor(1.0,0.05,0.05,1.0));
+					Y += 14;
+				}
+				Canvas.Flush();
 			}
 		}
 	}
@@ -716,13 +801,6 @@ void FSceneRenderer::OnStartFrame()
 	GSceneRenderTargets.bCustomDepthIsValid = false;
 }
 
-void FSceneRenderer::SetupTranslucentState()
-{
-	// Enable depth test, disable depth writes.
-	// Note, this is a reversed Z depth surface, using CF_GreaterEqual.
-	RHISetDepthStencilState(TStaticDepthStencilState<false,CF_GreaterEqual>::GetRHI());
-}
-
 /*-----------------------------------------------------------------------------
 	FRendererModule::BeginRenderingViewFamily
 -----------------------------------------------------------------------------*/
@@ -734,7 +812,7 @@ void FSceneRenderer::SetupTranslucentState()
  */
 static void RenderViewFamily_RenderThread( FSceneRenderer* SceneRenderer )
 {
-    FMemMark MemStackMark(GRenderingThreadMemStack);
+    FMemMark MemStackMark(FMemStack::Get());
 
 	// update any resources that needed a deferred update
 	FDeferredUpdateResource::UpdateResources();
@@ -775,7 +853,7 @@ static void RenderViewFamily_RenderThread( FSceneRenderer* SceneRenderer )
 			}
 		}
 		SET_MEMORY_STAT(STAT_ViewStateMemory, ViewStateMemory);
-		SET_MEMORY_STAT(STAT_RenderingMemStackMemory, GRenderingThreadMemStack.GetByteCount());
+		SET_MEMORY_STAT(STAT_RenderingMemStackMemory, FMemStack::Get().GetByteCount());
 		SET_MEMORY_STAT(STAT_LightInteractionMemory, FLightPrimitiveInteraction::GetMemoryPoolSize());
 #endif
 

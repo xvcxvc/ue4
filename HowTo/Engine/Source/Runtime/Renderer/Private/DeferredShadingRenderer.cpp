@@ -14,56 +14,79 @@
 #include "CompositionLighting.h"
 #include "FXSystem.h"
 #include "OneColorShader.h"
+#include "CompositionLighting/PostProcessDeferredDecals.h"
 
-int32 GRenderMovableObjectsInDepthOnlyPass = 0;
+
+TAutoConsoleVariable<int32> CVarEarlyZPass(
+	TEXT("r.EarlyZPass"),
+	-1,	
+	TEXT("Whether to use a depth only pass to initialize Z culling for the base pass. Cannot be changed at runtime.\n")
+	TEXT("Note: also look at r.EarlyZPassMovable\n")
+	TEXT("  0: off\n")
+	TEXT("  1: only if not masked, and only if large on the screen\n")
+	TEXT("  2: all opaque (including masked)\n")
+	TEXT("  x: use built in heuristic (default is -1)\n"),
+	ECVF_Default);
+
+int32 GEarlyZPassMovable = 0;
 
 /** Affects static draw lists so must reload level to propagate. */
-static FAutoConsoleVariableRef CVarRenderMovableObjectsInDepthOnlyPass(
-	TEXT("r.RenderMovableObjectsInDepthOnlyPass"),
-	GRenderMovableObjectsInDepthOnlyPass,
-	TEXT("Whether to render movable objects into the depth only pass.  Movable objects are typically not good occluders so this defaults to off."),
+static FAutoConsoleVariableRef CVarEarlyZPassMovable(
+	TEXT("r.EarlyZPassMovable"),
+	GEarlyZPassMovable,
+	TEXT("Whether to render movable objects into the depth only pass.  Movable objects are typically not good occluders so this defaults to off.\n")
+	TEXT("Note: also look at r.EarlyZPass"),
 	ECVF_RenderThreadSafe | ECVF_ReadOnly
 	);
+
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
+static TAutoConsoleVariable<int32> CVarTestUIBlur(
+	TEXT("UI.TestUIBlur"),
+	0,
+	TEXT("Adds a 20,20 - 400,400 UIBlur rectangle to test the feature quickly.\n")
+	TEXT("0: off (default)\n")
+	TEXT("1: on\n"),
+	ECVF_RenderThreadSafe);
+#endif
 
 /*-----------------------------------------------------------------------------
 	FDeferredShadingSceneRenderer
 -----------------------------------------------------------------------------*/
 
 FDeferredShadingSceneRenderer::FDeferredShadingSceneRenderer(const FSceneViewFamily* InViewFamily,FHitProxyConsumer* HitProxyConsumer)
-:	FSceneRenderer(InViewFamily, HitProxyConsumer)
-,	TranslucentSelfShadowLayout(0, 0, 0, 0)
-,	CachedTranslucentSelfShadowLightId(INDEX_NONE)
+	: FSceneRenderer(InViewFamily, HitProxyConsumer)
+	, EarlyZPassMode(DDM_NonMaskedOnly)
+	, TranslucentSelfShadowLayout(0, 0, 0, 0)
+	, CachedTranslucentSelfShadowLightId(INDEX_NONE)
 {
-	if (FPlatformProperties::SupportsWindowedMode() == false)
+	if (FPlatformProperties::SupportsWindowedMode())
 	{
-		bUseDepthOnlyPass = true;
-	}
-	else
-	{
-		bUseDepthOnlyPass = 
-			// Use a depth only pass if we are using full blown HQ lightmaps
-			// Otherwise base pass pixel shaders will be cheap and there will be little benefit to rendering a depth only pass
-			(GSystemSettings.bAllowHighQualityLightMaps && ViewFamily.EngineShowFlags.Lighting);
-	}
-
-	static IConsoleVariable* ICVar = IConsoleManager::Get().FindConsoleVariable(TEXT("Compat.bUseDepthOnlyPass"));
-	const int32 bUseDepthOnlyPassDesiredSetting = ICVar->GetInt();
-
-	if (bUseDepthOnlyPassDesiredSetting == 0)
-	{
-		bUseDepthOnlyPass = false;
-	}
-	else if (bUseDepthOnlyPassDesiredSetting == 1)
-	{
-		bUseDepthOnlyPass = true;
+		// Use a depth only pass if we are using full blown HQ lightmaps
+		// Otherwise base pass pixel shaders will be cheap and there will be little benefit to rendering a depth only pass
+		if (!GSystemSettings.bAllowHighQualityLightMaps || !ViewFamily.EngineShowFlags.Lighting)
+		{
+			EarlyZPassMode = DDM_None;
+		}
 	}
 
 	// Shader complexity requires depth only pass to display masked material cost correctly
 	if (ViewFamily.EngineShowFlags.ShaderComplexity)
 	{
-		bUseDepthOnlyPass = true;
+		EarlyZPassMode = DDM_AllOccluders;
 	}
 
+	// developer override, good for profiling, can be useful as project setting
+	{
+		static const auto ICVar = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.EarlyZPass"));
+		const int32 CVarValue = ICVar->GetValueOnGameThread();
+
+		switch(CVarValue)
+		{
+			case 0: EarlyZPassMode = DDM_None; break;
+			case 1: EarlyZPassMode = DDM_NonMaskedOnly; break;
+			case 2: EarlyZPassMode = DDM_AllOccluders; break;
+		}
+	}
 }
 
 /** 
@@ -210,7 +233,7 @@ void FDeferredShadingSceneRenderer::SortBasePassStaticData(FVector ViewPosition)
 {
 	// If we're not using a depth only pass, sort the static draw list buckets roughly front to back, to maximize HiZ culling
 	// Note that this is only a very rough sort, since it does not interfere with state sorting, and each list is sorted separately
-	if (!bUseDepthOnlyPass)
+	if (EarlyZPassMode == DDM_None)
 	{
 		SCOPE_CYCLE_COUNTER(STAT_SortStaticDrawLists);
 
@@ -242,7 +265,7 @@ bool FDeferredShadingSceneRenderer::RenderBasePassStaticData(FViewInfo& View)
 	// in the depth buffer at this point, so rendering masked next will already cull
 	// as efficiently as it can, while also increasing the ZCull efficiency when
 	// rendering the default opaque geometry afterward.
-	if( bUseDepthOnlyPass )
+	if (EarlyZPassMode != DDM_None)
 	{
 		bDirty |= RenderBasePassStaticDataMasked(View);
 		bDirty |= RenderBasePassStaticDataDefault(View);
@@ -384,9 +407,9 @@ void FDeferredShadingSceneRenderer::RenderFinish()
 {
 #if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
 	{
-		static IConsoleVariable* ICVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.VisualizeTexturePool"));
+		static const auto ICVar = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.VisualizeTexturePool"));
 
-		if(ICVar->GetInt())
+		if(ICVar->GetValueOnRenderThread())
 		{
 			RenderVisualizeTexturePool();
 		}
@@ -424,13 +447,13 @@ void FDeferredShadingSceneRenderer::Render()
 
 	const bool bIsWireframe = ViewFamily.EngineShowFlags.Wireframe;
 
-	static IConsoleVariable* ClearMethodCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.ClearSceneMethod"));
+	static const auto ClearMethodCVar = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.ClearSceneMethod"));
 	bool bRequiresRHIClear = true;
 	bool bRequiresFarZQuadClear = false;
 
 	if (ClearMethodCVar)
 	{
-		switch (ClearMethodCVar->GetInt())
+		switch (ClearMethodCVar->GetValueOnRenderThread())
 		{
 		case 0: // No clear
 			{
@@ -482,7 +505,7 @@ void FDeferredShadingSceneRenderer::Render()
 		Scene->FXSystem->PreRender();
 	}
 
-	// Draw the scene pre-pass, populating the scene depth buffer and HiZ
+	// Draw the scene pre-pass / early z pass, populating the scene depth buffer and HiZ
 	RenderPrePass();
 	
 	// Clear scene color buffer if necessary.
@@ -494,6 +517,31 @@ void FDeferredShadingSceneRenderer::Render()
 		bRequiresRHIClear = false;
 	}
 
+	// only temporarily available after early z pass and until base pass
+	check(!GSceneRenderTargets.DBufferA);
+	check(!GSceneRenderTargets.DBufferB);
+	check(!GSceneRenderTargets.DBufferC);
+
+	if(IsDBufferEnabled())
+	{
+		GSceneRenderTargets.ResolveSceneDepthTexture();
+
+		// Resolve the scene depth to an auxiliary texture when SM3/SM4 is in use. This needs to happen so the auxiliary texture can be bound as a shader parameter
+		// while the primary scene depth texture can be bound as the target. Simultaneously binding a single DepthStencil resource as a parameter and target
+		// is unsupported in d3d feature level 10.
+		if(!(GRHIFeatureLevel >= ERHIFeatureLevel::SM5) && GRHIFeatureLevel >= ERHIFeatureLevel::SM4)
+		{
+			GSceneRenderTargets.ResolveSceneDepthToAuxiliaryTexture();
+		}
+
+		// e.g. ambient cubemaps, ambient occlusion, deferred decals
+		for(int32 ViewIndex = 0;ViewIndex < Views.Num();ViewIndex++)
+		{	
+			SCOPED_CONDITIONAL_DRAW_EVENTF(EventView,Views.Num() > 1, DEC_SCENE_ITEMS, TEXT("View%d"), ViewIndex);
+			GCompositionLighting.ProcessBeforeBasePass(Views[ViewIndex]);
+		}
+	}
+
 	// Begin rendering to scene color
 	GSceneRenderTargets.BeginRenderingSceneColor(true);
 
@@ -501,6 +549,22 @@ void FDeferredShadingSceneRenderer::Render()
 	{
 		RenderBasePass();
 	}
+
+	if(ViewFamily.EngineShowFlags.VisualizeLightCulling)
+	{
+		// clear out emissive and baked lighting (not too efficient but simple and only needed for this debug view)
+		GSceneRenderTargets.BeginRenderingSceneColor(false);
+		RHIClear(true, FLinearColor(0, 0, 0, 0), false, 0, false, 0, FIntRect());
+	}
+
+	GSceneRenderTargets.DBufferA.SafeRelease();
+	GSceneRenderTargets.DBufferB.SafeRelease();
+	GSceneRenderTargets.DBufferC.SafeRelease();
+
+	// only temporarily available after early z pass and until base pass
+	check(!GSceneRenderTargets.DBufferA);
+	check(!GSceneRenderTargets.DBufferB);
+	check(!GSceneRenderTargets.DBufferC);
 
 	if (bRequiresFarZQuadClear)
 	{
@@ -553,20 +617,6 @@ void FDeferredShadingSceneRenderer::Render()
 	// This needs to happen before occlusion tests, which makes use of the small depth buffer.
 	UpdateDownsampledDepthSurface();
 
-/*	if( Views.Num() > 0 )
-	{
-		GSceneRenderTargets.BeginRenderingSceneColor();
-
-//		FLinearColor ClearColor(0,0,0,1);
-//		RHIClear(true,ClearColor,true,0.f,true,0, FIntRect());
-
-		GetRendererModule().RenderPostOpaqueExtensions(Views[0]);
-
-		GSceneRenderTargets.FinishRenderingSceneColor();
-	}
-*/
-
-
 	// Issue occlusion queries
 	// This is done after the downsampled depth buffer is created so that it can be used for issuing queries
 	if ( bIsOcclusionTesting )
@@ -578,13 +628,14 @@ void FDeferredShadingSceneRenderer::Render()
 	if (ViewFamily.EngineShowFlags.Lighting
 		&& GRHIFeatureLevel >= ERHIFeatureLevel::SM4
 		&& (!Views[0].TemporalReprojectionPhase || !ViewFamily.EngineShowFlags.TemporalReprojection)
+		&& ViewFamily.EngineShowFlags.DeferredLighting
 		)
 	{
 		// e.g. ambient cubemaps, ambient occlusion, deferred decals
 		for(int32 ViewIndex = 0;ViewIndex < Views.Num();ViewIndex++)
 		{	
 			SCOPED_CONDITIONAL_DRAW_EVENTF(EventView,Views.Num() > 1, DEC_SCENE_ITEMS, TEXT("View%d"), ViewIndex);
-			GCompositionLighting.Process(Views[ViewIndex]);
+			GCompositionLighting.ProcessAfterBasePass(Views[ViewIndex]);
 		}
 		
 		// Clear the translucent lighting volumes before we accumulate
@@ -680,9 +731,6 @@ void FDeferredShadingSceneRenderer::Render()
 		//GSceneRenderTargets.FinishRenderingSceneColor(false);
 	}
 
-
-
-
 	if (ViewFamily.EngineShowFlags.LightShafts)
 	{
 		RenderLightShaftBloom();
@@ -694,7 +742,15 @@ void FDeferredShadingSceneRenderer::Render()
 		GSceneRenderTargets.ResolveSceneColor(FResolveRect(0, 0, ViewFamily.FamilySizeX, ViewFamily.FamilySizeY));
 	}
 
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
+	if(CVarTestUIBlur.GetValueOnRenderThread() > 0)
+	{
+		Views[0].UIBlurOverrideRectangles.Add(FIntRect(20, 20, 400, 400));
+	}
+#endif
+
 	// Finish rendering for each view.
+	if(ViewFamily.bResolveScene)
 	{
 		SCOPED_DRAW_EVENT(FinishRendering, DEC_SCENE_ITEMS);
 		SCOPE_CYCLE_COUNTER(STAT_FinishRenderViewTargetTime);
@@ -723,7 +779,7 @@ bool FDeferredShadingSceneRenderer::RenderPrePass()
 	RHIClear(false,FLinearColor::Black,true,0.0f,true,0, FIntRect());
 
 	// Draw a depth pass to avoid overdraw in the other passes.
-	if(bUseDepthOnlyPass)
+	if(EarlyZPassMode != DDM_None)
 	{
 		for(int32 ViewIndex = 0;ViewIndex < Views.Num();ViewIndex++)
 		{
@@ -751,13 +807,15 @@ bool FDeferredShadingSceneRenderer::RenderPrePass()
 				bDirty |= Scene->DepthDrawList.DrawVisible(View,View.StaticMeshOccluderMap,View.StaticMeshBatchVisibility);
 			}
 
-			const bool bShowShaderComplexity = View.Family->EngineShowFlags.ShaderComplexity;
-			// Only render masked materials if scene depth needs to be up to date after the prepass, or if shader complexity is enabled
-			const EDepthDrawingMode DepthDrawingMode = 
-				bShowShaderComplexity
-				? DDM_AllOccluders : DDM_NonMaskedOnly;
+			if(EarlyZPassMode >= DDM_AllOccluders)
+			{
+				// Draw opaque occluders with masked materials
+				SCOPED_DRAW_EVENT(Opaque, DEC_SCENE_ITEMS);
+				bDirty |= Scene->MaskedDepthDrawList.DrawVisible(View,View.StaticMeshOccluderMap,View.StaticMeshBatchVisibility);
+			}
+
 			// Draw the dynamic occluder primitives using a depth drawing policy.
-			TDynamicPrimitiveDrawer<FDepthDrawingPolicyFactory> Drawer(&View,FDepthDrawingPolicyFactory::ContextType(DepthDrawingMode),true);
+			TDynamicPrimitiveDrawer<FDepthDrawingPolicyFactory> Drawer(&View,FDepthDrawingPolicyFactory::ContextType(EarlyZPassMode),true);
 			{
 				SCOPED_DRAW_EVENT(Dynamic, DEC_SCENE_ITEMS);
 				for(int32 PrimitiveIndex = 0;PrimitiveIndex < View.VisibleDynamicPrimitives.Num();PrimitiveIndex++)
@@ -765,18 +823,20 @@ bool FDeferredShadingSceneRenderer::RenderPrePass()
 					const FPrimitiveSceneInfo* PrimitiveSceneInfo = View.VisibleDynamicPrimitives[PrimitiveIndex];
 					int32 PrimitiveId = PrimitiveSceneInfo->GetIndex();
 					const FPrimitiveViewRelevance& PrimitiveViewRelevance = View.PrimitiveViewRelevanceMap[PrimitiveId];
-					extern float GMinScreenRadiusForDepthPrepass;
-					const float LODFactorDistanceSquared = (PrimitiveSceneInfo->Proxy->GetBounds().Origin - View.ViewMatrices.ViewOrigin).SizeSquared() * FMath::Square(View.LODDistanceFactor);
 
-					// Only render primitives marked as occluders
-					bool bShouldUseAsOccluder = PrimitiveSceneInfo->Proxy->ShouldUseAsOccluder()
-						// Only render static objects unless movable are requested
-						&& (!PrimitiveSceneInfo->Proxy->IsMovable() || GRenderMovableObjectsInDepthOnlyPass)
-						// And if the primitive takes up enough screen space to be a good occluder, or shader complexity is enabled
-						&& (FMath::Square(PrimitiveSceneInfo->Proxy->GetBounds().SphereRadius) > GMinScreenRadiusForDepthPrepass * GMinScreenRadiusForDepthPrepass * LODFactorDistanceSquared);
+					bool bShouldUseAsOccluder = true;
+					
+					if(EarlyZPassMode != DDM_AllOccluders)
+					{
+						extern float GMinScreenRadiusForDepthPrepass;
+						const float LODFactorDistanceSquared = (PrimitiveSceneInfo->Proxy->GetBounds().Origin - View.ViewMatrices.ViewOrigin).SizeSquared() * FMath::Square(View.LODDistanceFactor);
 
-					// All primitives should be rendered when shader complexity view mode is enabled.
-					bShouldUseAsOccluder |= bShowShaderComplexity;
+						// Only render primitives marked as occluders
+						bShouldUseAsOccluder = PrimitiveSceneInfo->Proxy->ShouldUseAsOccluder()
+							// Only render static objects unless movable are requested
+							&& (!PrimitiveSceneInfo->Proxy->IsMovable() || GEarlyZPassMovable)
+							&& (FMath::Square(PrimitiveSceneInfo->Proxy->GetBounds().SphereRadius) > GMinScreenRadiusForDepthPrepass * GMinScreenRadiusForDepthPrepass * LODFactorDistanceSquared);
+					}
 
 					// Only render opaque primitives marked as occluders
 					if (bShouldUseAsOccluder && PrimitiveViewRelevance.bOpaqueRelevance && PrimitiveViewRelevance.bRenderInMainPass)
@@ -941,14 +1001,14 @@ void FDeferredShadingSceneRenderer::UpdateDownsampledDepthSurface()
 
 			RHISetViewport(DownsampledX, DownsampledY, 0.0f, DownsampledX + DownsampledSizeX, DownsampledY + DownsampledSizeY, 1.0f);
 
-			DrawDenormalizedQuad(
+			DrawRectangle(
 				0, 0,
 				DownsampledSizeX, DownsampledSizeY,
 				View.ViewRect.Min.X, View.ViewRect.Min.Y,
 				View.ViewRect.Width(), View.ViewRect.Height(),
 				FIntPoint(DownsampledSizeX, DownsampledSizeY),
-				GSceneRenderTargets.GetBufferSizeXY()
-				);
+				GSceneRenderTargets.GetBufferSizeXY(),
+				EDRF_UseTriangleOptimization);
 		}
 	}
 }

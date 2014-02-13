@@ -15,3 +15,8 @@ UObject* UTrueSkySequenceFactory::FactoryCreateNew(UClass* Class,UObject* InPare
 
 	return NewSequence;
 }
+
+FName UTrueSkySequenceFactory::GetNewAssetThumbnailOverride() const
+{
+	return TEXT("ClassThumbnail.TrueSkySequenceAsset");
+}
