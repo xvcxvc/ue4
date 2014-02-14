@@ -20,6 +20,9 @@
 #include "Editor.h"
 #include <string>
 
+#define ENABLE_AUTO_SAVING
+
+
 class FTrueSkyPlugin : public ITrueSkyPlugin, FTickableGameObject
 {
 public:
@@ -73,6 +76,8 @@ public:
 	SEditorInstance*		FindEditorInstance(HWND const EditorWindowHWND);
 	SEditorInstance*		FindEditorInstance(UTrueSkySequenceAsset* const Asset);
 	int						FindEditorInstance(SEditorInstance* const Instance);
+	/** Saves all Environments */
+	void					SaveAllEditorInstances();
 
 protected:
 
@@ -142,6 +147,7 @@ protected:
 	bool					RendererInitialized;
 
 	float					CachedDeltaSeconds;
+	float					AutoSaveTimer;		// 0.0f == no auto-saving
 
 	TArray<SEditorInstance>	EditorInstances;
 
@@ -185,6 +191,7 @@ FTrueSkyPlugin::FTrueSkyPlugin()
 {
 	Instance = this;
 	EditorInstances.Reset();
+	AutoSaveTimer = 0.0f;
 }
 
 FTrueSkyPlugin::~FTrueSkyPlugin()
@@ -202,6 +209,16 @@ bool FTrueSkyPlugin::SupportsDynamicReloading()
 void FTrueSkyPlugin::Tick( float DeltaTime )
 {
 	CachedDeltaSeconds = DeltaTime;
+#ifdef ENABLE_AUTO_SAVING
+	if ( AutoSaveTimer > 0.0f )
+	{
+		if ( (AutoSaveTimer -= DeltaTime) <= 0.0f )
+		{
+			SaveAllEditorInstances();
+			AutoSaveTimer = 4.0f;
+		}
+	}
+#endif
 }
 
 bool FTrueSkyPlugin::IsTickable() const
@@ -606,6 +623,13 @@ int FTrueSkyPlugin::FindEditorInstance(FTrueSkyPlugin::SEditorInstance* const In
 	return INDEX_NONE;
 }
 
+void FTrueSkyPlugin::SaveAllEditorInstances()
+{
+	for (int i = 0; i < EditorInstances.Num(); ++i)
+	{
+		EditorInstances[i].SaveSequenceData();
+	}
+}
 
 void FTrueSkyPlugin::SEditorInstance::SaveSequenceData()
 {
@@ -849,6 +873,9 @@ void FTrueSkyPlugin::OpenEditor(UTrueSkySequenceAsset* const TrueSkySequence)
 		if ( EditorInstance )
 		{
 			EditorInstance->Asset = TrueSkySequence;
+#ifdef ENABLE_AUTO_SAVING
+			AutoSaveTimer = 4.0f;
+#endif
 		}
 	}
 
