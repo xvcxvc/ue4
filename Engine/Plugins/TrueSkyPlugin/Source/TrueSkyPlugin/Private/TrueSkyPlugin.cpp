@@ -155,7 +155,6 @@ protected:
 	static ::UINT			MessageId;
 
 	static void				OnSequenceChangeCallback(HWND OwnerHWND);
-	static char*			AllocString(int size);
 };
 
 
@@ -635,11 +634,28 @@ void FTrueSkyPlugin::SEditorInstance::SaveSequenceData()
 {
 	if ( Asset )
 	{
+		struct Local
+		{
+			static char* AllocString(int size)
+			{
+				check( size > 0 );
+				return new char[size];
+			}
+		};
 		check( FTrueSkyPlugin::Instance );
 		check( FTrueSkyPlugin::Instance->GetSequence );
-		char* const OutputText = FTrueSkyPlugin::Instance->GetSequence( EditorWindowHWND, FTrueSkyPlugin::AllocString );
-		if ( OutputText )
+		if ( char* const OutputText = FTrueSkyPlugin::Instance->GetSequence(EditorWindowHWND, Local::AllocString) )
 		{
+			if ( Asset->SequenceText.Num() > 0 )
+			{
+				if ( strcmp(OutputText, (const char*)Asset->SequenceText.GetData()) == 0 )
+				{
+					// No change -> quit
+					delete OutputText;
+					return;
+				}
+			}
+
 			const int OutputTextLen = strlen( OutputText );
 			Asset->SequenceText.Reset( OutputTextLen + 1 );
 
@@ -886,12 +902,6 @@ void FTrueSkyPlugin::OpenEditor(UTrueSkySequenceAsset* const TrueSkySequence)
 	}
 }
 
-
-char* FTrueSkyPlugin::AllocString(int size)
-{
-	check( size );
-	return new char[size];
-}
 
 
 

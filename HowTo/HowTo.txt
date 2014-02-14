@@ -1,18 +1,17 @@
 === Build UE4 TrueSky plugin ===
 
+* Run GenerateProjectFiles_AllPlatforms.bat from UE4. This will generate projects and the solution file (UE4.sln)
+
 * Use UE4.sln (UE4.vcxproj).
 
-* Soluton file must go to the folder where your UE4 installation is (UE4 root folder)
-* Project file goes to Engine/Intermediate/ProjectFiles (i.e. folder where prj files were generated)
-* Project contains "TrueSkyPlugin" folder in Engine/UE4/Plugins
+* UE4 project contains "TrueSkyPlugin" folder in Engine/UE4/Plugins
 
 * Build UE4 project.
-* Build some game project (I build QAGame). Set that game project as a startup project in VS.
-( If you want to debug, run the game project, not UE4. Otherwise you must manually attach the debugger to
-a new process.)
 
-TrueSkyPlugin currently loads "TrueSkyUI.dll" from %SIMUL%\exe\x64\VC11\Debug\TrueSkyUI.dll
-This DLL further loads Qt libraries. For that, the PATH env-variable is extended by
+TrueSkyPlugin loads "TrueSkyUI.dll" and "UE4PluginRenderInterface.dll" from %SIMUL%\exe\x64\VC11\Debug\
+or %SIMUL%\exe\x64\VC11\Release\
+
+TrueSkyUI.dll further loads Qt libraries. For that, the PATH env-variable is extended by
 %QTDIR%\bin
 %SIMUL%\exe\x64
 %SIMUL%\exe\x64\VC11\Debug
@@ -31,24 +30,69 @@ set QTDIR=C:\Qt64\Qt5.2.0\5.2.0\msvc2012_64
 cd "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\"
 start devenv.exe
 
+TrueSky plugin requires modified Unreal source files to successfully build. Read "Update 2" for more information.
+
 
 === Build TrueSkyUI.dll ===
 
-* Use %SIMUL%/PlugIns/UE4/TrueSkyUI/TrueSkyUI.vcxproj
+* Use %SIMUL%/PlugIns/UE4/TrueSkyUI/TrueSkyUI.vcxproj  (use Debug_DLL or Release_DLL configuration)
 It builds x64 DLL into %SIMUL%/exe/$(Platform)/VC11/$(Configuration)
-However UE4 plugin currently loads debug version (from .../Debug folder) only!
 * To build DLL you must build "qtwinmigrate" library first (in PlugIns/Qt/QtWinMigrate)
- [I don't know if dependencies are correctly set]
+
+
+=== Build UE4PluginRenderInterface.dll
+
+* Use %SIMUL%/PlugIns/UE4/PluginRenderInterface/UE4Plugin_x64_VC11.vcxproj
+Build 64bit DLL in %SIMUL%/exe/$(Platform)/VC11/$(Configuration).
+
+
+
+== How to run it?
+
+* From VS2012 (to debug): Set any game project as a startup project (TrueSky game, for example). Do not run
+UE4 directly as it displays just the game selection window, closes the process and runs a new one (so you
+need to reattach debugger then).
+Open your chosen game project properties and set "Debugging->Command Arguments" to contain the game name ("TrueSky"
+for example). If not set it displays the game selection window.
+
+* When UE4 editor is running (for the first time), go to Windows->Plugin and enable TrueSky plugin. Restart the editor!
+* Plugin adds "TrueSky" section into "Window" menu.
+
+* Press "Window->Add Sequence to Scene" -- this adds TrueSkySequenceActor to the current level. This actor provides a reference
+to a sequence asset which is rendered. Choose the actor (from "Scene Outliner" window). In "Details" window, set reference to a
+TrueSky Sequence asset (read below how to create one) in "Active Sequence" property. When correctly set, "Window->Toggle Rendering"
+should be enabled. Press it to start the rendering.
+Note: If you delete TrueSkySequenceActor from the level, the sky rendering is still active. However, immediately after you select
+"Window" menu it will be detected that the actor is missing and the rendering stops. You can't toggle rendering back until you add
+a new TrueSkySequenceActor to the level.
+
+* To create a new TrueSkySeqence asset, go to "Content Browser" window. Press "New Asset" button (or do a right mouse click inside
+the window) to open an asset selection window. Choose "Miscellaneous / TrueSky Sequence Asset". A new asset will be created.
+Now you can rename/save/delete it.
+
+* To edit TrueSkySequence asset just double-click on it. Editor window opens (TrueSkyUI.dll).
+
+* You can see changes to the properties (e.g. "preview") only if edited asset is also assigned to the level's TrueSkySequenceActor!
+TrueSky plugin renderer uses only  asset which is referenced from that actor.
+If you are editing some other asset (which is not assigned to the TrueSky actor of the current level) then you can't see any visualization of it.
+
+* Your changes in TrueSky properties are reliably(!) saved to the asset when you close the editing window.
+If the plugin has been compiled with autosaving on (#define ENABLE_AUTO_SAVING), it saves changes automatically every X seconds (currently X=4).
+
+* If TrueSkySequence asset has been changed, it can be saved to the disc by right-clicking on it and choosing "Save".
+You are also prompted about any unsaved assets when closing Unreal Editor.
+
+* You can edit any number of TrueSkySequence assets at once. However, only that which is also set to the current level's TrueSkySequenceActor
+is visible in editor's rendering window.
+
+* TrueSkySequenceActor can be added to the level only through "Window->Add Sequence to Scene" menu command.
+This prevents more than one such actor to be present on the level.
+
 
 
 -----------------------------------------------------------------------------------------------------------
 
 Update 1:
-
-* Folder structure in "HowTo" just points at places where .sln and .vcxproj files should go within installed UE4 structure.
-UE4.sln can be copied over already generated .sln file (not tested!). However, after copying TrueSkyPlugin folders/files
-into UE4 structure, GenerateProjectFiles.bat (from UE4) should generate correct .sln and .vcxproj
--- so maybe it's better not to handle sln/vcxproj files manually but let UE4 to create them.
 
 * TrueSkyUI project has configurations to build EXE or DLL. Please setup your solution so it builds either Debug_DLL or
 Release_DLL ( after opening you solution go to Build -> Configuration Manager, choose debur/relase solution
@@ -72,18 +116,5 @@ Update 2:
 
 * To successfully build current version of UE4 plugin, you need to copy "[HowTo]/Engine/Source/Runtime/Renderer/*" files into
 apropriate location in UE4. It contains modified Epic's source codes.
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
