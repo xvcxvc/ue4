@@ -22,8 +22,46 @@
 
 #define ENABLE_AUTO_SAVING
 
+#pragma optimize("",off)
 
-class FTrueSkyPlugin : public ITrueSkyPlugin, FTickableGameObject
+#define DECLARE_TOGGLE(name)\
+	void					OnToggle##name();\
+	bool					IsToggled##name();
+
+#define IMPLEMENT_TOGGLE(name)\
+	void FTrueSkyPlugin::OnToggle##name()\
+{\
+	if(StaticGetRenderBool)\
+	{\
+		bool current=StaticGetRenderBool(#name);\
+		StaticSetRenderBool(#name,!current);\
+	}\
+}\
+\
+bool FTrueSkyPlugin::IsToggled##name()\
+{\
+	if(StaticGetRenderBool)\
+		return StaticGetRenderBool(#name);\
+	return false;\
+}
+
+#define DECLARE_ACTION(name)\
+	void					OnTrigger##name()\
+	{\
+	StaticTriggerAction(#name);\
+	}
+
+
+class FTrueSkyTickable : public  FTickableGameObject
+{
+public:
+	/** Tick interface */
+	void					Tick( float DeltaTime );
+	bool					IsTickable() const;
+	TStatId					GetStatId() const;
+};
+
+class FTrueSkyPlugin : public ITrueSkyPlugin, public TSharedFromThis<FTrueSkyPlugin>
 {
 public:
 	FTrueSkyPlugin();
@@ -39,8 +77,10 @@ public:
 	/** Render delegate */
 	void					RenderFrame( FPostOpaqueRenderParameters& RenderParameters );
 
-	/** Extend menu */
+	/** TrueSKY menu */
 	void					FillMenu( FMenuBuilder& MenuBuilder );
+	/** Overlay sub-menu */
+	void					FillOverlayMenu(FMenuBuilder& MenuBuilder);
 
 	/** Init rendering */
 	void					InitRenderingInterface( const TCHAR* SimulPath, const TCHAR* QtPath );
@@ -78,7 +118,8 @@ public:
 	int						FindEditorInstance(SEditorInstance* const Instance);
 	/** Saves all Environments */
 	void					SaveAllEditorInstances();
-
+	
+	void					Tick( float DeltaTime );
 protected:
 
 	void					OnMainWindowClosed(const TSharedRef<SWindow>& Window);
@@ -90,6 +131,13 @@ protected:
 	/** Returns true if Toggle rendering button should be checked */
 	bool					IsToggleRenderingChecked();
 
+	/** Called when the Toggle Fades Overlay button is pressed*/
+	DECLARE_TOGGLE(RenderSky)
+	DECLARE_TOGGLE(ShowFades)
+	DECLARE_TOGGLE(ShowCompositing)
+
+	DECLARE_ACTION(RecompileShaders)
+
 	/** Adds a TrueSkySequenceActor to the current scene */
 	void					OnAddSequence();
 	/** Returns true if user can add a sequence actor */
@@ -97,11 +145,6 @@ protected:
 
 	/** Initializes all necessary paths */
 	void					InitPaths();
-
-	/** Tick interface */
-	void					Tick( float DeltaTime );
-	bool					IsTickable() const;
-	TStatId					GetStatId() const;
 
 	/** Creates new instance of UI */
 	SEditorInstance*		CreateEditorInstance( const TCHAR* SimulPath, const TCHAR* QtPath, void* Env );
@@ -118,26 +161,36 @@ protected:
 	typedef void (* FOnSequenceChangeCallback)(HWND);
 	typedef void (* FSetOnPropertiesChangedCallback)(HWND, FOnSequenceChangeCallback);
 
-	typedef int (* FStaticInitInterface)( const char* shaderPath, const char* texturePath );
-	typedef int (* FStaticRenderFrame)( void* device, float* viewMatrix4x4, float* projMatrix4x4,  void* fullResDepthBuffer, void* halfResDepthBuffer, int viewportSizeX, int viewportSizeY );
+	typedef int (* FStaticInitInterface)(  );
+	typedef int (* FStaticPushPath)(const char*,const char*);
+	typedef int (* FStaticRenderFrame)( void* device,int view_id, float* viewMatrix4x4, float* projMatrix4x4,  void* fullResDepthBuffer, void* halfResDepthBuffer, int viewportSizeX, int viewportSizeY );
 	typedef int (* FStaticTick)( float deltaTime );
 	typedef int (* FStaticOnDeviceChanged)( void * device );
 	typedef void* (* FStaticGetEnvironment)();
 	typedef int (* FStaticSetSequence)( std::string sequenceInputText );
+	typedef class UE4PluginRenderInterface* (*FStaticGetRenderInterfaceInstance)();
+	typedef void (*FStaticSetRenderBool)( const char* name,bool value );
+	typedef bool (*FStaticGetRenderBool)( const char* name );
+	typedef void (*FStaticTriggerAction)( const char* name );
+	
+	FOpenUI								OpenUI;
+	FCloseUI							CloseUI;
+	FSetStyleSheetPath					SetStyleSheetPath;
+	FSetSequence						SetSequence;
+	FGetSequence						GetSequence;
+	FSetOnPropertiesChangedCallback		SetOnPropertiesChangedCallback;
 
-	FOpenUI					OpenUI;
-	FCloseUI				CloseUI;
-	FSetStyleSheetPath		SetStyleSheetPath;
-	FSetSequence			SetSequence;
-	FGetSequence			GetSequence;
-	FSetOnPropertiesChangedCallback SetOnPropertiesChangedCallback;
-
-	FStaticInitInterface	StaticInitInterface;
-	FStaticRenderFrame		StaticRenderFrame;
-	FStaticTick				StaticTick;
-	FStaticOnDeviceChanged	StaticOnDeviceChanged;
-	FStaticGetEnvironment	StaticGetEnvironment;
-	FStaticSetSequence		StaticSetSequence;
+	FStaticInitInterface				StaticInitInterface;
+	FStaticPushPath						StaticPushPath;
+	FStaticRenderFrame					StaticRenderFrame;
+	FStaticTick							StaticTick;
+	FStaticOnDeviceChanged				StaticOnDeviceChanged;
+	FStaticGetEnvironment				StaticGetEnvironment;
+	FStaticSetSequence					StaticSetSequence;
+	FStaticGetRenderInterfaceInstance	StaticGetRenderInterfaceInstance;
+	FStaticSetRenderBool				StaticSetRenderBool;
+	FStaticGetRenderBool				StaticGetRenderBool;
+	FStaticTriggerAction				StaticTriggerAction;
 
 	TCHAR*					PathEnv;
 	TCHAR*					SimulPath;
@@ -174,28 +227,45 @@ public:
 	}
 	virtual void RegisterCommands() OVERRIDE
 	{
-		UI_COMMAND(ToggleRendering, "Toggle Rendering", "Toggles TrueSky plugin rendering.", EUserInterfaceActionType::ToggleButton, FInputGesture());
-		UI_COMMAND(AddSequence, "Add Sequence To Scene", "Adds a TrueSkySequenceActor to the current scene", EUserInterfaceActionType::Button, FInputGesture())
+		UI_COMMAND(ToggleRendering			,"Toggle Rendering"		,"Toggles TrueSky plugin rendering.", EUserInterfaceActionType::ToggleButton, FInputGesture());
+		UI_COMMAND(AddSequence				,"Add Sequence To Scene","Adds a TrueSkySequenceActor to the current scene", EUserInterfaceActionType::Button, FInputGesture());
+		UI_COMMAND(ToggleRenderSky			,"Render Sky"			,"Toggles the rendering.", EUserInterfaceActionType::ToggleButton, FInputGesture());
+		UI_COMMAND(ToggleFades				,"Atmospheric Tables"	,"Toggles the atmospheric tables overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
+		UI_COMMAND(ToggleShowCompositing	,"Compositing"			,"Toggles the compositing overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
+		UI_COMMAND(TriggerRecompileShaders	,"Recompile Shaders"	,"Recompiles the shaders.", EUserInterfaceActionType::Button, FInputGesture());
 	}
 public:
 	TSharedPtr<FUICommandInfo> ToggleRendering;
 	TSharedPtr<FUICommandInfo> AddSequence;
+	TSharedPtr<FUICommandInfo> ToggleRenderSky;
+	TSharedPtr<FUICommandInfo> ToggleFades;
+	TSharedPtr<FUICommandInfo> ToggleShowCompositing;
+	TSharedPtr<FUICommandInfo> TriggerRecompileShaders;
 };
-
 
 FTrueSkyPlugin* FTrueSkyPlugin::Instance = NULL;
 
+TSharedPtr<FTrueSkyPlugin,(ESPMode::Type)0> staticSharedPtr;
 
 FTrueSkyPlugin::FTrueSkyPlugin()
 {
 	Instance = this;
+	staticSharedPtr=TSharedPtr<FTrueSkyPlugin,(ESPMode::Type)0>(Instance);
+	
 	EditorInstances.Reset();
 	AutoSaveTimer = 0.0f;
+	//we need to pass through real DeltaSecond; from our scene Actor?
+	CachedDeltaSeconds = 0.0333f;
 }
 
 FTrueSkyPlugin::~FTrueSkyPlugin()
 {
+	//static int n;
+	//n=TickableObjects.Num();
+	//char c[100];
+	//sprintf(c,"%d",n);
 	Instance = NULL;
+	staticSharedPtr.Reset();
 }
 
 
@@ -204,7 +274,6 @@ bool FTrueSkyPlugin::SupportsDynamicReloading()
 	return false;
 }
 
-/** Tickable object interface */
 void FTrueSkyPlugin::Tick( float DeltaTime )
 {
 	CachedDeltaSeconds = DeltaTime;
@@ -220,14 +289,21 @@ void FTrueSkyPlugin::Tick( float DeltaTime )
 #endif
 }
 
-bool FTrueSkyPlugin::IsTickable() const
+/** Tickable object interface */
+void FTrueSkyTickable::Tick( float DeltaTime )
+{
+	if(FTrueSkyPlugin::Instance)
+		FTrueSkyPlugin::Instance->Tick(DeltaTime);
+}
+
+bool FTrueSkyTickable::IsTickable() const
 {
 	return true;
 }
 
-TStatId FTrueSkyPlugin::GetStatId() const
+TStatId FTrueSkyTickable::GetStatId() const
 {
-	RETURN_QUICK_DECLARE_CYCLE_STAT(FTrueSkyPlugin, STATGROUP_Tickables);
+	RETURN_QUICK_DECLARE_CYCLE_STAT(FTrueSkyTickable, STATGROUP_Tickables);
 }
 
 
@@ -236,7 +312,8 @@ void FTrueSkyPlugin::StartupModule()
 	FTrueSkyCommands::Register();
 	IMainFrameModule& MainFrameModule = IMainFrameModule::Get();
 	const TSharedRef<FUICommandList>& CommandList = MainFrameModule.GetMainFrameCommandBindings();
-//	CommandList->MapAction( FTrueSkyCommands::Get().ToggleRendering, FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleRendering) );
+//	CommandList->MapAction( FTrueSkyCommands::Get().ToggleRendering,
+	//FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleRendering) );
 	CommandList->MapAction( FTrueSkyCommands::Get().ToggleRendering,
 							FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleRendering),
 							FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingEnabled),
@@ -246,6 +323,27 @@ void FTrueSkyPlugin::StartupModule()
 							FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnAddSequence),
 							FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsAddSequenceEnabled)
 							);
+		CommandList->MapAction( FTrueSkyCommands::Get().TriggerRecompileShaders,
+								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnTriggerRecompileShaders),
+								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked)
+								);
+	{
+		CommandList->MapAction( FTrueSkyCommands::Get().ToggleRenderSky,
+								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleRenderSky),
+								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked),
+								FIsActionChecked::CreateRaw(this, &FTrueSkyPlugin::IsToggledRenderSky)
+								);
+		CommandList->MapAction( FTrueSkyCommands::Get().ToggleFades,
+								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleShowFades),
+								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked),
+								FIsActionChecked::CreateRaw(this, &FTrueSkyPlugin::IsToggledShowFades)
+								);
+		CommandList->MapAction( FTrueSkyCommands::Get().ToggleShowCompositing,
+								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleShowCompositing),
+								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked),
+								FIsActionChecked::CreateRaw(this, &FTrueSkyPlugin::IsToggledShowCompositing)
+								);
+	}
 
 	MenuExtender = MakeShareable(new FExtender);
 	MenuExtender->AddMenuExtension("WindowGlobalTabSpawners", EExtensionHook::After, CommandList, FMenuExtensionDelegate::CreateRaw(this, &FTrueSkyPlugin::FillMenu));
@@ -262,23 +360,27 @@ void FTrueSkyPlugin::StartupModule()
 	FSlateStyleSet& SlateStyleSet = (FSlateStyleSet&)FEditorStyle::GetInstance();
 	SlateStyleSet.Set( TEXT("ClassThumbnail.TrueSkySequenceAsset"), new FSlateImageBrush(IconName, FVector2D(64.0f, 64.0f)) );
 
-	OpenUI = NULL;
-	CloseUI = NULL;
-	SetStyleSheetPath = NULL;
-	SetSequence = NULL;
-	GetSequence = NULL;
-	SetOnPropertiesChangedCallback = NULL;
+	OpenUI							= NULL;
+	CloseUI							= NULL;
+	SetStyleSheetPath				= NULL;
+	SetSequence						= NULL;
+	GetSequence						= NULL;
+	SetOnPropertiesChangedCallback	= NULL;
 
-	RenderingEnabled = false;
-	RendererInitialized = false;
-	StaticInitInterface = NULL;
-	StaticRenderFrame  = NULL;
-	StaticTick  = NULL;
-	StaticOnDeviceChanged = NULL;
-	StaticGetEnvironment = NULL;
+	RenderingEnabled				=false;
+	RendererInitialized				=false;
+	StaticInitInterface				=NULL;
+	StaticPushPath					=NULL;
+	StaticRenderFrame				=NULL;
+	StaticTick						=NULL;
+	StaticOnDeviceChanged			=NULL;
+	StaticGetEnvironment			=NULL;
 
-	//we need to pass through real DeltaSecond; from our scene Actor?
-	CachedDeltaSeconds = 0.0333f;
+	StaticGetRenderInterfaceInstance=NULL;
+	
+	StaticSetRenderBool				=NULL;
+	StaticGetRenderBool				=NULL;
+	StaticTriggerAction				=NULL;
 
 	PathEnv = NULL;
 	SimulPath = NULL;
@@ -293,14 +395,15 @@ void FTrueSkyPlugin::SetRenderingEnabled( bool Enabled )
 	RenderingEnabled = Enabled;
 }
 
-
 void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters )
 {	
 	check(IsInRenderingThread());
+	if(!RenderingEnabled )
+		OnToggleRendering();
 
 	if( RenderingEnabled )
 	{
-		StaticTick( CachedDeltaSeconds );
+		StaticTick( 0 );
 
 		FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
 		ID3D11Device * device = d3d11rhi->GetDevice();
@@ -315,10 +418,10 @@ void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters 
 		mirroredViewMatrix.M[3][2] *= 0.1f;
 		mirroredViewMatrix.M[3][3] *= 0.1f;
 
-		FD3D11TextureBase * depthTex = static_cast<FD3D11Texture2D*>(RenderParameters.DepthTexture);	
-		FD3D11TextureBase * halfDepthTex = static_cast<FD3D11Texture2D*>(RenderParameters.SmallDepthTexture);		
+		FD3D11TextureBase * depthTex		= static_cast<FD3D11Texture2D*>(RenderParameters.DepthTexture);	
+		FD3D11TextureBase * halfDepthTex	= static_cast<FD3D11Texture2D*>(RenderParameters.SmallDepthTexture);		
 
-		StaticRenderFrame( device, &(mirroredViewMatrix.M[0][0]), &(RenderParameters.ProjMatrix.M[0][0]), (void*)depthTex->GetShaderResourceView(), 
+		StaticRenderFrame( device,0, &(mirroredViewMatrix.M[0][0]), &(RenderParameters.ProjMatrix.M[0][0]), (void*)depthTex->GetShaderResourceView(), 
 							(void*)halfDepthTex->GetShaderResourceView(), RenderParameters.ViewportRect.Width(),
 							RenderParameters.ViewportRect.Height() );
 	}
@@ -356,11 +459,20 @@ void FTrueSkyPlugin::FillMenu( FMenuBuilder& MenuBuilder )
 	{		
 		MenuBuilder.AddMenuEntry( FTrueSkyCommands::Get().ToggleRendering );
 		MenuBuilder.AddMenuEntry( FTrueSkyCommands::Get().AddSequence );
+		MenuBuilder.AddMenuEntry( FTrueSkyCommands::Get().TriggerRecompileShaders );
+		FNewMenuDelegate d;
+		d=FNewMenuDelegate::CreateSP(this, &FTrueSkyPlugin::FillOverlayMenu);
+		MenuBuilder.AddSubMenu(FText::FromString("Overlays"),FText::FromString("TrueSKY overlays"),d);
 	}
 	MenuBuilder.EndSection();
 }
-
-
+	
+void FTrueSkyPlugin::FillOverlayMenu(FMenuBuilder& MenuBuilder)
+{		
+	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleRenderSky);
+	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleFades);
+	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleShowCompositing);
+}
 /** Returns environment variable value */
 static TCHAR* GetEnvVariable( const TCHAR* const VariableName, int iEnvSize = 1024)
 {
@@ -452,19 +564,25 @@ void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR
 	check( DllPath );
 
 	void* const DllHandle = FPlatformProcess::GetDllHandle( DllPath );
-
+	check(DllHandle);
 	if ( DllHandle != NULL )
 	{
-		StaticInitInterface = (FStaticInitInterface)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticInitInterface") );
-		StaticRenderFrame = (FStaticRenderFrame)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticRenderFrame") );
-		StaticOnDeviceChanged = (FStaticOnDeviceChanged)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticOnDeviceChanged") );
-		StaticTick = (FStaticTick)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticTick") );
-		StaticGetEnvironment = (FStaticGetEnvironment)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetEnvironment"));
-		StaticSetSequence = (FStaticSetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetSequence"));
-
-		if( StaticInitInterface == NULL || StaticRenderFrame == NULL || 
+		StaticInitInterface				=(FStaticInitInterface)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticInitInterface") );
+		StaticPushPath					=(FStaticPushPath)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticPushPath") );
+		StaticRenderFrame				=(FStaticRenderFrame)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticRenderFrame") );
+		StaticOnDeviceChanged			=(FStaticOnDeviceChanged)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticOnDeviceChanged") );
+		StaticTick						=(FStaticTick)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticTick") );
+		StaticGetEnvironment			=(FStaticGetEnvironment)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetEnvironment"));
+		StaticSetSequence				=(FStaticSetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetSequence"));
+		StaticGetRenderInterfaceInstance=(FStaticGetRenderInterfaceInstance)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetRenderInterfaceInstance"));
+		StaticSetRenderBool				=(FStaticSetRenderBool)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetRenderBool"));
+		StaticGetRenderBool				=(FStaticGetRenderBool)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetRenderBool"));
+		StaticTriggerAction				=(FStaticTriggerAction)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticTriggerAction"));
+		if( StaticInitInterface == NULL ||StaticPushPath==NULL|| StaticRenderFrame == NULL || 
 			StaticOnDeviceChanged == NULL || StaticTick == NULL  || 
-			StaticGetEnvironment == NULL || StaticSetSequence == NULL )
+			StaticGetEnvironment == NULL || StaticSetSequence == NULL||StaticGetRenderInterfaceInstance==NULL
+			||StaticSetRenderBool==NULL
+			||StaticGetRenderBool==NULL||StaticTriggerAction==NULL)
 		{
 			//missing dll functions... cancel initialization
 			SetRenderingEnabled(false);
@@ -474,8 +592,9 @@ void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR
 		const char* const ShaderPath = ConstructPathUTF8( SimulPath, L"\\Platform\\DirectX11\\HLSL" );
 		const char* const ResourcePath = ConstructPathUTF8( SimulPath, L"\\Media\\Textures" );
 
-		StaticInitInterface( ShaderPath, ResourcePath );
-
+		StaticInitInterface(  );
+		StaticPushPath("TexturePath",ResourcePath);
+		StaticPushPath("ShaderPath",ShaderPath);
 		FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
 		ID3D11Device * device = d3d11rhi->GetDevice();
 
@@ -499,7 +618,7 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance( const TCH
 	check( DllPath );
 
 	void* const DllHandle = FPlatformProcess::GetDllHandle( DllPath );
-
+	check( DllHandle );
 	if ( DllHandle != NULL )
 	{
 		OpenUI = (FOpenUI)FPlatformProcess::GetDllExport(DllHandle, TEXT("OpenUI") );
@@ -806,6 +925,10 @@ void FTrueSkyPlugin::OnToggleRendering()
 	}
 }
 
+IMPLEMENT_TOGGLE(RenderSky)
+IMPLEMENT_TOGGLE(ShowFades)
+IMPLEMENT_TOGGLE(ShowCompositing)
+
 bool FTrueSkyPlugin::IsToggleRenderingEnabled()
 {
 	if ( GetActiveSequence() )
@@ -813,7 +936,7 @@ bool FTrueSkyPlugin::IsToggleRenderingEnabled()
 		return true;
 	}
 	// No active sequence found!
-	SetRenderingEnabled( false );
+	SetRenderingEnabled(false);
 	return false;
 }
 
@@ -821,7 +944,6 @@ bool FTrueSkyPlugin::IsToggleRenderingChecked()
 {
 	return RenderingEnabled;
 }
-
 
 void FTrueSkyPlugin::OnAddSequence()
 {
