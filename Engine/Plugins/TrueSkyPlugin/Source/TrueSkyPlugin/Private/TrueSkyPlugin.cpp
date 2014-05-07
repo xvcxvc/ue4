@@ -151,19 +151,24 @@ protected:
 
 	TSharedPtr< FExtender > MenuExtender;
 	TSharedPtr<FAssetTypeActions_TrueSkySequence> SequenceAssetTypeActions;
-
-	typedef void (* FOpenUI)(HWND, RECT*, RECT*, void*);
+	enum Style
+	{
+		UNITY_STYLE
+		,UNREAL_STYLE
+	};
+	typedef void (* FOpenUI)(HWND, RECT*, RECT*, void*,Style style);
 	typedef void (* FCloseUI)(HWND);
-	typedef void (* FSetStyleSheetPath)(const TCHAR*);
+	typedef void (* FPushStyleSheetPath)(const char*);
 	typedef void (* FSetSequence)(HWND, const char*);
 	typedef char* (*FAlloc)(int size);
 	typedef char* (* FGetSequence)(HWND, FAlloc);
 	typedef void (* FOnSequenceChangeCallback)(HWND);
-	typedef void (* FSetOnPropertiesChangedCallback)(HWND, FOnSequenceChangeCallback);
+	typedef void (* FSetOnPropertiesChangedCallback)( FOnSequenceChangeCallback);
 
 	typedef int (* FStaticInitInterface)(  );
 	typedef int (* FStaticPushPath)(const char*,const char*);
-	typedef int (* FStaticRenderFrame)( void* device,int view_id, float* viewMatrix4x4, float* projMatrix4x4,  void* fullResDepthBuffer, void* halfResDepthBuffer, int viewportSizeX, int viewportSizeY );
+	typedef int (* FStaticGetOrAddView)( void *);
+	typedef int (* FStaticRenderFrame)(void* device, int view_id,float* viewMatrix4x4, float* projMatrix4x4, void* fullResDepthBuffer, int viewportSizeX, int viewportSizeY );
 	typedef int (* FStaticTick)( float deltaTime );
 	typedef int (* FStaticOnDeviceChanged)( void * device );
 	typedef void* (* FStaticGetEnvironment)();
@@ -175,13 +180,14 @@ protected:
 	
 	FOpenUI								OpenUI;
 	FCloseUI							CloseUI;
-	FSetStyleSheetPath					SetStyleSheetPath;
+	FPushStyleSheetPath					PushStyleSheetPath;
 	FSetSequence						SetSequence;
 	FGetSequence						GetSequence;
 	FSetOnPropertiesChangedCallback		SetOnPropertiesChangedCallback;
 
 	FStaticInitInterface				StaticInitInterface;
 	FStaticPushPath						StaticPushPath;
+	FStaticGetOrAddView					StaticGetOrAddView;
 	FStaticRenderFrame					StaticRenderFrame;
 	FStaticTick							StaticTick;
 	FStaticOnDeviceChanged				StaticOnDeviceChanged;
@@ -362,7 +368,7 @@ void FTrueSkyPlugin::StartupModule()
 
 	OpenUI							= NULL;
 	CloseUI							= NULL;
-	SetStyleSheetPath				= NULL;
+	PushStyleSheetPath				= NULL;
 	SetSequence						= NULL;
 	GetSequence						= NULL;
 	SetOnPropertiesChangedCallback	= NULL;
@@ -410,23 +416,30 @@ void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters 
 		ID3D11DeviceContext * context = d3d11rhi->GetDeviceContext();
 
 		FMatrix mirroredViewMatrix = RenderParameters.ViewMatrix;
-		mirroredViewMatrix.Mirror(EAxis::Z,EAxis::Y);
-
+#if 0
+	//	mirroredViewMatrix.Mirror(EAxis::Z,EAxis::Y);
+		/*
+		std::swap(mirroredViewMatrix.M[2][0],mirroredViewMatrix.M[1][0]);
+		std::swap(mirroredViewMatrix.M[2][1],mirroredViewMatrix.M[1][1]);
+		std::swap(mirroredViewMatrix.M[2][2],mirroredViewMatrix.M[1][2]);
+		std::swap(mirroredViewMatrix.M[2][3],mirroredViewMatrix.M[1][3]);
+		*/
 		//unreal unit is 10cm
-		mirroredViewMatrix.M[3][0] *= 0.1f;
-		mirroredViewMatrix.M[3][1] *= 0.1f;
-		mirroredViewMatrix.M[3][2] *= 0.1f;
-		mirroredViewMatrix.M[3][3] *= 0.1f;
-
+		mirroredViewMatrix.M[3][0] *= 0.01f;
+		mirroredViewMatrix.M[3][1] *= 0.01f;
+		mirroredViewMatrix.M[3][2] *= 0.01f;
+		//mirroredViewMatrix.M[3][3] *= 0.1f;
+#endif
+		//mirroredViewMatrix=mirroredViewMatrix.Inverse();
 		FD3D11TextureBase * depthTex		= static_cast<FD3D11Texture2D*>(RenderParameters.DepthTexture);	
 		FD3D11TextureBase * halfDepthTex	= static_cast<FD3D11Texture2D*>(RenderParameters.SmallDepthTexture);		
-
-		StaticRenderFrame( device,0, &(mirroredViewMatrix.M[0][0]), &(RenderParameters.ProjMatrix.M[0][0]), (void*)depthTex->GetShaderResourceView(), 
-							(void*)halfDepthTex->GetShaderResourceView(), RenderParameters.ViewportRect.Width(),
+		
+        int view_id = StaticGetOrAddView(0);		// RVK: really need a unique view ident to pass here..
+		StaticRenderFrame( device,view_id, &(mirroredViewMatrix.M[0][0]), &(RenderParameters.ProjMatrix.M[0][0]), (void*)depthTex->GetShaderResourceView(), 
+							RenderParameters.ViewportRect.Width(),
 							RenderParameters.ViewportRect.Height() );
 	}
 }
-
 
 void FTrueSkyPlugin::ShutdownModule()
 {
@@ -569,6 +582,7 @@ void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR
 	{
 		StaticInitInterface				=(FStaticInitInterface)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticInitInterface") );
 		StaticPushPath					=(FStaticPushPath)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticPushPath") );
+		StaticGetOrAddView				=(FStaticGetOrAddView)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetOrAddView") );
 		StaticRenderFrame				=(FStaticRenderFrame)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticRenderFrame") );
 		StaticOnDeviceChanged			=(FStaticOnDeviceChanged)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticOnDeviceChanged") );
 		StaticTick						=(FStaticTick)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticTick") );
@@ -578,7 +592,7 @@ void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR
 		StaticSetRenderBool				=(FStaticSetRenderBool)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetRenderBool"));
 		StaticGetRenderBool				=(FStaticGetRenderBool)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetRenderBool"));
 		StaticTriggerAction				=(FStaticTriggerAction)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticTriggerAction"));
-		if( StaticInitInterface == NULL ||StaticPushPath==NULL|| StaticRenderFrame == NULL || 
+		if( StaticInitInterface == NULL ||StaticPushPath==NULL|| StaticRenderFrame == NULL || StaticGetOrAddView==NULL||
 			StaticOnDeviceChanged == NULL || StaticTick == NULL  || 
 			StaticGetEnvironment == NULL || StaticSetSequence == NULL||StaticGetRenderInterfaceInstance==NULL
 			||StaticSetRenderBool==NULL
@@ -607,6 +621,25 @@ void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR
 	}
 }
 
+static std::string WStringToUtf8(const wchar_t *src_w)
+{
+	int src_length=(int)wcslen(src_w);
+#ifdef _MSC_VER
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0,src_w, (int)src_length, NULL, 0, NULL, NULL);
+#else
+	int size_needed=2*src_length;
+#endif
+	char *output_buffer = new char [size_needed+1];
+#ifdef _MSC_VER
+	WideCharToMultiByte (CP_UTF8,0,src_w,(int)src_length,output_buffer, size_needed, NULL, NULL);
+#else
+	wcstombs(output_buffer, src_w, (size_t)size_needed );
+#endif
+	output_buffer[size_needed]=0;
+	std::string str_utf8=std::string(output_buffer);
+	delete [] output_buffer;
+	return str_utf8;
+}
 
 FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance( const TCHAR* SimulPath, const TCHAR* QtPath, void* Env )
 {
@@ -623,20 +656,20 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance( const TCH
 	{
 		OpenUI = (FOpenUI)FPlatformProcess::GetDllExport(DllHandle, TEXT("OpenUI") );
 		CloseUI = (FCloseUI)FPlatformProcess::GetDllExport(DllHandle, TEXT("CloseUI") );
-		SetStyleSheetPath = (FSetStyleSheetPath)FPlatformProcess::GetDllExport(DllHandle, TEXT("SetStyleSheetPath") );
+		PushStyleSheetPath = (FPushStyleSheetPath)FPlatformProcess::GetDllExport(DllHandle, TEXT("PushStyleSheetPath") );
 		SetSequence = (FSetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("SetSequence") );
 		GetSequence = (FGetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("GetSequence") );
 		SetOnPropertiesChangedCallback = (FSetOnPropertiesChangedCallback)FPlatformProcess::GetDllExport(DllHandle, TEXT("SetOnPropertiesChangedCallback") );
 
 		checkf( OpenUI, L"OpenUI function not found!" );
 		checkf( CloseUI, L"CloseUI function not found!" );
-		checkf( SetStyleSheetPath, L"SetStyleSheetPath function not found!" );
+		checkf( PushStyleSheetPath, L"PushStyleSheetPath function not found!" );
 		checkf( SetSequence, L"SetSequence function not found!" );
 		checkf( GetSequence, L"GetSequence function not found!" );
 		checkf( SetOnPropertiesChangedCallback, L"SetOnPropertiesChangedCallback function not found!" );
 
-		const TCHAR* StyleSheetPath = ConstructPath( SimulPath, L"\\PlugIns\\UE4\\TrueSkyUI\\qss\\" );
-		SetStyleSheetPath( StyleSheetPath );
+		const TCHAR *StyleSheetPath = ConstructPath( SimulPath, L"\\PlugIns\\UE4\\TrueSkyUI\\qss\\" );
+		PushStyleSheetPath(WStringToUtf8( StyleSheetPath).c_str());
 		delete StyleSheetPath;
 
 		IMainFrameModule& MainFrameModule = IMainFrameModule::Get();
@@ -675,14 +708,14 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance( const TCH
 				ParentRect.right = ClientSize.X;
 				ParentRect.bottom = ClientSize.Y;
 
-				OpenUI( EditorInstance.EditorWindowHWND, &ClientRect, &ParentRect, Env );
+				OpenUI( EditorInstance.EditorWindowHWND, &ClientRect, &ParentRect, Env,UNREAL_STYLE);
 
 				// Overload main window's WndProc
 				EditorInstance.OrigEditorWindowWndProc = (WNDPROC)GetWindowLongPtr( EditorInstance.EditorWindowHWND, GWLP_WNDPROC );
 				SetWindowLongPtr( EditorInstance.EditorWindowHWND, GWLP_WNDPROC, (LONG_PTR)EditorWindowWndProc );
 
 				// Setup notification callback
-				SetOnPropertiesChangedCallback( EditorInstance.EditorWindowHWND, OnSequenceChangeCallback );
+				SetOnPropertiesChangedCallback(  OnSequenceChangeCallback );
 
 				return &EditorInstances[ EditorInstances.Add(EditorInstance) ];
 			}
