@@ -1,4 +1,4 @@
-// Copyright 1998-2013 Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2014 Epic Games, Inc. All Rights Reserved.
 
 /*=============================================================================
 	DeferredShadingRenderer.cpp: Top level rendering loop for deferred shading
@@ -15,17 +15,17 @@
 #include "FXSystem.h"
 #include "OneColorShader.h"
 #include "CompositionLighting/PostProcessDeferredDecals.h"
-
+#include "LightPropagationVolume.h"
 
 TAutoConsoleVariable<int32> CVarEarlyZPass(
 	TEXT("r.EarlyZPass"),
-	-1,	
+	3,	
 	TEXT("Whether to use a depth only pass to initialize Z culling for the base pass. Cannot be changed at runtime.\n")
 	TEXT("Note: also look at r.EarlyZPassMovable\n")
 	TEXT("  0: off\n")
 	TEXT("  1: only if not masked, and only if large on the screen\n")
 	TEXT("  2: all opaque (including masked)\n")
-	TEXT("  x: use built in heuristic (default is -1)\n"),
+	TEXT("  x: use built in heuristic (default is 3)\n"),
 	ECVF_Default);
 
 int32 GEarlyZPassMovable = 0;
@@ -63,7 +63,7 @@ FDeferredShadingSceneRenderer::FDeferredShadingSceneRenderer(const FSceneViewFam
 	{
 		// Use a depth only pass if we are using full blown HQ lightmaps
 		// Otherwise base pass pixel shaders will be cheap and there will be little benefit to rendering a depth only pass
-		if (!GSystemSettings.bAllowHighQualityLightMaps || !ViewFamily.EngineShowFlags.Lighting)
+		if (AllowHighQualityLightmaps() || !ViewFamily.EngineShowFlags.Lighting)
 		{
 			EarlyZPassMode = DDM_None;
 		}
@@ -103,10 +103,10 @@ namespace
 {
 	FVector4 ClearQuadVertices[4] = 
 	{
-		FVector4( -1.0f,  1.0f, 1.0f, 1.0f ),
-		FVector4(  1.0f,  1.0f, 1.0f, 1.0f ),
-		FVector4( -1.0f, -1.0f, 1.0f, 1.0f ),
-		FVector4(  1.0f, -1.0f, 1.0f, 1.0f )
+		FVector4( -1.0f,  1.0f, 0.0f, 1.0f ),
+		FVector4(  1.0f,  1.0f, 0.0f, 1.0f ),
+		FVector4( -1.0f, -1.0f, 0.0f, 1.0f ),
+		FVector4(  1.0f, -1.0f, 0.0f, 1.0f )
 	};
 }
 
@@ -155,6 +155,7 @@ void FDeferredShadingSceneRenderer::ClearGBufferAtMaxZ()
 		break;
 	}
 
+	SetGlobalBoundShaderState(GClearMRTBoundShaderState[NumActiveRenderTargets - 1], GetVertexDeclarationFVector4(), *VertexShader, PixelShader);
 	// Opaque rendering, depth test but no depth writes
 	RHISetRasterizerState( TStaticRasterizerState<FM_Solid,CM_None>::GetRHI() );
 	RHISetBlendState(TStaticBlendStateWriteMask<>::GetRHI());
@@ -172,7 +173,6 @@ void FDeferredShadingSceneRenderer::ClearGBufferAtMaxZ()
 		RHISetViewport(View.ViewRect.Min.X, View.ViewRect.Min.Y, 0, View.ViewRect.Max.X, View.ViewRect.Max.Y, 1);
 
 		// Setup PS
-		SetGlobalBoundShaderState(GClearMRTBoundShaderState[NumActiveRenderTargets - 1], GetVertexDeclarationFVector4(), *VertexShader, PixelShader);
 		SetShaderValueArray(PixelShader->GetPixelShader(),PixelShader->ColorParameter, ClearColors, NumActiveRenderTargets);
 
 		// Render quad
@@ -294,17 +294,19 @@ bool FDeferredShadingSceneRenderer::RenderBasePassDynamicData(FViewInfo& View)
 
 	if( !View.Family->EngineShowFlags.CompositeEditorPrimitives )
 	{
+		const bool bNeedToSwitchVerticalAxis = IsES2Platform(GRHIShaderPlatform) && !IsPCPlatform(GRHIShaderPlatform);
+
 		// Draw the base pass for the view's batched mesh elements.
 		bDirty = DrawViewElements<FBasePassOpaqueDrawingPolicyFactory>(View,FBasePassOpaqueDrawingPolicyFactory::ContextType(false, ESceneRenderTargetsMode::DontSet), SDPG_World, true) || bDirty;
 
 		// Draw the view's batched simple elements(lines, sprites, etc).
-		bDirty = View.BatchedViewElements.Draw(View.ViewProjectionMatrix, View.ViewRect.Width(), View.ViewRect.Height(), false) || bDirty;
+		bDirty = View.BatchedViewElements.Draw(bNeedToSwitchVerticalAxis, View.ViewProjectionMatrix, View.ViewRect.Width(), View.ViewRect.Height(), false) || bDirty;
 		
 		// Draw foreground objects last
 		bDirty = DrawViewElements<FBasePassOpaqueDrawingPolicyFactory>(View,FBasePassOpaqueDrawingPolicyFactory::ContextType(false, ESceneRenderTargetsMode::DontSet), SDPG_Foreground, true) || bDirty;
 
 		// Draw the view's batched simple elements(lines, sprites, etc).
-		bDirty = View.TopBatchedViewElements.Draw(View.ViewProjectionMatrix, View.ViewRect.Width(), View.ViewRect.Height(), false) || bDirty;
+		bDirty = View.TopBatchedViewElements.Draw(bNeedToSwitchVerticalAxis, View.ViewProjectionMatrix, View.ViewRect.Width(), View.ViewRect.Height(), false) || bDirty;
 
 	}
 
@@ -331,7 +333,7 @@ bool FDeferredShadingSceneRenderer::RenderBasePass(FViewInfo& View)
 			// Draw the dynamic non-occluded primitives using a base pass drawing policy.
 			TDynamicPrimitiveDrawer<FBasePassOpaqueDrawingPolicyFactory> Drawer(
 				&View,FBasePassOpaqueDrawingPolicyFactory::ContextType(false, ESceneRenderTargetsMode::DontSet),true);
-			for(int32 PrimitiveIndex = 0;PrimitiveIndex < View.VisibleDynamicPrimitives.Num();PrimitiveIndex++)
+			for(int32 PrimitiveIndex = 0, Num = View.VisibleDynamicPrimitives.Num();PrimitiveIndex < Num;PrimitiveIndex++)
 			{
 				const FPrimitiveSceneInfo* PrimitiveSceneInfo = View.VisibleDynamicPrimitives[PrimitiveIndex];
 				int32 PrimitiveId = PrimitiveSceneInfo->GetIndex();
@@ -420,7 +422,7 @@ void FDeferredShadingSceneRenderer::RenderFinish()
 	FSceneRenderer::RenderFinish();
 
 	//grab the new transform out of the proxies for next frame
-	if(ViewFamily.EngineShowFlags.MotionBlur)
+	if(ViewFamily.EngineShowFlags.MotionBlur || ViewFamily.EngineShowFlags.TemporalAA)
 	{
 		Scene->MotionBlurInfoData.UpdateMotionBlurCache();
 	}
@@ -435,6 +437,8 @@ void FDeferredShadingSceneRenderer::Render()
 	{
 		return;
 	}
+
+	SCOPED_DRAW_EVENT(Scene,DEC_SCENE_ITEMS);
 
 	// Initialize global system textures (pass-through if already initialized).
 	GSystemTextures.InitializeTextures();
@@ -517,6 +521,12 @@ void FDeferredShadingSceneRenderer::Render()
 		bRequiresRHIClear = false;
 	}
 
+	// Clear LPVs for all views
+	if ( IsFeatureLevelSupported(GRHIShaderPlatform, ERHIFeatureLevel::SM5) )
+	{
+		ClearLPVs();
+	}
+
 	// only temporarily available after early z pass and until base pass
 	check(!GSceneRenderTargets.DBufferA);
 	check(!GSceneRenderTargets.DBufferB);
@@ -525,14 +535,7 @@ void FDeferredShadingSceneRenderer::Render()
 	if(IsDBufferEnabled())
 	{
 		GSceneRenderTargets.ResolveSceneDepthTexture();
-
-		// Resolve the scene depth to an auxiliary texture when SM3/SM4 is in use. This needs to happen so the auxiliary texture can be bound as a shader parameter
-		// while the primary scene depth texture can be bound as the target. Simultaneously binding a single DepthStencil resource as a parameter and target
-		// is unsupported in d3d feature level 10.
-		if(!(GRHIFeatureLevel >= ERHIFeatureLevel::SM5) && GRHIFeatureLevel >= ERHIFeatureLevel::SM4)
-		{
 			GSceneRenderTargets.ResolveSceneDepthToAuxiliaryTexture();
-		}
 
 		// e.g. ambient cubemaps, ambient occlusion, deferred decals
 		for(int32 ViewIndex = 0;ViewIndex < Views.Num();ViewIndex++)
@@ -542,13 +545,19 @@ void FDeferredShadingSceneRenderer::Render()
 		}
 	}
 
+	if(bIsWireframe && FDeferredShadingSceneRenderer::ShouldCompositeEditorPrimitives(Views[0]))
+	{
+		// In Editor we want wire frame view modes to be MSAA for better quality. Resolve will be done with EditorPrimitives
+		RHISetRenderTarget(GSceneRenderTargets.GetEditorPrimitivesColor(), GSceneRenderTargets.GetEditorPrimitivesDepth());
+		RHIClear(true, FLinearColor(0, 0, 0, 0), true, 0.0f, false, 0, FIntRect());
+	}
+	else
+	{
 	// Begin rendering to scene color
 	GSceneRenderTargets.BeginRenderingSceneColor(true);
-
-	if(!Views[0].TemporalReprojectionPhase || !ViewFamily.EngineShowFlags.TemporalReprojection)
-	{
-		RenderBasePass();
 	}
+
+		RenderBasePass();
 
 	if(ViewFamily.EngineShowFlags.VisualizeLightCulling)
 	{
@@ -575,31 +584,9 @@ void FDeferredShadingSceneRenderer::Render()
 		bRequiresFarZQuadClear = false;
 	}
 	
-	bool bCustomGBufferResolve = GRHIFeatureLevel >= ERHIFeatureLevel::SM5 && GSceneRenderTargets.GetGBufferMSAASampleCount() > 1;
-
-	if (bCustomGBufferResolve)
-	{
-		// Resolve the GBuffers and the scene depth for deferred shading.
-		FRenderingCompositePassContext CompositeContext(Views[0]);
-
-		FRenderingCompositePass* Pass = CompositeContext.Graph.RegisterPass(new FRCPassPostProcessCustomGBufferResolve());
-			
-		CompositeContext.Root->AddDependency(Pass);
-		CompositeContext.Process(TEXT("CustomBufferResolve"));
-	}
-	else
-	{
 		GSceneRenderTargets.ResolveSceneColor(FResolveRect(0, 0, ViewFamily.FamilySizeX, ViewFamily.FamilySizeY));
 		GSceneRenderTargets.ResolveSceneDepthTexture();
-	}
-
-	// Resolve the scene depth to an auxiliary texture when SM3/SM4 is in use. This needs to happen so the auxiliary texture can be bound as a shader parameter
-	// while the primary scene depth texture can be bound as the target. Simultaneously binding a single DepthStencil resource as a parameter and target
-	// is unsupported in d3d feature level 10.
-	if(!(GRHIFeatureLevel >= ERHIFeatureLevel::SM5) && GRHIFeatureLevel >= ERHIFeatureLevel::SM4)
-	{
 		GSceneRenderTargets.ResolveSceneDepthToAuxiliaryTexture();
-	}
 	
 	RenderCustomDepthPass();
 
@@ -627,11 +614,11 @@ void FDeferredShadingSceneRenderer::Render()
 	// Render lighting.
 	if (ViewFamily.EngineShowFlags.Lighting
 		&& GRHIFeatureLevel >= ERHIFeatureLevel::SM4
-		&& (!Views[0].TemporalReprojectionPhase || !ViewFamily.EngineShowFlags.TemporalReprojection)
 		&& ViewFamily.EngineShowFlags.DeferredLighting
 		)
 	{
-		// e.g. ambient cubemaps, ambient occlusion, deferred decals
+		// Pre-lighting composition lighting stage
+		// e.g. deferred decals, blurred GBuffer
 		for(int32 ViewIndex = 0;ViewIndex < Views.Num();ViewIndex++)
 		{	
 			SCOPED_CONDITIONAL_DRAW_EVENTF(EventView,Views.Num() > 1, DEC_SCENE_ITEMS, TEXT("View%d"), ViewIndex);
@@ -641,10 +628,7 @@ void FDeferredShadingSceneRenderer::Render()
 		// Clear the translucent lighting volumes before we accumulate
 		ClearTranslucentVolumeLighting();
 
-		if (ViewFamily.EngineShowFlags.DirectLighting)
-		{
 			RenderLights();
-		}
 
 		InjectAmbientCubemapTranslucentVolumeLighting();
 
@@ -653,8 +637,22 @@ void FDeferredShadingSceneRenderer::Render()
 		// Filter the translucency lighting volume now that it is complete
 		FilterTranslucentVolumeLighting();
 
+		// Clear LPVs for all views
+		if ( IsFeatureLevelSupported(GRHIShaderPlatform, ERHIFeatureLevel::SM5) )
+		{
+			PropagateLPVs();
+		}
+
 		// Render reflections that only operate on opaque pixels
 		RenderDeferredReflections();
+
+		// Post-lighting composition lighting stage
+		// e.g. ambient cubemaps, ambient occlusion, LPV indirect
+		for(int32 ViewIndex = 0; ViewIndex < Views.Num(); ++ViewIndex)
+		{	
+			SCOPED_CONDITIONAL_DRAW_EVENTF(EventView,Views.Num() > 1, DEC_SCENE_ITEMS, TEXT("View%d"), ViewIndex);
+			GCompositionLighting.ProcessLighting(Views[ViewIndex]);
+		}
 	}
 
 	if( ViewFamily.EngineShowFlags.StationaryLightOverlap &&
@@ -737,10 +735,7 @@ void FDeferredShadingSceneRenderer::Render()
 	}
 
 	// Resolve the scene color for post processing.
-	if(!bCustomGBufferResolve)
-	{
 		GSceneRenderTargets.ResolveSceneColor(FResolveRect(0, 0, ViewFamily.FamilySizeX, ViewFamily.FamilySizeY));
-	}
 
 #if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
 	if(CVarTestUIBlur.GetValueOnRenderThread() > 0)
@@ -757,7 +752,7 @@ void FDeferredShadingSceneRenderer::Render()
 		for(int32 ViewIndex = 0;ViewIndex < Views.Num();ViewIndex++)
 		{	
 			SCOPED_CONDITIONAL_DRAW_EVENTF(EventView, Views.Num() > 1, DEC_SCENE_ITEMS, TEXT("View%d"), ViewIndex);
-			FinishRenderViewTarget(&Views[ViewIndex]);
+			FinishRenderViewTarget(&Views[ViewIndex], ViewIndex == (Views.Num() - 1));
 		}
 	}
 
@@ -906,6 +901,51 @@ bool FDeferredShadingSceneRenderer::RenderBasePass()
 	return bDirty;
 }
 
+void FDeferredShadingSceneRenderer::ClearLPVs()
+{
+	// clear light propagation volumes
+
+	for(int32 ViewIndex = 0; ViewIndex < Views.Num(); ViewIndex++)
+	{
+		FViewInfo& View = Views[ViewIndex];
+
+		FSceneViewState* ViewState = (FSceneViewState*)Views[ViewIndex].State;
+		if(ViewState)
+		{
+			FLightPropagationVolume* LightPropagationVolume = ViewState->GetLightPropagationVolume();
+
+			if(LightPropagationVolume)
+			{
+				SCOPED_DRAW_EVENT(ClearLPVs, DEC_SCENE_ITEMS);
+				SCOPE_CYCLE_COUNTER(STAT_UpdateLPVs);
+				LightPropagationVolume->InitSettings(Views[ViewIndex]);
+				LightPropagationVolume->Clear();
+			}
+		}
+	}
+}
+
+void FDeferredShadingSceneRenderer::PropagateLPVs()
+{
+	for(int32 ViewIndex = 0; ViewIndex < Views.Num(); ViewIndex++)
+	{
+		FViewInfo& View = Views[ViewIndex];
+
+		FSceneViewState* ViewState = (FSceneViewState*)Views[ViewIndex].State;
+		if(ViewState)
+		{
+			FLightPropagationVolume* LightPropagationVolume = ViewState->GetLightPropagationVolume();
+
+			if(LightPropagationVolume)
+			{
+				SCOPED_DRAW_EVENT(UpdateLPVs, DEC_SCENE_ITEMS);
+				SCOPE_CYCLE_COUNTER(STAT_UpdateLPVs);
+				LightPropagationVolume->Propagate();
+			}
+		}
+	}
+}
+
 /** A simple pixel shader used on PC to read scene depth from scene color alpha and write it to a downsized depth buffer. */
 class FDownsampleSceneDepthPS : public FGlobalShader
 {
@@ -1015,7 +1055,23 @@ void FDeferredShadingSceneRenderer::UpdateDownsampledDepthSurface()
 
 bool FDeferredShadingSceneRenderer::ShouldCompositeEditorPrimitives(const FViewInfo& View)
 {
-	// If the show flag is enabled and any elements that needed compositing were drawn then compositing should be done
-	return View.Family->EngineShowFlags.CompositeEditorPrimitives && 
-		( View.ViewMeshElements.Num() || View.TopViewMeshElements.Num() || View.BatchedViewElements.HasPrimsToDraw() || View.TopBatchedViewElements.HasPrimsToDraw() || View.VisibleEditorPrimitives.Num() );
+	// If the show flag is enabled
+	if(!View.Family->EngineShowFlags.CompositeEditorPrimitives)
+	{
+		return false;
+	}
+
+	if(GIsEditor && View.Family->EngineShowFlags.Wireframe)
+	{
+		// In Editor we want wire frame view modes to be in MSAA
+		return true;
+	}
+
+	// Any elements that needed compositing were drawn then compositing should be done
+	if( View.ViewMeshElements.Num() || View.TopViewMeshElements.Num() || View.BatchedViewElements.HasPrimsToDraw() || View.TopBatchedViewElements.HasPrimsToDraw() || View.VisibleEditorPrimitives.Num() )
+	{
+		return true;
+	}
+
+	return false;
 }

@@ -16,7 +16,7 @@
 #include "AssetToolsModule.h"
 #include "AssetTypeActions_TrueSkySequence.h"
 #include "TrueSkyPlugin.generated.inl"
-#include "AssetPaletteFactoryFilter.h"
+//#include "AssetPaletteFactoryFilter.h"
 #include "Editor.h"
 #include <string>
 
@@ -151,12 +151,11 @@ protected:
 
 	TSharedPtr< FExtender > MenuExtender;
 	TSharedPtr<FAssetTypeActions_TrueSkySequence> SequenceAssetTypeActions;
-	enum Style
+	enum PluginStyle
 	{
-		UNITY_STYLE
-		,UNREAL_STYLE
+		UNREAL_STYLE=1
 	};
-	typedef void (* FOpenUI)(HWND, RECT*, RECT*, void*,Style style);
+	typedef void (* FOpenUI)(HWND, RECT*, RECT*, void*,PluginStyle style);
 	typedef void (* FCloseUI)(HWND);
 	typedef void (* FPushStyleSheetPath)(const char*);
 	typedef void (* FSetSequence)(HWND, const char*);
@@ -168,7 +167,7 @@ protected:
 	typedef int (* FStaticInitInterface)(  );
 	typedef int (* FStaticPushPath)(const char*,const char*);
 	typedef int (* FStaticGetOrAddView)( void *);
-	typedef int (* FStaticRenderFrame)(void* device, int view_id,float* viewMatrix4x4, float* projMatrix4x4, void* fullResDepthBuffer, int viewportSizeX, int viewportSizeY );
+	typedef int (* FStaticRenderFrame)(void* device, int view_id,float* viewMatrix4x4, float* projMatrix4x4, void* fullResDepthBuffer,PluginStyle s);
 	typedef int (* FStaticTick)( float deltaTime );
 	typedef int (* FStaticOnDeviceChanged)( void * device );
 	typedef void* (* FStaticGetEnvironment)();
@@ -223,12 +222,13 @@ IMPLEMENT_MODULE( FTrueSkyPlugin, TrueSkyPlugin )
 class FTrueSkyCommands : public TCommands<FTrueSkyCommands>
 {
 public:
+	//	TCommands( const FName InContextName, const FText& InContextDesc, const FName InContextParent, const FName InStyleSetName )
 	FTrueSkyCommands()
 		: TCommands<FTrueSkyCommands>(
 		TEXT("TrueSky"), // Context name for fast lookup
-		//		NSLOCTEXT("Contexts", "PaperEditor", "Sprite Editor"), // Localized context name for displaying
-		FText::FromString(TEXT("TrueSky plugin")),
-		NAME_None) // Parent
+		NSLOCTEXT("Contexts", "TrueSkyCmd", "Simul TrueSky"), // Localized context name for displaying
+		NAME_None, // Parent context name. 
+		FEditorStyle::GetStyleSetName()) // Parent
 	{
 	}
 	virtual void RegisterCommands() OVERRIDE
@@ -271,7 +271,7 @@ FTrueSkyPlugin::~FTrueSkyPlugin()
 	//char c[100];
 	//sprintf(c,"%d",n);
 	Instance = NULL;
-	staticSharedPtr.Reset();
+	//staticSharedPtr.Reset();
 }
 
 
@@ -363,8 +363,8 @@ void FTrueSkyPlugin::StartupModule()
 
 	const FName IconName(TEXT("../../Plugins/TrueSkyPlugin/Resources/icon_64x.png"));
 	//	check( FPaths::FileExists( IconName.ToString() ) );
-	FSlateStyleSet& SlateStyleSet = (FSlateStyleSet&)FEditorStyle::GetInstance();
-	SlateStyleSet.Set( TEXT("ClassThumbnail.TrueSkySequenceAsset"), new FSlateImageBrush(IconName, FVector2D(64.0f, 64.0f)) );
+	//FSlateStyleSet& SlateStyleSet = (FSlateStyleSet&) FEditorStyle::GetInstance();
+	//SlateStyleSet.Set( TEXT("ClassThumbnail.TrueSkySequenceAsset"), new FSlateImageBrush(IconName, FVector2D(64.0f, 64.0f)) );
 
 	OpenUI							= NULL;
 	CloseUI							= NULL;
@@ -436,8 +436,7 @@ void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters 
 		
         int view_id = StaticGetOrAddView(0);		// RVK: really need a unique view ident to pass here..
 		StaticRenderFrame( device,view_id, &(mirroredViewMatrix.M[0][0]), &(RenderParameters.ProjMatrix.M[0][0]), (void*)depthTex->GetShaderResourceView(), 
-							RenderParameters.ViewportRect.Width(),
-							RenderParameters.ViewportRect.Height() );
+							 UNREAL_STYLE);
 	}
 }
 
@@ -570,9 +569,9 @@ static HWND GetSWindowHWND(const TSharedPtr<SWindow>& Window)
 void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR* QtPath )
 {
 #ifdef _DEBUG
-	const TCHAR* const DllPath = ConstructPath( SimulPath, L"\\exe\\x64\\VC11\\Debug\\UE4PluginRenderInterface.dll" );
+	const TCHAR* const DllPath =L"TrueSkyPluginRender_MDd.dll";
 #else
-	const TCHAR* const DllPath = ConstructPath( SimulPath, L"\\exe\\x64\\VC11\\Release\\UE4PluginRenderInterface.dll" );
+	const TCHAR* const DllPath =L"TrueSkyPluginRender_MD.dll";
 #endif
 	check( DllPath );
 
@@ -644,9 +643,9 @@ static std::string WStringToUtf8(const wchar_t *src_w)
 FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance( const TCHAR* SimulPath, const TCHAR* QtPath, void* Env )
 {
 #ifdef _DEBUG
-	const TCHAR* const DllPath = ConstructPath( SimulPath, L"\\exe\\x64\\VC11\\Debug\\TrueSkyUI.dll" );
+	const TCHAR* const DllPath =L"TrueSkyUI_MDd.dll";
 #else
-	const TCHAR* const DllPath = ConstructPath( SimulPath, L"\\exe\\x64\\VC11\\Release\\TrueSkyUI.dll" );
+	const TCHAR* const DllPath =L"TrueSkyUI_MD.dll";
 #endif
 	check( DllPath );
 

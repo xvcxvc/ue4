@@ -1,4 +1,4 @@
-// Copyright 1998-2013 Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2014 Epic Games, Inc. All Rights Reserved.
 
 /*=============================================================================
 	SceneRendering.cpp: Scene rendering.
@@ -34,6 +34,17 @@ static TAutoConsoleVariable<int32> CVarAllowOcclusionQueries(
 	ECVF_RenderThreadSafe
 	);
 
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
+static TAutoConsoleVariable<float> CVarGeneralPurposeTweak(
+	TEXT("r.GeneralPurposeTweak"),
+	1.0f,
+	TEXT("Useful for low level shader development to get quick iteration time without having to change any c++ code.\n")
+	TEXT("Value maps to View.GeneralPurposeTweak inside the shaders.\n")
+	TEXT("Example usage: Multiplier on some value to tweak, toggle to switch between different algorithms (Default: 1.0)\n")
+	TEXT("DON'T USE THIS FOR ANYTHING THAT IS CHECKED IN. Compiled out in SHIPPING to make cheating a bit harder."),
+	ECVF_RenderThreadSafe);
+#endif
+
 /**
  * Console variable controlling the maximum number of shadow cascades to render with.
  *   DO NOT READ ON THE RENDERING THREAD. Use FSceneView::MaxShadowCascades.
@@ -44,6 +55,12 @@ static TAutoConsoleVariable<int32> CVarMaxShadowCascades(
 	TEXT("The maximum number of cascades with which to render dynamic directional light shadows."),
 	ECVF_Scalability | ECVF_RenderThreadSafe
 	);
+
+static TAutoConsoleVariable<float> CVarTessellationAdaptivePixelsPerTriangle(
+	TEXT("r.TessellationAdaptivePixelsPerTriangle"),
+	48.0f,
+	TEXT("Global tessellation factor multiplier"),
+	ECVF_RenderThreadSafe);
 
 /*-----------------------------------------------------------------------------
 	FViewInfo
@@ -261,8 +278,8 @@ TUniformBufferRef<FViewUniformShaderParameters> FViewInfo::CreateUniformBuffer(
 
 	if(Family->EngineShowFlags.Tessellation)
 	{
-		// Engine.ini setting is pixels/tri which is nice and intuitive.  But we want pixels/tessellated edge.  So use a heuristic.
-		float TessellationAdaptivePixelsPerEdge = FMath::Sqrt(2.f * GSystemSettings.TessellationAdaptivePixelsPerTriangle);
+		// CVar setting is pixels/tri which is nice and intuitive.  But we want pixels/tessellated edge.  So use a heuristic.
+		float TessellationAdaptivePixelsPerEdge = FMath::Sqrt(2.f * CVarTessellationAdaptivePixelsPerTriangle.GetValueOnRenderThread());
 
 		ViewUniformShaderParameters.AdaptiveTessellationFactor = 0.5f * float(ViewRect.Height()) / TessellationAdaptivePixelsPerEdge;
 	}
@@ -341,16 +358,22 @@ TUniformBufferRef<FViewUniformShaderParameters> FViewInfo::CreateUniformBuffer(
 
 	ViewUniformShaderParameters.GameTime = Family->CurrentWorldTime;
 	ViewUniformShaderParameters.RealTime = Family->CurrentRealTime;
+	ViewUniformShaderParameters.Random = FMath::Rand();
+	ViewUniformShaderParameters.FrameNumber = FrameNumber;
 
 	if(State)
 	{
 		// safe to cast on the renderer side
 		FSceneViewState* ViewState = (FSceneViewState*)State;
-		ViewUniformShaderParameters.TemporalAAParams = FVector2D(ViewState->GetCurrentTemporalAASampleIndex(), ViewState->GetCurrentTemporalAASampleCount());
+		ViewUniformShaderParameters.TemporalAAParams = FVector4(
+			ViewState->GetCurrentTemporalAASampleIndex(), 
+			ViewState->GetCurrentTemporalAASampleCount(),
+			TemporalJitterPixelsX,
+			TemporalJitterPixelsY);
 	}
 	else
 	{
-		ViewUniformShaderParameters.TemporalAAParams = FVector2D(0, 1);
+		ViewUniformShaderParameters.TemporalAAParams = FVector4(0, 1, 0, 0);
 	}
 
 	{
@@ -389,6 +412,27 @@ TUniformBufferRef<FViewUniformShaderParameters> FViewInfo::CreateUniformBuffer(
 	ViewUniformShaderParameters.DepthOfFieldFocalLength = 50.0f;
 	ViewUniformShaderParameters.MotionBlurNormalizedToPixel = FinalPostProcessSettings.MotionBlurMax * ViewRect.Width() / 100.0f;
 
+	{
+		// This is the CVar default
+		float Value = 1.0f;
+
+		// Compiled out in SHIPPING to make cheating a bit harder.
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
+		Value = CVarGeneralPurposeTweak.GetValueOnRenderThread();
+#endif
+
+		ViewUniformShaderParameters.GeneralPurposeTweak = Value;
+	}
+
+	ViewUniformShaderParameters.DemosaicVposOffset = 0.0f;
+	{
+		static auto* DemosaicVposOffsetCvar = IConsoleManager::Get().FindTConsoleVariableDataFloat(TEXT("r.DemosaicVposOffset"));
+		if (DemosaicVposOffsetCvar)
+		{
+			ViewUniformShaderParameters.DemosaicVposOffset = DemosaicVposOffsetCvar->GetValueOnRenderThread();
+		}
+	}
+
 	ViewUniformShaderParameters.IndirectLightingColorScale = FVector(FinalPostProcessSettings.IndirectLightingColor.R * FinalPostProcessSettings.IndirectLightingIntensity,
 		FinalPostProcessSettings.IndirectLightingColor.G * FinalPostProcessSettings.IndirectLightingIntensity,
 		FinalPostProcessSettings.IndirectLightingColor.B * FinalPostProcessSettings.IndirectLightingIntensity);
@@ -398,8 +442,7 @@ TUniformBufferRef<FViewUniformShaderParameters> FViewInfo::CreateUniformBuffer(
 
 	{
 		// Enables toggle of HDR Mosaic mode without recompile of all PC shaders during ES2 emulation.
-		static const auto CVar = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Mobile32bpp")); 
-		ViewUniformShaderParameters.HdrMosaic = CVar->GetValueOnRenderThread() == 1 ? 1.0f : 0.0f;
+		ViewUniformShaderParameters.HdrMosaic = IsMobileHDR32bpp() ? 1.0f : 0.0f;
 	}
 	
 	FVector2D OneScenePixelUVSize = FVector2D(1.0f / BufferSize.X, 1.0f / BufferSize.Y);
@@ -611,11 +654,17 @@ void FSceneRenderer::RenderFinish()
 			SCOPED_CONDITIONAL_DRAW_EVENTF(EventView, Views.Num() > 1, DEC_SCENE_ITEMS, TEXT("View%d"), ViewIndex);
 			FViewInfo& View = Views[ViewIndex];
 
+			bool bShowPrecomputedVisibilityWarning = false;
+			static const auto* CVarPrecomputedVisibilityWarning = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.PrecomputedVisibilityWarning"));
+			if (CVarPrecomputedVisibilityWarning && CVarPrecomputedVisibilityWarning->GetValueOnRenderThread() == 1)
+			{
+				bShowPrecomputedVisibilityWarning = !bUsedPrecomputedVisibility;
+			}
+
 			// display a message saying we're frozen
 			FSceneViewState* ViewState = (FSceneViewState*)View.State;
 			bool bViewParentOrFrozen = ViewState && (ViewState->HasViewParent() || ViewState->bIsFrozen);
-			bool bNeedsPrecomputedVisibility = !bUsedPrecomputedVisibility && GRHIFeatureLevel == ERHIFeatureLevel::ES2;
-			if (bViewParentOrFrozen || bNeedsPrecomputedVisibility)
+			if (bViewParentOrFrozen || bShowPrecomputedVisibilityWarning)
 			{
 				// this is a helper class for FCanvas to be able to get screen size
 				class FRenderTargetTemp : public FRenderTarget
@@ -642,18 +691,18 @@ void FSceneRenderer::RenderFinish()
 				FCanvas Canvas(&TempRenderTarget, NULL, View.Family->CurrentRealTime, View.Family->CurrentWorldTime, View.Family->DeltaWorldTime);
 				if (bViewParentOrFrozen)
 				{
-					const FString StateText =
+					const FText StateText =
 						ViewState->bIsFrozen ?
-						Localize(TEXT("ViewportStatus"),TEXT("RenderingFrozenE"))
+						NSLOCTEXT("SceneRendering", "RenderingFrozen", "Rendering frozen...")
 						:
-						Localize(TEXT("ViewportStatus"),TEXT("OcclusionChild"));
-					Canvas.DrawShadowedString( 10, Y, *StateText, GetStatsFont(), FLinearColor(0.8,1.0,0.2,1.0));
+						NSLOCTEXT("SceneRendering", "OcclusionChild", "Occlusion Child");
+					Canvas.DrawShadowedText( 10, Y, StateText, GetStatsFont(), FLinearColor(0.8,1.0,0.2,1.0));
 					Y += 14;
 				}
-				if (bNeedsPrecomputedVisibility)
+				if (bShowPrecomputedVisibilityWarning)
 				{
-					FText Message = NSLOCTEXT("Renderer", "NoPrecomputedVisibility", "NO PRECOMPUTED VISIBILITY");
-					Canvas.DrawShadowedString( 10, Y, *Message.ToString(), GetStatsFont(), FLinearColor(1.0,0.05,0.05,1.0));
+					const FText Message = NSLOCTEXT("Renderer", "NoPrecomputedVisibility", "NO PRECOMPUTED VISIBILITY");
+					Canvas.DrawShadowedText( 10, Y, Message, GetStatsFont(), FLinearColor(1.0,0.05,0.05,1.0));
 					Y += 14;
 				}
 				Canvas.Flush();
@@ -799,6 +848,17 @@ void FSceneRenderer::OnStartFrame()
 	CompositionGraph_OnStartFrame();
 	GSceneRenderTargets.bScreenSpaceAOIsValid = false;
 	GSceneRenderTargets.bCustomDepthIsValid = false;
+
+	for(int32 ViewIndex = 0; ViewIndex < Views.Num(); ++ViewIndex)
+	{	
+		FSceneView& View = Views[ViewIndex];
+		FSceneViewStateInterface* State = View.State;
+
+		if(State)
+		{
+			State->OnStartFrame(View);
+		}
+	}
 }
 
 /*-----------------------------------------------------------------------------
@@ -819,6 +879,7 @@ static void RenderViewFamily_RenderThread( FSceneRenderer* SceneRenderer )
 
     for( int ViewExt = 0; ViewExt < SceneRenderer->ViewFamily.ViewExtensions.Num(); ViewExt++ )
     {
+		SceneRenderer->ViewFamily.ViewExtensions[ViewExt]->PreRenderViewFamily_RenderThread(SceneRenderer->ViewFamily);
         for( int ViewIndex = 0; ViewIndex < SceneRenderer->ViewFamily.Views.Num(); ViewIndex++ )
         {
             SceneRenderer->ViewFamily.ViewExtensions[ViewExt]->PreRenderView_RenderThread(SceneRenderer->Views[ViewIndex]);
@@ -932,4 +993,14 @@ void FRendererModule::RenderPostOpaqueExtensions( const FSceneView& View )
 	PostOpaqueRenderDelegate.ExecuteIfBound( RenderParameters );
 }
 
+bool IsMobileHDR()
+{
+	static auto* MobileHDRCvar = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.MobileHDR"));
+	return MobileHDRCvar->GetValueOnRenderThread() == 1;
+}
 
+bool IsMobileHDR32bpp()
+{
+	static auto* MobileHDR32bppCvar = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.MobileHDR32bpp"));
+	return IsMobileHDR() && (GSupportsRenderTargetFormat_PF_FloatRGBA == false || MobileHDR32bppCvar->GetValueOnRenderThread() == 1);
+}

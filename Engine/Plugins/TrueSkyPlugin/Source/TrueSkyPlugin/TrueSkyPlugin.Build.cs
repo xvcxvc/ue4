@@ -27,9 +27,9 @@ namespace UnrealBuildTool.Rules
 				{
 					"Core",
 					"CoreUObject",
+					"Slate",
 					"Engine",
 					"UnrealEd",
-					"Slate",
 					"LevelEditor",
 					"MainFrame",
                     "AssetTools",
@@ -37,6 +37,7 @@ namespace UnrealBuildTool.Rules
                     "UnrealEd",
                     "CollectionManager",
                     "ContentBrowser",
+					"EditorStyle"
 					// ... add other public dependencies that you statically link with here ...
 				}
 				);
@@ -52,7 +53,7 @@ namespace UnrealBuildTool.Rules
 				}
 				);
 
-            AddThirdPartyPrivateStaticDependencies("DX11");
+            AddThirdPartyPrivateStaticDependencies(Target,"DX11");
 		}
 	}
 }

@@ -1,5 +1,6 @@
 #include "TrueSkyPluginPrivatePCH.h"
 #include "TrueSkySequenceFactory.h"
+#include "TrueSkySequenceAsset.h"
 
 UTrueSkySequenceFactory::UTrueSkySequenceFactory(const class FPostConstructInitializeProperties& PCIP)
 	: Super(PCIP)
