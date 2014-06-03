@@ -252,7 +252,7 @@ public:
 FTrueSkyPlugin* FTrueSkyPlugin::Instance = NULL;
 
 TSharedPtr<FTrueSkyPlugin,(ESPMode::Type)0> staticSharedPtr;
-
+static std::string trueSkyPluginPath="../../Plugins/TrueSkyPlugin";
 FTrueSkyPlugin::FTrueSkyPlugin()
 {
 	Instance = this;
@@ -486,19 +486,19 @@ void FTrueSkyPlugin::FillOverlayMenu(FMenuBuilder& MenuBuilder)
 	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleShowCompositing);
 }
 /** Returns environment variable value */
-static TCHAR* GetEnvVariable( const TCHAR* const VariableName, int iEnvSize = 1024)
+static wchar_t* GetEnvVariable( const wchar_t* const VariableName, int iEnvSize = 1024)
 {
-	TCHAR* Env = new TCHAR[iEnvSize];
+	wchar_t* Env = new wchar_t[iEnvSize];
 	check( Env );
-	memset(Env, 0, iEnvSize * sizeof(TCHAR));
-	if ( (int)GetEnvironmentVariable(VariableName, Env, iEnvSize) > iEnvSize )
+	memset(Env, 0, iEnvSize * sizeof(wchar_t));
+	if ( (int)GetEnvironmentVariableW(VariableName, Env, iEnvSize) > iEnvSize )
 	{
 		delete Env;
 		Env = NULL;
 	}
 	else if ( wcslen(Env) == 0 )
 	{
-		TCHAR errorMsg[512];
+		wchar_t errorMsg[512];
 		swprintf_s(errorMsg, 512, L"No %s environment variable set!", VariableName);
 		MessageBox(NULL, errorMsg, L"Error", MB_OK);
 	}
@@ -524,7 +524,7 @@ static const TCHAR* ConstructPath(const TCHAR* const BasePath, const TCHAR* cons
 }
 
 /** Takes Base path, concatenates it with Relative path and returns it as 8-bit char string */
-static const char* ConstructPathUTF8(const TCHAR* const BasePath, const TCHAR* const RelativePath)
+static std::string ConstructPathUTF8(const TCHAR* const BasePath, const TCHAR* const RelativePath)
 {
 	if ( BasePath )
 	{
@@ -543,11 +543,12 @@ static const char* ConstructPathUTF8(const TCHAR* const BasePath, const TCHAR* c
 		memset(utf8NewPath, 0, iPathLen);
 		WideCharToMultiByte( CP_UTF8, 0, NewPath, iPathLen, utf8NewPath, iPathLen, NULL, NULL );
 
-		delete NewPath;
-
-		return utf8NewPath;
+		delete [] NewPath;
+		std::string ret=utf8NewPath;
+		delete [] utf8NewPath;
+		return ret;
 	}
-	return NULL;
+	return "";
 }
 
 
@@ -602,12 +603,16 @@ void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR
 			return;
 		}
 
-		const char* const ShaderPath = ConstructPathUTF8( SimulPath, L"\\Platform\\DirectX11\\HLSL" );
-		const char* const ResourcePath = ConstructPathUTF8( SimulPath, L"\\Media\\Textures" );
+		const std::string ShaderPath = ConstructPathUTF8( SimulPath, L"\\Platform\\DirectX11\\HLSL" );
+		const std::string ResourcePath = ConstructPathUTF8( SimulPath, L"\\Media\\Textures" );
 
 		StaticInitInterface(  );
-		StaticPushPath("TexturePath",ResourcePath);
-		StaticPushPath("ShaderPath",ShaderPath);
+		StaticPushPath("TexturePath",ResourcePath.c_str());
+		StaticPushPath("ShaderPath",ShaderPath.c_str());
+		
+		StaticPushPath("ShaderPath",(trueSkyPluginPath+"\\Resources\\Platform\\DirectX11\\HLSL").c_str());
+		StaticPushPath("TexturePath",(trueSkyPluginPath+"\\Resources\\Media\\Textures").c_str());
+		
 		FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
 		ID3D11Device * device = d3d11rhi->GetDevice();
 
@@ -620,6 +625,25 @@ void FTrueSkyPlugin::InitRenderingInterface( const TCHAR* SimulPath, const TCHAR
 	}
 }
 
+static std::wstring Utf8ToWString(const char *src_utf8)
+{
+	int src_length=(int)strlen(src_utf8);
+#ifdef _MSC_VER
+	int length = MultiByteToWideChar(CP_UTF8, 0, src_utf8,src_length, 0, 0);
+#else
+	int length=src_length;
+#endif
+	wchar_t *output_buffer = new wchar_t [length+1];
+#ifdef _MSC_VER
+	MultiByteToWideChar(CP_UTF8, 0, src_utf8, src_length, output_buffer, length);
+#else
+	mbstowcs(output_buffer, src_utf8, (size_t)length );
+#endif
+	output_buffer[length]=0;
+	std::wstring wstr=std::wstring(output_buffer);
+	delete [] output_buffer;
+	return wstr;
+}
 static std::string WStringToUtf8(const wchar_t *src_w)
 {
 	int src_length=(int)wcslen(src_w);
@@ -668,7 +692,8 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance( const TCH
 		checkf( SetOnPropertiesChangedCallback, L"SetOnPropertiesChangedCallback function not found!" );
 
 		const TCHAR *StyleSheetPath = ConstructPath( SimulPath, L"\\PlugIns\\UE4\\TrueSkyUI\\qss\\" );
-		PushStyleSheetPath(WStringToUtf8( StyleSheetPath).c_str());
+		PushStyleSheetPath(WStringToUtf8(StyleSheetPath).c_str());
+		PushStyleSheetPath((trueSkyPluginPath+"\\Resources\\qss\\").c_str());
 		delete StyleSheetPath;
 
 		IMainFrameModule& MainFrameModule = IMainFrameModule::Get();
@@ -707,6 +732,8 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance( const TCH
 				ParentRect.right = ClientSize.X;
 				ParentRect.bottom = ClientSize.Y;
 
+			//	GetWindowRect(EditorInstance.EditorWindowHWND, &ParentRect);
+
 				OpenUI( EditorInstance.EditorWindowHWND, &ClientRect, &ParentRect, Env,UNREAL_STYLE);
 
 				// Overload main window's WndProc
@@ -715,7 +742,7 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance( const TCH
 
 				// Setup notification callback
 				SetOnPropertiesChangedCallback(  OnSequenceChangeCallback );
-
+				EditorInstance.EditorWindow->Restore();
 				return &EditorInstances[ EditorInstances.Add(EditorInstance) ];
 			}
 		}
@@ -865,7 +892,7 @@ void FTrueSkyPlugin::OnSequenceChangeCallback(HWND OwnerHWND)
 
 LRESULT CALLBACK FTrueSkyPlugin::EditorWindowWndProc(HWND hWnd, ::UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if ( uMsg == WM_SIZE )
+	if ( uMsg == WM_SIZE)//||uMsg==WM_ACTIVATE||uMsg==WM_MOVE)
 	{
 		if ( HWND ChildHWND = GetWindow(hWnd, GW_CHILD) ) 
 		{
@@ -894,36 +921,38 @@ void FTrueSkyPlugin::InitPaths()
 	if ( PathEnv == NULL )
 	{
 		const int iPathSize = 4096;
-
-		PathEnv = GetEnvVariable(L"PATH", iPathSize);
-		if ( PathEnv == NULL )
+		const wchar_t *p=GetEnvVariable(L"PATH", iPathSize);
+		delete [] p;
+		if ( p == NULL )
 		{
 			return;
 		}
-
-		if ( wcslen(PathEnv) > 0 )
+		std::wstring PathEnv = p;
+		
+		std::wstring trueSkyPluginPathW=Utf8ToWString(trueSkyPluginPath.c_str());
+		if ( PathEnv.length()>0)
 		{
-			wcscat_s( PathEnv, iPathSize, L";" );
-			wcscat_s( PathEnv, iPathSize, QtPath ); wcscat_s( PathEnv, iPathSize, L"\\bin;" );
+		/*	wcscat_s( PathEnv, iPathSize, QtPath ); wcscat_s( PathEnv, iPathSize, L"\\bin;" );
 			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64;" );
 #ifdef _DEBUG
 			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64\\VC11\\Debug" );
 #else
 			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64\\VC11\\Release" );
-#endif
+#endif*/
 		}
 		else
 		{
-			wcscpy_s( PathEnv, iPathSize, QtPath ); wcscat_s( PathEnv, iPathSize, L"\\bin;" );
+		/*	wcscpy_s( PathEnv, iPathSize, QtPath ); wcscat_s( PathEnv, iPathSize, L"\\bin;" );
 			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64;" );
 #ifdef _DEBUG
 			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64\\VC11\\Debug" );
 #else
 			wcscat_s( PathEnv, iPathSize, SimulPath ); wcscat_s( PathEnv, iPathSize, L"\\exe\\x64\\VC11\\Release" );
-#endif
+#endif*/
 		}
+		PathEnv=(trueSkyPluginPathW+L"\\Binaries\\Win64;")+PathEnv;
 
-		SetEnvironmentVariable( L"PATH", PathEnv );
+		SetEnvironmentVariable( L"PATH", PathEnv.c_str());
 	}
 }
 
