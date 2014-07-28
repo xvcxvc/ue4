@@ -110,7 +110,7 @@ Engine/Source/Runtime/Windows/D3D11RHI/Private/D3D11RHIPrivate.h
 into
 Engine/Source/Runtime/Windows/D3D11RHI/Public/D3D11RHIPrivate.h
 
-This is of course a temporary solution and hopefully will be fixed by Epic.
+This is of course a temporary solution and a fix by Epic is in the pipeline.
 
 
 -----------------------------------------------------------------------------------------------------------

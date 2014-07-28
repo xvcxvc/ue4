@@ -11,6 +11,7 @@
 #include "ShaderCore.h"
 #include "RHI.h"
 #include "ScenePrivate.h"
+#include "RendererInterface.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogRenderer, Log, All);
 
@@ -42,7 +43,7 @@ public:
 		return AllocatedScenes;
 	}
 
-	virtual void RegisterPostOpaqueRenderDelegate( const FPostOpaqueRenderDelegate& PostOpaqueRenderDelegate ) OVERRIDE;
+	virtual void RegisterPostOpaqueRenderDelegate( const FPostOpaqueRenderDelegate& PostOpaqueRenderDelegate ) override;
 	virtual void RenderPostOpaqueExtensions( const FSceneView& View ) OVERRIDE;
 
 private:
