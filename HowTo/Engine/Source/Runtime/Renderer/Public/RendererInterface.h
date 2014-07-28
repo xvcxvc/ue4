@@ -231,6 +231,11 @@ public:
 			FlagsString += TEXT(" UAV");
 		}
 
+		if(LocalFlags & TexCreate_FastVRAM)
+		{
+			FlagsString += TEXT(" VRam");
+		}
+
 		FString ArrayString;
 
 		if(IsArray())
@@ -261,6 +266,11 @@ public:
 	{
 		// Usually we don't want to propagate MSAA samples.
 		NumSamples = 1;
+
+		bForceSeparateTargetAndShaderResource = false;
+
+		// Remove UAV flag for rendertargets that don't need it (some formats are incompatible)
+		TargetableFlags &= (~TexCreate_UAV);
 	}
 
 	/** In pixels, (0,0) if not set, (x,0) for cube maps, todo: make 3d int vector for volume textures */
@@ -339,7 +349,10 @@ struct IPooledRenderTarget : public IRefCountedObject
 	virtual const FPooledRenderTargetDesc& GetDesc() const = 0;
 	/** @param InName must not be 0 */
 	virtual void SetDebugName(const TCHAR *InName) = 0;
-	/** Only for debugging purpose */
+	/**
+	 * Only for debugging purpose
+	 * @return in bytes
+	 **/
 	virtual uint32 ComputeMemorySize() const = 0;
 	/** Get the low level internals (texture/surface) */
 	inline FSceneRenderTargetItem& GetRenderTargetItem() { return RenderTargetItem; }
@@ -358,9 +371,47 @@ struct FQueryVisualizeTexureInfo
 	TArray<FString> Entries;
 };
 
-/**
- * The public interface of the renderer module.
- */
+
+/** The vertex data used to filter a texture. */
+struct FFilterVertex
+{
+	FVector4 Position;
+	FVector2D UV;
+};
+
+/** The filter vertex declaration resource type. */
+class FFilterVertexDeclaration : public FRenderResource
+{
+public:
+	FVertexDeclarationRHIRef VertexDeclarationRHI;
+
+	/** Destructor. */
+	virtual ~FFilterVertexDeclaration() {}
+
+	virtual void InitRHI()
+	{
+		FVertexDeclarationElementList Elements;
+		uint32 Stride = sizeof(FFilterVertex);
+		Elements.Add(FVertexElement(0,STRUCT_OFFSET(FFilterVertex,Position),VET_Float4,0,Stride));
+		Elements.Add(FVertexElement(0,STRUCT_OFFSET(FFilterVertex,UV),VET_Float2,1,Stride));
+		VertexDeclarationRHI = RHICreateVertexDeclaration(Elements);
+	}
+
+	virtual void ReleaseRHI()
+	{
+		VertexDeclarationRHI.SafeRelease();
+	}
+};
+
+// use r.DrawDenormalizedQuadMode to override the function call setting (quick way to see if an artifact is caused why this optimization)
+enum EDrawRectangleFlags
+{
+	// Rectangle is created by 2 triangles (diagonal can cause some slightly less efficient shader execution), this is the default as it has no artifacts
+	EDRF_Default,
+	//
+	EDRF_UseTriangleOptimization
+};
+
 class FPostOpaqueRenderParameters
 {
 	public:
@@ -375,6 +426,9 @@ class FPostOpaqueRenderParameters
 DECLARE_DELEGATE_OneParam(FPostOpaqueRenderDelegate, class FPostOpaqueRenderParameters& );
 
 
+/**
+ * The public interface of the renderer module.
+ */
 class IRendererModule : public IModuleInterface
 {
 public:
@@ -387,7 +441,7 @@ public:
 	 * @param World - An optional world to associate with the scene.
 	 * @param bInRequiresHitProxies - Indicates that hit proxies should be rendered in the scene.
 	 */
-	virtual FSceneInterface* AllocateScene(UWorld* World, bool bInRequiresHitProxies) = 0;
+	virtual FSceneInterface* AllocateScene(UWorld* World, bool bInRequiresHitProxies, ERHIFeatureLevel::Type InFeatureLevel) = 0;
 	
 	virtual void RemoveScene(FSceneInterface* Scene) = 0;
 
@@ -409,7 +463,7 @@ public:
 	virtual void SceneRenderTargetsSetBufferSize(uint32 SizeX, uint32 SizeY) = 0;
 
 	/** Draws a tile mesh element with the specified view. */
-	virtual void DrawTileMesh(const FSceneView& View, const FMeshBatch& Mesh, bool bIsHitTesting, const class FHitProxyId& HitProxyId) = 0;
+	virtual void DrawTileMesh(FRHICommandListImmediate& RHICmdList, const FSceneView& View, const FMeshBatch& Mesh, bool bIsHitTesting, const class FHitProxyId& HitProxyId) = 0;
 
 	/** Render thread side, use TRefCountPtr<IPooledRenderTarget>, allows to use sharing and VisualizeTexture */
 	virtual void RenderTargetPoolFindFreeElement(const FPooledRenderTargetDesc& Desc, TRefCountPtr<IPooledRenderTarget> &Out, const TCHAR* InDebugName) = 0;
@@ -431,6 +485,40 @@ public:
 	virtual void ExecVisualizeTextureCmd(const FString& Cmd) = 0;
 
 	virtual void UpdateMapNeedsLightingFullyRebuiltState(UWorld* World) = 0;
+
+	/**
+	 * Draws a quad with the given vertex positions and UVs in denormalized pixel/texel coordinates.
+	 * The platform-dependent mapping from pixels to texels is done automatically.
+	 * Note that the positions are affected by the current viewport.
+	 * NOTE: DrawRectangle should be used in the vertex shader to calculate the correct position and uv for vertices.
+	 *
+	 * X, Y							Position in screen pixels of the top left corner of the quad
+	 * SizeX, SizeY					Size in screen pixels of the quad
+	 * U, V							Position in texels of the top left corner of the quad's UV's
+	 * SizeU, SizeV					Size in texels of the quad's UV's
+	 * TargetSizeX, TargetSizeY		Size in screen pixels of the target surface
+	 * TextureSize                  Size in texels of the source texture
+	 * VertexShader					The vertex shader used for rendering
+	 * Flags						see EDrawRectangleFlags
+	 */
+	virtual void DrawRectangle(
+		FRHICommandList& RHICmdList,
+		float X,
+		float Y,
+		float SizeX,
+		float SizeY,
+		float U,
+		float V,
+		float SizeU,
+		float SizeV,
+		FIntPoint TargetSize,
+		FIntPoint TextureSize,
+		class FShader* VertexShader,
+		EDrawRectangleFlags Flags = EDRF_Default
+		) = 0;
+
+	/** @return Returns a vertex declaration that can be used with with the DrawRectangle() function */
+	virtual TGlobalResource<FFilterVertexDeclaration>& GetFilterVertexDeclaration() = 0;
 
 	virtual void RegisterPostOpaqueRenderDelegate( const FPostOpaqueRenderDelegate& PostOpaqueRenderDelegate ) = 0;
 	virtual void RenderPostOpaqueExtensions( const FSceneView& View ) = 0;
