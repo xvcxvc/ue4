@@ -48,6 +48,8 @@ namespace UnrealBuildTool.Rules
 					"RenderCore",
                     "RHI",
                     "D3D11RHI",
+					"Slate",
+					"SlateCore",
                     "Renderer"
 					// ... add private dependencies that you statically link with here ...
 				}

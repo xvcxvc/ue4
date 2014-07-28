@@ -4,6 +4,7 @@
 #include "PlacementModePrivatePCH.h"
 #include "TrueSkySequenceAsset.h"
 #include "TrueSkySequenceFactory.h"
+#include "TrueSkySequenceActor.h"
 #include "LevelEditor.h"
 #include "IMainFrameModule.h"
 #include "SlateStyle.h"
@@ -11,12 +12,46 @@
 #include "WindowsWindow.h"
 #include "RendererInterface.h"
 #include "DynamicRHI.h"
-#include "D3D11RHIPrivate.h"
+
+
+
+
+#include "D3D11RHI.h"
+// Dependencies.
+#include "Core.h"
+#include "RHI.h"
+#include "GPUProfiler.h"
+#include "ShaderCore.h"
+#include "Engine.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogD3D11RHI, Log, All);
+
+#include "../Private/Windows/D3D11RHIBasePrivate.h"
+#include "StaticArray.h"
+
+/** This is a macro that casts a dynamically bound RHI reference to the appropriate D3D type. */
+#define DYNAMIC_CAST_D3D11RESOURCE(Type,Name) \
+	FD3D11##Type* Name = (FD3D11##Type*)Name##RHI;
+
+// D3D RHI public headers.
+#include "D3D11Util.h"
+#include "D3D11State.h"
+#include "D3D11Resources.h"
+#include "D3D11Viewport.h"
+#include "D3D11ConstantBuffer.h"
+//#include "../Private/Windows/D3D11StateCache.h"
+#include "../Private/D3D11StateCachePrivate.h"
+
+typedef FD3D11StateCacheBase FD3D11StateCache;
+
+
+
+#include "D3D11Resources.h"
 #include "Tickable.h"
 #include "AssetToolsModule.h"
 #include "AssetTypeActions_TrueSkySequence.h"
 #include "TrueSkyPlugin.generated.inl"
-//#include "AssetPaletteFactoryFilter.h"
+#include "EngineModule.h"
 #include "Editor.h"
 #include <string>
 
@@ -75,9 +110,9 @@ public:
 	void					OnDebugTrueSky(class UCanvas* Canvas, APlayerController*);
 
 	/** IModuleInterface implementation */
-	virtual void			StartupModule() OVERRIDE;
-	virtual void			ShutdownModule() OVERRIDE;
-	virtual bool			SupportsDynamicReloading() OVERRIDE;
+	virtual void			StartupModule() override;
+	virtual void			ShutdownModule() override;
+	virtual bool			SupportsDynamicReloading() override;
 
 	/** Render delegate */
 	void					RenderFrame( FPostOpaqueRenderParameters& RenderParameters );
@@ -240,7 +275,7 @@ public:
 		FEditorStyle::GetStyleSetName()) // Parent
 	{
 	}
-	virtual void RegisterCommands() OVERRIDE
+	virtual void RegisterCommands() override
 	{
 		UI_COMMAND(ToggleRendering			,"Toggle Rendering"		,"Toggles TrueSky plugin rendering.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(AddSequence				,"Add Sequence To Scene","Adds a TrueSkySequenceActor to the current scene", EUserInterfaceActionType::Button, FInputGesture());
@@ -436,8 +471,8 @@ void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters 
 	{
 		StaticTick( 0 );
 
-		FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
-		ID3D11Device * device = d3d11rhi->RHIGetNativeDevice();//GetDevice();
+		//FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
+		ID3D11Device * device =(ID3D11Device *)GDynamicRHI->RHIGetNativeDevice();
 		ID3D11DeviceContext * context =NULL;// d3d11rhi->GetDeviceContext();
 		device->GetImmediateContext(&context);
 		FMatrix mirroredViewMatrix = RenderParameters.ViewMatrix;
@@ -660,8 +695,7 @@ void FTrueSkyPlugin::InitRenderingInterface(  )
 		if(SimulPath)
 			StaticPushPath("ShaderPath", ConstructPathUTF8( SimulPath, L"\\Platform\\DirectX11\\HLSL" ).c_str());
 		delete [] SimulPath;
-		FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
-		ID3D11Device * device = d3d11rhi->GetDevice();
+		ID3D11Device * device = (ID3D11Device*)GDynamicRHI->RHIGetNativeDevice();
 
 		if( device != NULL )
 		{
