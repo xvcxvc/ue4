@@ -761,8 +761,8 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* E
 		OpenUI = (FOpenUI)FPlatformProcess::GetDllExport(DllHandle, TEXT("OpenUI") );
 		CloseUI = (FCloseUI)FPlatformProcess::GetDllExport(DllHandle, TEXT("CloseUI") );
 		PushStyleSheetPath = (FPushStyleSheetPath)FPlatformProcess::GetDllExport(DllHandle, TEXT("PushStyleSheetPath") );
-		SetSequence = (FSetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("SetSequence") );
-		GetSequence = (FGetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("GetSequence") );
+		SetSequence = (FSetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetSequence") );
+		GetSequence = (FGetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetSequence") );
 		SetOnPropertiesChangedCallback = (FSetOnPropertiesChangedCallback)FPlatformProcess::GetDllExport(DllHandle, TEXT("SetOnPropertiesChangedCallback") );
 
 		checkf( OpenUI, L"OpenUI function not found!" );
