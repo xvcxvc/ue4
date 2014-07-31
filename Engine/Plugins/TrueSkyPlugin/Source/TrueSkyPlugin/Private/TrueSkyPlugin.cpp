@@ -8,12 +8,13 @@
 #include "LevelEditor.h"
 #include "IMainFrameModule.h"
 #include "SlateStyle.h"
+#include "IDocumentation.h"
 #include "GenericWindow.h"
 #include "WindowsWindow.h"
 #include "RendererInterface.h"
 #include "DynamicRHI.h"
 
-
+DEFINE_LOG_CATEGORY_STATIC(TrueSky, Log, All);
 
 
 #include "D3D11RHI.h"
@@ -50,7 +51,7 @@ typedef FD3D11StateCacheBase FD3D11StateCache;
 #include "Tickable.h"
 #include "AssetToolsModule.h"
 #include "AssetTypeActions_TrueSkySequence.h"
-#include "TrueSkyPlugin.generated.inl"
+//#include "TrueSkyPlugin.generated.inl"
 #include "EngineModule.h"
 #include "Editor.h"
 #include <string>
@@ -66,7 +67,7 @@ typedef FD3D11StateCacheBase FD3D11StateCache;
 #define IMPLEMENT_TOGGLE(name)\
 	void FTrueSkyPlugin::OnToggle##name()\
 {\
-	if(StaticGetRenderBool)\
+	if(StaticGetRenderBool!=NULL&&StaticSetRenderBool!=NULL)\
 	{\
 		bool current=StaticGetRenderBool(#name);\
 		StaticSetRenderBool(#name,!current);\
@@ -75,15 +76,17 @@ typedef FD3D11StateCacheBase FD3D11StateCache;
 \
 bool FTrueSkyPlugin::IsToggled##name()\
 {\
-	if(StaticGetRenderBool)\
-		return StaticGetRenderBool(#name);\
+	if(StaticGetRenderBool!=NULL)\
+		if(StaticGetRenderBool)\
+			return StaticGetRenderBool(#name);\
 	return false;\
 }
 
 #define DECLARE_ACTION(name)\
 	void					OnTrigger##name()\
 	{\
-	StaticTriggerAction(#name);\
+		if(StaticTriggerAction!=NULL)\
+			StaticTriggerAction(#name);\
 	}
 
 
@@ -123,7 +126,7 @@ public:
 	void					FillOverlayMenu(FMenuBuilder& MenuBuilder);
 
 	/** Init rendering */
-	void					InitRenderingInterface(  );
+	bool					InitRenderingInterface(  );
 
 	/** Enable rendering */
 	void					SetRenderingEnabled( bool Enabled );
@@ -179,7 +182,12 @@ protected:
 	DECLARE_TOGGLE(Show2DCloudTextures)
 
 	DECLARE_ACTION(RecompileShaders)
-	DECLARE_ACTION(ShowDocumentation)
+	void ShowDocumentation()
+	{
+	//	FString DocumentationUrl = FDocumentationLink::ToUrl(Link);
+		FString DocumentationUrl="https://www.simul.co/wp-content/uploads/documentation/html/index.html";
+		FPlatformProcess::LaunchURL(*DocumentationUrl, NULL, NULL);
+	}
 	
 	/** Adds a TrueSkySequenceActor to the current scene */
 	void					OnAddSequence();
@@ -201,6 +209,10 @@ protected:
 		,UNITY_STYLE=2
 		,UNITY_STYLE_DEFERRED=3
 	};
+	struct Viewport
+	{
+		int x,y,w,h;
+	};
 	typedef void (*FOpenUI)(HWND, RECT*, RECT*, void*,PluginStyle style);
 	typedef void (*FCloseUI)(HWND);
 	typedef void (*FPushStyleSheetPath)(const char*);
@@ -213,7 +225,13 @@ protected:
 	typedef int (*FStaticInitInterface)(  );
 	typedef int (*FStaticPushPath)(const char*,const char*);
 	typedef int (*FStaticGetOrAddView)( void *);
-	typedef int (*FStaticRenderFrame)(void* device, int view_id,float* viewMatrix4x4, float* projMatrix4x4, ID3D11Texture2D* depthTexture,ID3D11ShaderResourceView* depthResource,PluginStyle s);
+	typedef int (*FStaticRenderFrame)(void* device, int view_id
+		,float* viewMatrix4x4
+		, float* projMatrix4x4
+		, ID3D11Texture2D* depthTexture
+		,ID3D11ShaderResourceView* depthResource
+		,const Viewport *v
+		,PluginStyle s);
 	typedef int (*FStaticTick)( float deltaTime );
 	typedef int (*FStaticOnDeviceChanged)( void * device );
 	typedef void* (*FStaticGetEnvironment)();
@@ -284,7 +302,7 @@ public:
 		UI_COMMAND(ToggleShowCompositing	,"Compositing"			,"Toggles the compositing overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(ToggleShow2DCloudTextures,"Show 2D Cloud Textures","Toggles the 2D cloud overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(TriggerRecompileShaders	,"Recompile Shaders"	,"Recompiles the shaders.", EUserInterfaceActionType::Button, FInputGesture());
-		UI_COMMAND(TriggerShowDocumentation	,"Show trueSKY Documentation..."	,"Shows the trueSKY help pages.", EUserInterfaceActionType::Button, FInputGesture());
+		UI_COMMAND(TriggerShowDocumentation	,"trueSKY Documentation..."	,"Shows the trueSKY help pages.", EUserInterfaceActionType::Button, FInputGesture());
 	}
 public:
 	TSharedPtr<FUICommandInfo> ToggleRendering;
@@ -384,7 +402,7 @@ void FTrueSkyPlugin::StartupModule()
 								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked)
 								);
 		CommandList->MapAction( FTrueSkyCommands::Get().TriggerShowDocumentation,
-								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnTriggerShowDocumentation)
+								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::ShowDocumentation)
 								);
 	{
 		CommandList->MapAction( FTrueSkyCommands::Get().ToggleRenderSky,
@@ -482,9 +500,14 @@ void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters 
 		FD3D11TextureBase * halfDepthTex	= static_cast<FD3D11Texture2D*>(RenderParameters.SmallDepthTexture);		
 		
         int view_id = StaticGetOrAddView(0);		// RVK: really need a unique view ident to pass here..
+		Viewport v;
+		v.x=RenderParameters.ViewportRect.Min.X;
+		v.y=RenderParameters.ViewportRect.Min.Y;
+		v.w=RenderParameters.ViewportRect.Width();
+		v.h=RenderParameters.ViewportRect.Height();
 		StaticRenderFrame( device,view_id, &(mirroredViewMatrix.M[0][0]), &(RenderParameters.ProjMatrix.M[0][0])
-			,(ID3D11Texture2D*)depthTex->GetResource(),depthTex->GetShaderResourceView(), 
-							 UNREAL_STYLE);
+			,(ID3D11Texture2D*)depthTex->GetResource(),depthTex->GetShaderResourceView(),&v
+							 ,UNREAL_STYLE);
 	}
 }
 
@@ -555,7 +578,7 @@ void FTrueSkyPlugin::FillMenu( FMenuBuilder& MenuBuilder )
 		}
 		catch(...)
 		{
-			UE_LOG(LogWindows, Warning, TEXT("Failed to add trueSKY submenu"), TEXT(""));
+			UE_LOG(TrueSky, Warning, TEXT("Failed to add trueSKY submenu"), TEXT(""));
 		}
 	}
 	MenuBuilder.EndSection();
@@ -649,7 +672,7 @@ static HWND GetSWindowHWND(const TSharedPtr<SWindow>& Window)
 }
 
 
-void FTrueSkyPlugin::InitRenderingInterface(  )
+bool FTrueSkyPlugin::InitRenderingInterface(  )
 {
 #ifdef _DEBUG
 	const TCHAR* const DllPath =L"TrueSkyPluginRender_MDd.dll";
@@ -659,7 +682,10 @@ void FTrueSkyPlugin::InitRenderingInterface(  )
 	check( DllPath );
 
 	void* const DllHandle = FPlatformProcess::GetDllHandle( DllPath );
-	check(DllHandle);
+	if(DllHandle==NULL)
+	{
+		UE_LOG(TrueSky, Warning, TEXT("Failed to load %s"), DllPath);
+	}
 	if ( DllHandle != NULL )
 	{
 		StaticInitInterface				=(FStaticInitInterface)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticInitInterface") );
@@ -682,12 +708,13 @@ void FTrueSkyPlugin::InitRenderingInterface(  )
 		{
 			//missing dll functions... cancel initialization
 			SetRenderingEnabled(false);
-			return;
+			return false;
 		}
 
 		StaticInitInterface(  );
 		
 		StaticPushPath("ShaderPath",(trueSkyPluginPath+"\\Resources\\Platform\\DirectX11\\HLSL").c_str());
+		StaticPushPath("ShaderBinaryPath",(trueSkyPluginPath+"\\Resources\\Platform\\DirectX11\\shaderbin").c_str());
 		StaticPushPath("TexturePath",(trueSkyPluginPath+"\\Resources\\Media\\Textures").c_str());
 		
 		// IF there's a "SIMUL" env variable, we can build shaders direct from there:
@@ -703,7 +730,9 @@ void FTrueSkyPlugin::InitRenderingInterface(  )
 		}
 
 		RendererInitialized = true;
+		return true;
 	}
+	return false;
 }
 
 static std::wstring Utf8ToWString(const char *src_utf8)
@@ -755,7 +784,10 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* E
 	check( DllPath );
 
 	void* const DllHandle = FPlatformProcess::GetDllHandle( DllPath );
-	check( DllHandle );
+	if(DllHandle==NULL)
+	{
+		UE_LOG(TrueSky, Warning, TEXT("Failed to load %s"), DllPath);
+	}
 	if ( DllHandle != NULL )
 	{
 		OpenUI = (FOpenUI)FPlatformProcess::GetDllExport(DllHandle, TEXT("OpenUI") );
@@ -1016,14 +1048,17 @@ void FTrueSkyPlugin::OnToggleRendering()
 		}
 		else
 		{
-			InitRenderingInterface();
-			SetRenderingEnabled(true);
+			if(InitRenderingInterface())
+				SetRenderingEnabled(true);
 		}
-		if(ActiveSequence->SequenceText.Num()>0)
+		if(RenderingEnabled)
 		{
-			std::string SequenceInputText;
-			SequenceInputText = std::string( (const char*)ActiveSequence->SequenceText.GetData() );
-			StaticSetSequence( SequenceInputText );
+			if(ActiveSequence->SequenceText.Num()>0)
+			{
+				std::string SequenceInputText;
+				SequenceInputText = std::string( (const char*)ActiveSequence->SequenceText.GetData() );
+				StaticSetSequence( SequenceInputText );
+			}
 		}
 	}
 	else if(RenderingEnabled)
@@ -1114,8 +1149,7 @@ void FTrueSkyPlugin::OpenEditor(UTrueSkySequenceAsset* const TrueSkySequence)
 
 		InitRenderingInterface();
 
-		check( StaticGetEnvironment );
-		void* const Env = GetActiveSequence() == TrueSkySequence ? StaticGetEnvironment() : NULL;
+		void* const Env = GetActiveSequence() == TrueSkySequence ? (StaticGetEnvironment?StaticGetEnvironment():NULL) : NULL;
 
 		EditorInstance = CreateEditorInstance(  Env );
 		if ( EditorInstance )
