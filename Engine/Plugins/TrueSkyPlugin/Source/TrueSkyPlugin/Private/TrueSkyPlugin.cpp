@@ -714,6 +714,7 @@ bool FTrueSkyPlugin::InitRenderingInterface(  )
 		StaticInitInterface(  );
 		
 		StaticPushPath("ShaderPath",(trueSkyPluginPath+"\\Resources\\Platform\\DirectX11\\HLSL").c_str());
+		StaticPushPath("ShaderBinaryPath",(trueSkyPluginPath+"\\Resources\\Platform\\DirectX11\\shaderbin").c_str());
 		StaticPushPath("TexturePath",(trueSkyPluginPath+"\\Resources\\Media\\Textures").c_str());
 		
 		// IF there's a "SIMUL" env variable, we can build shaders direct from there:
