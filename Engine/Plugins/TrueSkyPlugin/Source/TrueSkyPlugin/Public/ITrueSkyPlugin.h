@@ -36,5 +36,8 @@ public:
 	}
 
 	virtual void OpenEditor(class UTrueSkySequenceAsset* const TrueSkySequence) = 0;
+
+	virtual void SetRenderFloat(const char* name, float value) = 0;
+	virtual float GetRenderFloat(const char* name) const = 0;
 };
 

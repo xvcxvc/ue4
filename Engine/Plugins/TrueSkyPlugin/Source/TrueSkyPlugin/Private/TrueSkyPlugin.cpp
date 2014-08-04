@@ -13,6 +13,8 @@
 #include "WindowsWindow.h"
 #include "RendererInterface.h"
 #include "DynamicRHI.h"
+#include "UnrealClient.h"
+#include "Canvas.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TrueSky, Log, All);
 
@@ -163,8 +165,14 @@ public:
 	void					SaveAllEditorInstances();
 	
 	void					Tick( float DeltaTime );
-protected:
 
+	virtual void			SetRenderFloat(const char* name, float value);
+	virtual float			GetRenderFloat(const char* name) const;
+
+	virtual void			SetCloudShadowRenderTarget(FRenderTarget *t);
+protected:
+	
+	void					RenderCloudShadow();
 	void					OnMainWindowClosed(const TSharedRef<SWindow>& Window);
 
 	/** Called when Toggle rendering button is pressed */
@@ -239,6 +247,8 @@ protected:
 	typedef class UE4PluginRenderInterface* (*FStaticGetRenderInterfaceInstance)();
 	typedef void (*FStaticSetRenderBool)( const char* name,bool value );
 	typedef bool (*FStaticGetRenderBool)( const char* name );
+	typedef void (*FStaticSetRenderFloat)( const char* name,float value );
+	typedef float (*FStaticGetRenderFloat)( const char* name );
 	typedef void (*FStaticTriggerAction)( const char* name );
 	
 	FOpenUI								OpenUI;
@@ -259,6 +269,8 @@ protected:
 	FStaticGetRenderInterfaceInstance	StaticGetRenderInterfaceInstance;
 	FStaticSetRenderBool				StaticSetRenderBool;
 	FStaticGetRenderBool				StaticGetRenderBool;
+	FStaticSetRenderFloat				StaticSetRenderFloat;
+	FStaticGetRenderFloat				StaticGetRenderFloat;
 	FStaticTriggerAction				StaticTriggerAction;
 
 	TCHAR*					PathEnv;
@@ -275,6 +287,9 @@ protected:
 	static ::UINT			MessageId;
 
 	static void				OnSequenceChangeCallback(HWND OwnerHWND);
+
+	
+	FRenderTarget			*cloudShadowRenderTarget;
 };
 
 
@@ -320,6 +335,7 @@ FTrueSkyPlugin* FTrueSkyPlugin::Instance = NULL;
 //TSharedRef<FTrueSkyPlugin> staticSharedRef;
 static std::string trueSkyPluginPath="../../Plugins/TrueSkyPlugin";
 FTrueSkyPlugin::FTrueSkyPlugin()
+	:cloudShadowRenderTarget(NULL)
 {
 	Instance = this;
 #ifdef SHARED_FROM_THIS
@@ -363,6 +379,50 @@ void FTrueSkyPlugin::Tick( float DeltaTime )
 #endif
 }
 
+void FTrueSkyPlugin::SetCloudShadowRenderTarget(FRenderTarget *t)
+{
+	cloudShadowRenderTarget=t;
+}
+
+void FTrueSkyPlugin::RenderCloudShadow()
+{
+	if(!cloudShadowRenderTarget)
+		return;
+//	FTextureRenderTarget2DResource* res = (FTextureRenderTarget2DResource*)cloudShadowRenderTarget->Resource;
+	FCanvas* Canvas = new FCanvas(cloudShadowRenderTarget, NULL, NULL);
+	Canvas->Clear(FLinearColor::Blue);
+	// Write text (no text is visible since the Canvas has no effect
+	UFont* Font = GEngine->GetSmallFont();
+	Canvas->DrawShadowedString(100, 100, TEXT("Test"), Font, FLinearColor::White);
+	Canvas->Flush();
+	delete Canvas;
+}
+
+void FTrueSkyPlugin::SetRenderFloat(const char* name, float value)
+{
+	if( StaticSetRenderFloat != NULL )
+	{
+		StaticSetRenderFloat( name, value );
+	}
+	else
+	{
+		UE_LOG(TrueSky, Warning, TEXT("Trying to set render float before StaticSetRenderFloat has been set"), TEXT(""));
+	}
+}
+
+float FTrueSkyPlugin::GetRenderFloat(const char* name) const
+{
+	if( StaticGetRenderFloat != NULL )
+	{
+		return StaticGetRenderFloat( name );
+	}
+
+	UE_LOG(TrueSky, Warning, TEXT("Trying to get render float before StaticGetRenderFloat has been set"), TEXT(""));
+	return 0.0f;
+}
+/*Texture2D FTrueSkyPlugin::GetTexture(const char *name)
+{
+}*/
 /** Tickable object interface */
 void FTrueSkyTickable::Tick( float DeltaTime )
 {
@@ -468,6 +528,9 @@ void FTrueSkyPlugin::StartupModule()
 	StaticGetRenderBool				=NULL;
 	StaticTriggerAction				=NULL;
 
+	StaticSetRenderFloat			=NULL;
+	StaticGetRenderFloat			=NULL;
+
 	PathEnv = NULL;
 
 	MessageId = RegisterWindowMessage(L"RESIZE");
@@ -482,11 +545,15 @@ void FTrueSkyPlugin::SetRenderingEnabled( bool Enabled )
 void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters )
 {	
 	check(IsInRenderingThread());
-	//if(!RenderingEnabled )
-	//	OnToggleRendering();
+	if(!RenderParameters.ViewportRect.Width()||!RenderParameters.ViewportRect.Height())
+		return;
+	if(!RenderingEnabled )
+		OnToggleRendering();
 
+	SCOPED_DRAW_EVENT(TrueSkyRenderFrame, FColor( 0, 0, 255 ) );
 	if( RenderingEnabled )
 	{
+		FSceneView *View=(FSceneView*)(RenderParameters.Uid);
 		StaticTick( 0 );
 
 		//FD3D11DynamicRHI * d3d11rhi = (FD3D11DynamicRHI*)GDynamicRHI;
@@ -499,15 +566,17 @@ void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters 
 		FD3D11TextureBase * depthTex		= static_cast<FD3D11Texture2D*>(RenderParameters.DepthTexture);	
 		FD3D11TextureBase * halfDepthTex	= static_cast<FD3D11Texture2D*>(RenderParameters.SmallDepthTexture);		
 		
-        int view_id = StaticGetOrAddView(0);		// RVK: really need a unique view ident to pass here..
 		Viewport v;
 		v.x=RenderParameters.ViewportRect.Min.X;
 		v.y=RenderParameters.ViewportRect.Min.Y;
 		v.w=RenderParameters.ViewportRect.Width();
 		v.h=RenderParameters.ViewportRect.Height();
+		unsigned uid=((unsigned)v.w<<(unsigned)24)+((unsigned)v.h<<(unsigned)16)+((unsigned)View->StereoPass);
+        int view_id = StaticGetOrAddView((void*)uid);		// RVK: really need a unique view ident to pass here..
 		StaticRenderFrame( device,view_id, &(mirroredViewMatrix.M[0][0]), &(RenderParameters.ProjMatrix.M[0][0])
 			,(ID3D11Texture2D*)depthTex->GetResource(),depthTex->GetShaderResourceView(),&v
 							 ,UNREAL_STYLE);
+		RenderCloudShadow();
 	}
 }
 
@@ -699,12 +768,16 @@ bool FTrueSkyPlugin::InitRenderingInterface(  )
 		StaticGetRenderInterfaceInstance=(FStaticGetRenderInterfaceInstance)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetRenderInterfaceInstance"));
 		StaticSetRenderBool				=(FStaticSetRenderBool)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetRenderBool"));
 		StaticGetRenderBool				=(FStaticGetRenderBool)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetRenderBool"));
+		StaticSetRenderFloat			=(FStaticSetRenderFloat)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetRenderFloat"));
+		StaticGetRenderFloat			=(FStaticGetRenderFloat)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetRenderFloat"));
+
 		StaticTriggerAction				=(FStaticTriggerAction)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticTriggerAction"));
 		if( StaticInitInterface == NULL ||StaticPushPath==NULL|| StaticRenderFrame == NULL || StaticGetOrAddView==NULL||
 			StaticOnDeviceChanged == NULL || StaticTick == NULL  || 
 			StaticGetEnvironment == NULL || StaticSetSequence == NULL||StaticGetRenderInterfaceInstance==NULL
 			||StaticSetRenderBool==NULL
-			||StaticGetRenderBool==NULL||StaticTriggerAction==NULL)
+			||StaticGetRenderBool==NULL||StaticTriggerAction==NULL
+			||StaticSetRenderFloat==NULL || StaticGetRenderFloat==NULL)
 		{
 			//missing dll functions... cancel initialization
 			SetRenderingEnabled(false);
@@ -1076,7 +1149,7 @@ IMPLEMENT_TOGGLE(Show2DCloudTextures)
 
 bool FTrueSkyPlugin::IsToggleRenderingEnabled()
 {
-	if ( GetActiveSequence() )
+	if(GetActiveSequence())
 	{
 		return true;
 	}
@@ -1121,7 +1194,6 @@ bool FTrueSkyPlugin::IsAddSequenceEnabled()
 	}
 	return true;
 }
-
 
 UTrueSkySequenceAsset* FTrueSkyPlugin::GetActiveSequence()
 {
