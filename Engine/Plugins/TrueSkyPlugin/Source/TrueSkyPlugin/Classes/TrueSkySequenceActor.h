@@ -6,14 +6,17 @@ UCLASS(hideCategories=(Actor, Advanced, Display, Events, Object, Attachment, Mov
 class ATrueSkySequenceActor : public AActor
 {
 	GENERATED_UCLASS_BODY()
+		
+	UPROPERTY(EditAnywhere, Category=TrueSky)
+	FString LicenceKey;
 
-	UFUNCTION(BlueprintCallable, Category=Defaults)
+	UFUNCTION(BlueprintCallable, Category=TrueSky)
 	void SetTime( float value );
 
-	UFUNCTION(BlueprintCallable, Category=Defaults)
+	UFUNCTION(BlueprintCallable, Category=TrueSky)
 	FRotator GetSunRotation();
 
-	UFUNCTION(BlueprintCallable, Category=Defaults)
+	UFUNCTION(BlueprintCallable, Category=TrueSky)
 	FLinearColor GetSunColor();
 
 	UPROPERTY(EditAnywhere, Category=TrueSky)
@@ -22,8 +25,12 @@ class ATrueSkySequenceActor : public AActor
 	UPROPERTY(EditAnywhere, Category=TrueSky)
 	UTextureRenderTarget2D* CloudShadowRenderTarget;
 
-	UPROPERTY(EditAnywhere, Category=TrueSky)
+	UPROPERTY(EditAnywhere, Category=TrueSky,meta=(ClampMin = "0.0", ClampMax = "1.0"))
 	float SimpleCloudShadowing;
+
+	UPROPERTY(EditAnywhere, Category=TrueSky)
+	bool Visible;
 	
 	virtual void Tick(float DeltaTime) override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 };

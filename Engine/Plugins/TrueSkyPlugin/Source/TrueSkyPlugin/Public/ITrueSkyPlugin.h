@@ -39,5 +39,6 @@ public:
 
 	virtual void SetRenderFloat(const char* name, float value) = 0;
 	virtual float GetRenderFloat(const char* name) const = 0;
+	virtual void PropertiesChanged(class ATrueSkySequenceActor*)=0;
 };
 

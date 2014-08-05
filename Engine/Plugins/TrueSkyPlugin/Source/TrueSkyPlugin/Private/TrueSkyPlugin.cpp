@@ -138,7 +138,11 @@ public:
 
 	/** If there is a TrueSkySequenceActor in the persistent level, this returns that actor's TrueSkySequenceAsset */
 	UTrueSkySequenceAsset*	GetActiveSequence();
-
+	
+	/** If there is a TrueSkySequenceActor in the persistent level, this returns that actor.*/
+	ATrueSkySequenceActor* GetActor();
+	
+	void PropertiesChanged(ATrueSkySequenceActor* a);
 	struct SEditorInstance
 	{
 		/** Editor window */
@@ -169,6 +173,9 @@ public:
 	virtual void			SetRenderFloat(const char* name, float value);
 	virtual float			GetRenderFloat(const char* name) const;
 
+	virtual void			SetRenderString(const char* name, const char*  value);
+	virtual const char*		GetRenderString(const char* name) const;
+	
 	virtual void			SetCloudShadowRenderTarget(FRenderTarget *t);
 protected:
 	
@@ -227,7 +234,9 @@ protected:
 	typedef void (*FSetSequence)(HWND, const char*);
 	typedef char* (*FAlloc)(int size);
 	typedef char* (*FGetSequence)(HWND, FAlloc);
-	typedef void (*FOnSequenceChangeCallback)(HWND);
+	typedef void (*FOnTimeChangedCallback)(HWND,float);
+	typedef void (*FSetOnTimeChangedInUICallback)(FOnTimeChangedCallback);
+	typedef void (*FOnSequenceChangeCallback)(HWND,const char *);
 	typedef void (*FSetOnPropertiesChangedCallback)( FOnSequenceChangeCallback);
 
 	typedef int (*FStaticInitInterface)(  );
@@ -249,6 +258,8 @@ protected:
 	typedef bool (*FStaticGetRenderBool)( const char* name );
 	typedef void (*FStaticSetRenderFloat)( const char* name,float value );
 	typedef float (*FStaticGetRenderFloat)( const char* name );
+	typedef void (*FStaticSetRenderString)( const char* name,const char* value );
+	typedef const char*(*FStaticGetRenderString)( const char* name );
 	typedef void (*FStaticTriggerAction)( const char* name );
 	
 	FOpenUI								OpenUI;
@@ -257,7 +268,7 @@ protected:
 	FSetSequence						SetSequence;
 	FGetSequence						GetSequence;
 	FSetOnPropertiesChangedCallback		SetOnPropertiesChangedCallback;
-
+	FSetOnTimeChangedInUICallback		SetOnTimeChangedInUICallback;
 	FStaticInitInterface				StaticInitInterface;
 	FStaticPushPath						StaticPushPath;
 	FStaticGetOrAddView					StaticGetOrAddView;
@@ -271,6 +282,8 @@ protected:
 	FStaticGetRenderBool				StaticGetRenderBool;
 	FStaticSetRenderFloat				StaticSetRenderFloat;
 	FStaticGetRenderFloat				StaticGetRenderFloat;
+	FStaticSetRenderString				StaticSetRenderString;
+	FStaticGetRenderString				StaticGetRenderString;
 	FStaticTriggerAction				StaticTriggerAction;
 
 	TCHAR*					PathEnv;
@@ -286,8 +299,9 @@ protected:
 	static LRESULT CALLBACK EditorWindowWndProc(HWND, ::UINT, WPARAM, LPARAM);
 	static ::UINT			MessageId;
 
-	static void				OnSequenceChangeCallback(HWND OwnerHWND);
-
+	static void				OnSequenceChangeCallback(HWND OwnerHWND,const char *);
+	
+	static void				OnTimeChangedCallback(HWND OwnerHWND,float t);
 	
 	FRenderTarget			*cloudShadowRenderTarget;
 };
@@ -310,7 +324,6 @@ public:
 	}
 	virtual void RegisterCommands() override
 	{
-		UI_COMMAND(ToggleRendering			,"Toggle Rendering"		,"Toggles TrueSky plugin rendering.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(AddSequence				,"Add Sequence To Scene","Adds a TrueSkySequenceActor to the current scene", EUserInterfaceActionType::Button, FInputGesture());
 		UI_COMMAND(ToggleRenderSky			,"Render Sky"			,"Toggles the rendering.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(ToggleFades				,"Atmospheric Tables"	,"Toggles the atmospheric tables overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
@@ -320,7 +333,6 @@ public:
 		UI_COMMAND(TriggerShowDocumentation	,"trueSKY Documentation..."	,"Shows the trueSKY help pages.", EUserInterfaceActionType::Button, FInputGesture());
 	}
 public:
-	TSharedPtr<FUICommandInfo> ToggleRendering;
 	TSharedPtr<FUICommandInfo> AddSequence;
 	TSharedPtr<FUICommandInfo> ToggleRenderSky;
 	TSharedPtr<FUICommandInfo> ToggleFades;
@@ -420,9 +432,29 @@ float FTrueSkyPlugin::GetRenderFloat(const char* name) const
 	UE_LOG(TrueSky, Warning, TEXT("Trying to get render float before StaticGetRenderFloat has been set"), TEXT(""));
 	return 0.0f;
 }
-/*Texture2D FTrueSkyPlugin::GetTexture(const char *name)
+
+void FTrueSkyPlugin::SetRenderString(const char* name, const char*  value)
 {
-}*/
+	if( StaticSetRenderString != NULL )
+	{
+		StaticSetRenderString( name, value );
+	}
+	else
+	{
+		UE_LOG(TrueSky, Warning, TEXT("Trying to set render string before StaticSetRenderString has been set"), TEXT(""));
+	}
+}
+
+const char*	 FTrueSkyPlugin::GetRenderString(const char* name) const
+{
+	if( StaticGetRenderString != NULL )
+	{
+		return StaticGetRenderString( name );
+	}
+
+	UE_LOG(TrueSky, Warning, TEXT("Trying to get render float before StaticGetRenderString has been set"), TEXT(""));
+	return NULL;
+}
 /** Tickable object interface */
 void FTrueSkyTickable::Tick( float DeltaTime )
 {
@@ -446,13 +478,6 @@ void FTrueSkyPlugin::StartupModule()
 	FTrueSkyCommands::Register();
 	IMainFrameModule& MainFrameModule = IMainFrameModule::Get();
 	const TSharedRef<FUICommandList>& CommandList = MainFrameModule.GetMainFrameCommandBindings();
-//	CommandList->MapAction( FTrueSkyCommands::Get().ToggleRendering,
-	//FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleRendering) );
-	CommandList->MapAction( FTrueSkyCommands::Get().ToggleRendering,
-							FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleRendering),
-							FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingEnabled),
-							FIsActionChecked::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked)
-							);
 	CommandList->MapAction( FTrueSkyCommands::Get().AddSequence,
 							FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnAddSequence),
 							FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsAddSequenceEnabled)
@@ -512,6 +537,7 @@ void FTrueSkyPlugin::StartupModule()
 	SetSequence						= NULL;
 	GetSequence						= NULL;
 	SetOnPropertiesChangedCallback	= NULL;
+	SetOnTimeChangedInUICallback	= NULL;
 
 	RenderingEnabled				=false;
 	RendererInitialized				=false;
@@ -536,7 +562,6 @@ void FTrueSkyPlugin::StartupModule()
 	MessageId = RegisterWindowMessage(L"RESIZE");
 }
 
-
 void FTrueSkyPlugin::SetRenderingEnabled( bool Enabled )
 {
 	RenderingEnabled = Enabled;
@@ -548,8 +573,12 @@ void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters 
 	if(!RenderParameters.ViewportRect.Width()||!RenderParameters.ViewportRect.Height())
 		return;
 	if(!RenderingEnabled )
-		OnToggleRendering();
-
+	{
+		ATrueSkySequenceActor *actor=GetActor();
+		PropertiesChanged(actor);
+		if(!RenderingEnabled )
+			return;
+	}
 	SCOPED_DRAW_EVENT(TrueSkyRenderFrame, FColor( 0, 0, 255 ) );
 	if( RenderingEnabled )
 	{
@@ -630,7 +659,6 @@ void FTrueSkyPlugin::FillMenu( FMenuBuilder& MenuBuilder )
 {
 	MenuBuilder.BeginSection( "TrueSky", FText::FromString(TEXT("TrueSky")) );
 	{		
-		MenuBuilder.AddMenuEntry( FTrueSkyCommands::Get().ToggleRendering );
 		MenuBuilder.AddMenuEntry( FTrueSkyCommands::Get().AddSequence );
 		MenuBuilder.AddMenuEntry( FTrueSkyCommands::Get().TriggerRecompileShaders);
 		MenuBuilder.AddMenuEntry( FTrueSkyCommands::Get().TriggerShowDocumentation);
@@ -770,6 +798,9 @@ bool FTrueSkyPlugin::InitRenderingInterface(  )
 		StaticGetRenderBool				=(FStaticGetRenderBool)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetRenderBool"));
 		StaticSetRenderFloat			=(FStaticSetRenderFloat)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetRenderFloat"));
 		StaticGetRenderFloat			=(FStaticGetRenderFloat)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetRenderFloat"));
+		
+		StaticGetRenderString			=(FStaticGetRenderString)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetRenderString"));
+		StaticSetRenderString			=(FStaticSetRenderString)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetRenderString"));
 
 		StaticTriggerAction				=(FStaticTriggerAction)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticTriggerAction"));
 		if( StaticInitInterface == NULL ||StaticPushPath==NULL|| StaticRenderFrame == NULL || StaticGetOrAddView==NULL||
@@ -777,7 +808,8 @@ bool FTrueSkyPlugin::InitRenderingInterface(  )
 			StaticGetEnvironment == NULL || StaticSetSequence == NULL||StaticGetRenderInterfaceInstance==NULL
 			||StaticSetRenderBool==NULL
 			||StaticGetRenderBool==NULL||StaticTriggerAction==NULL
-			||StaticSetRenderFloat==NULL || StaticGetRenderFloat==NULL)
+			||StaticSetRenderFloat==NULL || StaticGetRenderFloat==NULL
+			||StaticSetRenderString==NULL || StaticGetRenderString==NULL)
 		{
 			//missing dll functions... cancel initialization
 			SetRenderingEnabled(false);
@@ -869,14 +901,15 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* E
 		SetSequence = (FSetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetSequence") );
 		GetSequence = (FGetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetSequence") );
 		SetOnPropertiesChangedCallback = (FSetOnPropertiesChangedCallback)FPlatformProcess::GetDllExport(DllHandle, TEXT("SetOnPropertiesChangedCallback") );
-
+		SetOnTimeChangedInUICallback = (FSetOnTimeChangedInUICallback)FPlatformProcess::GetDllExport(DllHandle, TEXT("SetOnTimeChangedCallback") );
 		checkf( OpenUI, L"OpenUI function not found!" );
 		checkf( CloseUI, L"CloseUI function not found!" );
 		checkf( PushStyleSheetPath, L"PushStyleSheetPath function not found!" );
 		checkf( SetSequence, L"SetSequence function not found!" );
 		checkf( GetSequence, L"GetSequence function not found!" );
 		checkf( SetOnPropertiesChangedCallback, L"SetOnPropertiesChangedCallback function not found!" );
-
+		checkf( SetOnTimeChangedInUICallback, L"SetOnTimeChangedInUICallback function not found!" );
+		
 		PushStyleSheetPath((trueSkyPluginPath+"\\Resources\\qss\\").c_str());
 
 		IMainFrameModule& MainFrameModule = IMainFrameModule::Get();
@@ -925,6 +958,7 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* E
 
 				// Setup notification callback
 				SetOnPropertiesChangedCallback(  OnSequenceChangeCallback );
+				SetOnTimeChangedInUICallback(OnTimeChangedCallback);
 				EditorInstance.EditorWindow->Restore();
 				return &EditorInstances[ EditorInstances.Add(EditorInstance) ];
 			}
@@ -1061,12 +1095,20 @@ void FTrueSkyPlugin::OnMainWindowClosed(const TSharedRef<SWindow>& Window)
 
 
 /** Called when TrueSkyUI properties have changed */
-void FTrueSkyPlugin::OnSequenceChangeCallback(HWND OwnerHWND)
+void FTrueSkyPlugin::OnSequenceChangeCallback(HWND OwnerHWND,const char *txt)
 {
 	check( Instance );
 	if ( SEditorInstance* const EditorInstance = Instance->FindEditorInstance(OwnerHWND) )
 	{
 		EditorInstance->SaveSequenceData();
+	}
+}
+void FTrueSkyPlugin::OnTimeChangedCallback(HWND OwnerHWND,float t)
+{
+	check( Instance );
+	if ( SEditorInstance* const EditorInstance = Instance->FindEditorInstance(OwnerHWND) )
+	{
+		//EditorInstance->SaveSequenceData();
 	}
 }
 
@@ -1193,6 +1235,29 @@ bool FTrueSkyPlugin::IsAddSequenceEnabled()
 			return false;
 	}
 	return true;
+}
+void FTrueSkyPlugin::PropertiesChanged(ATrueSkySequenceActor* a)
+{
+	if(!a)
+		return;
+	if(a->Visible!=RenderingEnabled)
+	{
+		OnToggleRendering();
+	}
+	SetRenderFloat( "SimpleCloudShadowing",a->SimpleCloudShadowing);
+	SetRenderString("LicenceKey",TCHAR_TO_ANSI(*a->LicenceKey));
+}
+ATrueSkySequenceActor* FTrueSkyPlugin::GetActor()
+{
+	ULevel* const Level = GWorld->PersistentLevel;
+	for(int i = 0; i < Level->Actors.Num(); i++)
+	{
+		if ( ATrueSkySequenceActor* SequenceActor = Cast<ATrueSkySequenceActor>(Level->Actors[i]) )
+		{
+			return SequenceActor;
+		}
+	}
+	return NULL;
 }
 
 UTrueSkySequenceAsset* FTrueSkyPlugin::GetActiveSequence()
