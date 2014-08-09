@@ -556,6 +556,10 @@ void FTrueSkyPlugin::StartupModule()
 
 	StaticSetRenderFloat			=NULL;
 	StaticGetRenderFloat			=NULL;
+	
+
+	StaticSetRenderString			=NULL;
+	StaticGetRenderString			=NULL;
 
 	PathEnv = NULL;
 
