@@ -768,7 +768,6 @@ static HWND GetSWindowHWND(const TSharedPtr<SWindow>& Window)
 	return 0;
 }
 
-
 bool FTrueSkyPlugin::InitRenderingInterface(  )
 {
 #ifdef _DEBUG
@@ -886,8 +885,6 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* E
 #else
 	const TCHAR* const DllPath =L"TrueSkyUI_MD.dll";
 #endif
-	check( DllPath );
-
 	void* const DllHandle = FPlatformProcess::GetDllHandle( DllPath );
 	if(DllHandle==NULL)
 	{
@@ -1245,7 +1242,7 @@ void FTrueSkyPlugin::PropertiesChanged(ATrueSkySequenceActor* a)
 		OnToggleRendering();
 	}
 	SetRenderFloat( "SimpleCloudShadowing",a->SimpleCloudShadowing);
-	SetRenderString("LicenceKey",TCHAR_TO_ANSI(*a->LicenceKey));
+	//SetRenderString("LicenceKey",TCHAR_TO_ANSI(*a->LicenceKey));
 }
 ATrueSkySequenceActor* FTrueSkyPlugin::GetActor()
 {
