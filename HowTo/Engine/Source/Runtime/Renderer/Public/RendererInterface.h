@@ -420,6 +420,7 @@ class FPostOpaqueRenderParameters
 		FMatrix ProjMatrix;
 		FRHITexture2D * DepthTexture;
 		FRHITexture2D * SmallDepthTexture;
+		void *Uid; ///< A unique identifier for the view.
 };
 
 
