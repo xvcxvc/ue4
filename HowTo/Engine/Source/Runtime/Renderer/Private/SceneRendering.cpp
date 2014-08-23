@@ -1042,6 +1042,8 @@ void FRendererModule::RenderPostOpaqueExtensions( const FSceneView& View )
 	RenderParameters.SmallDepthTexture = GSceneRenderTargets.GetSmallDepthSurface()->GetTexture2D();
 	
 	RenderParameters.ViewportRect = View.ViewRect;
+	
+	RenderParameters.Uid=(void*)(&View);
 
 	PostOpaqueRenderDelegate.ExecuteIfBound( RenderParameters );
 }
