@@ -1,4 +1,4 @@
-// Copyright 1998-2013 Epic Games, Inc. All Rights Reserved.
+// Copyright 2013-2014 Simul Software Ltd. All Rights Reserved.
 
 #include "TrueSkyPluginPrivatePCH.h"
 #include "PlacementModePrivatePCH.h"
@@ -17,7 +17,6 @@
 #include "Canvas.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TrueSky, Log, All);
-
 
 #include "D3D11RHI.h"
 // Dependencies.
@@ -259,7 +258,7 @@ protected:
 	typedef void (*FStaticSetRenderFloat)( const char* name,float value );
 	typedef float (*FStaticGetRenderFloat)( const char* name );
 	typedef void (*FStaticSetRenderString)( const char* name,const char* value );
-	typedef const char*(*FStaticGetRenderString)( const char* name );
+	typedef void (*FStaticGetRenderString)( const char* name ,char* value,int len);
 	typedef void (*FStaticTriggerAction)( const char* name );
 	
 	FOpenUI								OpenUI;
@@ -449,7 +448,9 @@ const char*	 FTrueSkyPlugin::GetRenderString(const char* name) const
 {
 	if( StaticGetRenderString != NULL )
 	{
-		return StaticGetRenderString( name );
+		static char txt[50];
+		StaticGetRenderString( name,txt,50);
+		return txt;
 	}
 
 	UE_LOG(TrueSky, Warning, TEXT("Trying to get render float before StaticGetRenderString has been set"), TEXT(""));
@@ -701,7 +702,7 @@ static wchar_t* GetEnvVariable( const wchar_t* const VariableName, int iEnvSize 
 	memset(Env, 0, iEnvSize * sizeof(wchar_t));
 	if ( (int)GetEnvironmentVariableW(VariableName, Env, iEnvSize) > iEnvSize )
 	{
-		delete Env;
+		delete [] Env;
 		Env = NULL;
 	}
 	else if ( wcslen(Env) == 0 )
@@ -1248,6 +1249,7 @@ void FTrueSkyPlugin::PropertiesChanged(ATrueSkySequenceActor* a)
 	SetRenderFloat( "SimpleCloudShadowing",a->SimpleCloudShadowing);
 	//SetRenderString("LicenceKey",TCHAR_TO_ANSI(*a->LicenceKey));
 }
+
 ATrueSkySequenceActor* FTrueSkyPlugin::GetActor()
 {
 	ULevel* const Level = GWorld->PersistentLevel;
