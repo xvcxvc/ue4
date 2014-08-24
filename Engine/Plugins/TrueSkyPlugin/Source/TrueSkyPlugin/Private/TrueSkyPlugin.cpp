@@ -14,7 +14,7 @@
 #include "RendererInterface.h"
 #include "DynamicRHI.h"
 #include "UnrealClient.h"
-#include "Canvas.h"
+//#include "Canvas.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TrueSky, Log, All);
 
@@ -400,13 +400,13 @@ void FTrueSkyPlugin::RenderCloudShadow()
 	if(!cloudShadowRenderTarget)
 		return;
 //	FTextureRenderTarget2DResource* res = (FTextureRenderTarget2DResource*)cloudShadowRenderTarget->Resource;
-	FCanvas* Canvas = new FCanvas(cloudShadowRenderTarget, NULL, NULL);
+/*	FCanvas* Canvas = new FCanvas(cloudShadowRenderTarget, NULL, NULL);
 	Canvas->Clear(FLinearColor::Blue);
 	// Write text (no text is visible since the Canvas has no effect
 	UFont* Font = GEngine->GetSmallFont();
 	Canvas->DrawShadowedString(100, 100, TEXT("Test"), Font, FLinearColor::White);
 	Canvas->Flush();
-	delete Canvas;
+	delete Canvas;*/
 }
 
 void FTrueSkyPlugin::SetRenderFloat(const char* name, float value)
@@ -1246,7 +1246,7 @@ void FTrueSkyPlugin::PropertiesChanged(ATrueSkySequenceActor* a)
 	{
 		OnToggleRendering();
 	}
-	SetRenderFloat( "SimpleCloudShadowing",a->SimpleCloudShadowing);
+	SetRenderFloat("SimpleCloudShadowing",a->SimpleCloudShadowing);
 	//SetRenderString("LicenceKey",TCHAR_TO_ANSI(*a->LicenceKey));
 }
 

@@ -13,10 +13,10 @@ class ATrueSkySequenceActor : public AActor
 	UFUNCTION(BlueprintCallable, Category=TrueSky)
 	void SetTime( float value );
 
-	UFUNCTION(BlueprintCallable, Category=TrueSky)
+	UFUNCTION(BlueprintCallable, BlueprintPure,Category=TrueSky)
 	FRotator GetSunRotation();
 
-	UFUNCTION(BlueprintCallable, Category=TrueSky)
+	UFUNCTION(BlueprintCallable, BlueprintPure,Category=TrueSky)
 	FLinearColor GetSunColor();
 
 	UPROPERTY(EditAnywhere, Category=TrueSky)
