@@ -171,9 +171,12 @@ public:
 
 	virtual void			SetRenderFloat(const char* name, float value);
 	virtual float			GetRenderFloat(const char* name) const;
-
+	
 	virtual void			SetRenderString(const char* name, const char*  value);
 	virtual const char*		GetRenderString(const char* name) const;
+	
+	virtual void			SetUIString(SEditorInstance* const EditorInstance,const char* name, const char*  value);
+	virtual const char*		GetUIString(SEditorInstance* const EditorInstance,const char* name) const;
 	
 	virtual void			SetCloudShadowRenderTarget(FRenderTarget *t);
 protected:
@@ -229,6 +232,10 @@ protected:
 	};
 	typedef void (*FOpenUI)(HWND, RECT*, RECT*, void*,PluginStyle style);
 	typedef void (*FCloseUI)(HWND);
+	
+	typedef void (*FStaticSetUIString)(HWND,const char* name,const char* value );
+	typedef const char * (*FStaticGetUIString)(HWND,const char* name);
+
 	typedef void (*FPushStyleSheetPath)(const char*);
 	typedef void (*FSetSequence)(HWND, const char*);
 	typedef char* (*FAlloc)(int size);
@@ -248,6 +255,7 @@ protected:
 		,ID3D11ShaderResourceView* depthResource
 		,const Viewport *v
 		,PluginStyle s);
+
 	typedef int (*FStaticTick)( float deltaTime );
 	typedef int (*FStaticOnDeviceChanged)( void * device );
 	typedef void* (*FStaticGetEnvironment)();
@@ -263,6 +271,8 @@ protected:
 	
 	FOpenUI								OpenUI;
 	FCloseUI							CloseUI;
+	FStaticSetUIString					StaticSetUIString;
+	FStaticGetUIString					StaticGetUIString;
 	FPushStyleSheetPath					PushStyleSheetPath;
 	FSetSequence						SetSequence;
 	FGetSequence						GetSequence;
@@ -453,9 +463,34 @@ const char*	 FTrueSkyPlugin::GetRenderString(const char* name) const
 		return txt;
 	}
 
-	UE_LOG(TrueSky, Warning, TEXT("Trying to get render float before StaticGetRenderString has been set"), TEXT(""));
+	UE_LOG(TrueSky, Warning, TEXT("Trying to get render string before StaticGetRenderString has been set"), TEXT(""));
 	return NULL;
 }
+
+
+void FTrueSkyPlugin::SetUIString(SEditorInstance* const EditorInstance,const char* name, const char*  value)
+{
+	if( StaticSetUIString != NULL&&EditorInstance!=NULL)
+	{
+		StaticSetUIString(EditorInstance->EditorWindowHWND,name, value );
+	}
+	else
+	{
+		UE_LOG(TrueSky, Warning, TEXT("Trying to set UI string before StaticSetUIString has been set"), TEXT(""));
+	}
+}
+
+const char*	 FTrueSkyPlugin::GetUIString(SEditorInstance* const EditorInstance,const char* name) const
+{
+	if( StaticSetUIString != NULL&&EditorInstance!=NULL)
+	{
+		return StaticGetUIString(EditorInstance->EditorWindowHWND,name);
+	}
+
+	UE_LOG(TrueSky, Warning, TEXT("Trying to get UI string before StaticSetUIString has been set"), TEXT(""));
+	return NULL;
+}
+
 /** Tickable object interface */
 void FTrueSkyTickable::Tick( float DeltaTime )
 {
@@ -883,6 +918,7 @@ static std::string WStringToUtf8(const wchar_t *src_w)
 	return str_utf8;
 }
 
+#define warnf(expr, ...)				{ if(!(expr)) FDebug::AssertFailed( #expr, __FILE__, __LINE__, ##__VA_ARGS__ ); CA_ASSUME(expr); }
 FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* Env )
 {
 #ifdef _DEBUG
@@ -899,11 +935,16 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* E
 	{
 		OpenUI = (FOpenUI)FPlatformProcess::GetDllExport(DllHandle, TEXT("OpenUI") );
 		CloseUI = (FCloseUI)FPlatformProcess::GetDllExport(DllHandle, TEXT("CloseUI") );
+						
+		StaticSetUIString = (FStaticSetUIString)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetUIString") );
+		StaticGetUIString = (FStaticGetUIString)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetUIString") );
+		
 		PushStyleSheetPath = (FPushStyleSheetPath)FPlatformProcess::GetDllExport(DllHandle, TEXT("PushStyleSheetPath") );
 		SetSequence = (FSetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticSetSequence") );
 		GetSequence = (FGetSequence)FPlatformProcess::GetDllExport(DllHandle, TEXT("StaticGetSequence") );
 		SetOnPropertiesChangedCallback = (FSetOnPropertiesChangedCallback)FPlatformProcess::GetDllExport(DllHandle, TEXT("SetOnPropertiesChangedCallback") );
 		SetOnTimeChangedInUICallback = (FSetOnTimeChangedInUICallback)FPlatformProcess::GetDllExport(DllHandle, TEXT("SetOnTimeChangedCallback") );
+
 		checkf( OpenUI, L"OpenUI function not found!" );
 		checkf( CloseUI, L"CloseUI function not found!" );
 		checkf( PushStyleSheetPath, L"PushStyleSheetPath function not found!" );
@@ -912,6 +953,9 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* E
 		checkf( SetOnPropertiesChangedCallback, L"SetOnPropertiesChangedCallback function not found!" );
 		checkf( SetOnTimeChangedInUICallback, L"SetOnTimeChangedInUICallback function not found!" );
 		
+		checkf( StaticSetUIString, L"StaticSetUIString function not found!" );
+		checkf( StaticGetUIString, L"StaticGetUIString function not found!" );
+
 		PushStyleSheetPath((trueSkyPluginPath+"\\Resources\\qss\\").c_str());
 
 		IMainFrameModule& MainFrameModule = IMainFrameModule::Get();
@@ -953,7 +997,6 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* E
 			//	GetWindowRect(EditorInstance.EditorWindowHWND, &ParentRect);
 
 				OpenUI( EditorInstance.EditorWindowHWND, &ClientRect, &ParentRect, Env,UNREAL_STYLE);
-
 				// Overload main window's WndProc
 				EditorInstance.OrigEditorWindowWndProc = (WNDPROC)GetWindowLongPtr( EditorInstance.EditorWindowHWND, GWLP_WNDPROC );
 				SetWindowLongPtr( EditorInstance.EditorWindowHWND, GWLP_WNDPROC, (LONG_PTR)EditorWindowWndProc );
@@ -1247,7 +1290,7 @@ void FTrueSkyPlugin::PropertiesChanged(ATrueSkySequenceActor* a)
 		OnToggleRendering();
 	}
 	SetRenderFloat("SimpleCloudShadowing",a->SimpleCloudShadowing);
-	//SetRenderString("LicenceKey",TCHAR_TO_ANSI(*a->LicenceKey));
+//	SetUIString("LicenceKey",TCHAR_TO_ANSI(*a->LicenceKey));
 }
 
 ATrueSkySequenceActor* FTrueSkyPlugin::GetActor()
