@@ -22,8 +22,8 @@ class ATrueSkySequenceActor : public AActor
 	UPROPERTY(EditAnywhere, Category=TrueSky)
 	UTrueSkySequenceAsset* ActiveSequence;
 
-	UPROPERTY(EditAnywhere, Category=TrueSky)
-	UTextureRenderTarget2D* CloudShadowRenderTarget;
+	//UPROPERTY(EditAnywhere, Category=TrueSky)
+	//UTextureRenderTarget2D* CloudShadowRenderTarget;
 
 	UPROPERTY(EditAnywhere, Category=TrueSky,meta=(ClampMin = "0.0", ClampMax = "1.0"))
 	float SimpleCloudShadowing;

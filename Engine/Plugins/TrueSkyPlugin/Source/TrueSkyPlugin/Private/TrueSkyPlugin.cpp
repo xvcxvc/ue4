@@ -1,3 +1,6 @@
+#define TRUESKY_LICENCE_KEY "F9B84314064801F6"
+// Replace the string above with your own licence key!
+
 // Copyright 2013-2014 Simul Software Ltd. All Rights Reserved.
 
 #include "TrueSkyPluginPrivatePCH.h"
@@ -14,7 +17,6 @@
 #include "RendererInterface.h"
 #include "DynamicRHI.h"
 #include "UnrealClient.h"
-//#include "Canvas.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TrueSky, Log, All);
 
@@ -195,14 +197,14 @@ protected:
 	DECLARE_TOGGLE(RenderSky)
 	DECLARE_TOGGLE(ShowFades)
 	DECLARE_TOGGLE(ShowCompositing)
-	DECLARE_TOGGLE(ShowCloudTextures)
+	DECLARE_TOGGLE(Show3DCloudTextures)
 	DECLARE_TOGGLE(Show2DCloudTextures)
 
 	DECLARE_ACTION(RecompileShaders)
 	void ShowDocumentation()
 	{
 	//	FString DocumentationUrl = FDocumentationLink::ToUrl(Link);
-		FString DocumentationUrl="https://www.simul.co/wp-content/uploads/documentation/html/index.html";
+		FString DocumentationUrl="https://www.simul.co/wp-content/uploads/documentation/ue4/trueSkyUE4.html";
 		FPlatformProcess::LaunchURL(*DocumentationUrl, NULL, NULL);
 	}
 	
@@ -337,6 +339,7 @@ public:
 		UI_COMMAND(ToggleRenderSky			,"Render Sky"			,"Toggles the rendering.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(ToggleFades				,"Atmospheric Tables"	,"Toggles the atmospheric tables overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(ToggleShowCompositing	,"Compositing"			,"Toggles the compositing overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
+		UI_COMMAND(ToggleShow3DCloudTextures,"Show 3D Cloud Textures","Toggles the 3D cloud overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(ToggleShow2DCloudTextures,"Show 2D Cloud Textures","Toggles the 2D cloud overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(TriggerRecompileShaders	,"Recompile Shaders"	,"Recompiles the shaders.", EUserInterfaceActionType::Button, FInputGesture());
 		UI_COMMAND(TriggerShowDocumentation	,"trueSKY Documentation..."	,"Shows the trueSKY help pages.", EUserInterfaceActionType::Button, FInputGesture());
@@ -346,6 +349,7 @@ public:
 	TSharedPtr<FUICommandInfo> ToggleRenderSky;
 	TSharedPtr<FUICommandInfo> ToggleFades;
 	TSharedPtr<FUICommandInfo> ToggleShowCompositing;
+	TSharedPtr<FUICommandInfo> ToggleShow3DCloudTextures;
 	TSharedPtr<FUICommandInfo> ToggleShow2DCloudTextures;
 	TSharedPtr<FUICommandInfo> TriggerRecompileShaders;
 	TSharedPtr<FUICommandInfo> TriggerShowDocumentation;
@@ -541,6 +545,11 @@ void FTrueSkyPlugin::StartupModule()
 								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked),
 								FIsActionChecked::CreateRaw(this, &FTrueSkyPlugin::IsToggledShowCompositing)
 								);
+		CommandList->MapAction( FTrueSkyCommands::Get().ToggleShow3DCloudTextures,
+								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleShow3DCloudTextures),
+								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked),
+								FIsActionChecked::CreateRaw(this, &FTrueSkyPlugin::IsToggledShow3DCloudTextures)
+								);
 		CommandList->MapAction( FTrueSkyCommands::Get().ToggleShow2DCloudTextures,
 								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleShow2DCloudTextures),
 								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked),
@@ -727,6 +736,7 @@ void FTrueSkyPlugin::FillOverlayMenu(FMenuBuilder& MenuBuilder)
 	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleRenderSky);
 	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleFades);
 	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleShowCompositing);
+	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleShow3DCloudTextures);
 	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleShow2DCloudTextures);
 }
 /** Returns environment variable value */
@@ -996,7 +1006,8 @@ FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* E
 
 			//	GetWindowRect(EditorInstance.EditorWindowHWND, &ParentRect);
 
-				OpenUI( EditorInstance.EditorWindowHWND, &ClientRect, &ParentRect, Env,UNREAL_STYLE);
+				OpenUI( EditorInstance.EditorWindowHWND, &ClientRect, &ParentRect, Env, UNREAL_STYLE);
+				SetUIString(&EditorInstance,"LicenceKey",TRUESKY_LICENCE_KEY);
 				// Overload main window's WndProc
 				EditorInstance.OrigEditorWindowWndProc = (WNDPROC)GetWindowLongPtr( EditorInstance.EditorWindowHWND, GWLP_WNDPROC );
 				SetWindowLongPtr( EditorInstance.EditorWindowHWND, GWLP_WNDPROC, (LONG_PTR)EditorWindowWndProc );
@@ -1231,7 +1242,7 @@ void FTrueSkyPlugin::OnToggleRendering()
 IMPLEMENT_TOGGLE(RenderSky)
 IMPLEMENT_TOGGLE(ShowFades)
 IMPLEMENT_TOGGLE(ShowCompositing)
-IMPLEMENT_TOGGLE(ShowCloudTextures)
+IMPLEMENT_TOGGLE(Show3DCloudTextures)
 IMPLEMENT_TOGGLE(Show2DCloudTextures)
 
 bool FTrueSkyPlugin::IsToggleRenderingEnabled()
@@ -1290,7 +1301,6 @@ void FTrueSkyPlugin::PropertiesChanged(ATrueSkySequenceActor* a)
 		OnToggleRendering();
 	}
 	SetRenderFloat("SimpleCloudShadowing",a->SimpleCloudShadowing);
-//	SetUIString("LicenceKey",TCHAR_TO_ANSI(*a->LicenceKey));
 }
 
 ATrueSkySequenceActor* FTrueSkyPlugin::GetActor()
