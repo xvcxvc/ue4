@@ -204,7 +204,7 @@ protected:
 	void ShowDocumentation()
 	{
 	//	FString DocumentationUrl = FDocumentationLink::ToUrl(Link);
-		FString DocumentationUrl="https://www.simul.co/wp-content/uploads/documentation/ue4/trueSkyUE4.html";
+		FString DocumentationUrl="https://www.simul.co/wp-content/uploads/documentation/ue4/TrueSkyUE4.html";
 		FPlatformProcess::LaunchURL(*DocumentationUrl, NULL, NULL);
 	}
 	
@@ -391,6 +391,10 @@ bool FTrueSkyPlugin::SupportsDynamicReloading()
 
 void FTrueSkyPlugin::Tick( float DeltaTime )
 {
+	if(IsInGameThread())
+	{
+
+	}
 	CachedDeltaSeconds = DeltaTime;
 #ifdef ENABLE_AUTO_SAVING
 	if ( AutoSaveTimer > 0.0f )
@@ -1292,6 +1296,7 @@ bool FTrueSkyPlugin::IsAddSequenceEnabled()
 	}
 	return true;
 }
+
 void FTrueSkyPlugin::PropertiesChanged(ATrueSkySequenceActor* a)
 {
 	if(!a)
