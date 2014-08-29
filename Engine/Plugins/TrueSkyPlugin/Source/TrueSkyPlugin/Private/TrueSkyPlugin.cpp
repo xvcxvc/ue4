@@ -32,6 +32,13 @@ DECLARE_LOG_CATEGORY_EXTERN(LogD3D11RHI, Log, All);
 
 #include "../Private/Windows/D3D11RHIBasePrivate.h"
 #include "StaticArray.h"
+#include "ActorCrossThreadProperties.h"
+
+ActorCrossThreadProperties actorCrossThreadProperties;
+extern ActorCrossThreadProperties *GetActorCrossThreadProperties()
+{
+	return &actorCrossThreadProperties;
+}
 
 /** This is a macro that casts a dynamically bound RHI reference to the appropriate D3D type. */
 #define DYNAMIC_CAST_D3D11RESOURCE(Type,Name) \
@@ -140,10 +147,8 @@ public:
 	/** If there is a TrueSkySequenceActor in the persistent level, this returns that actor's TrueSkySequenceAsset */
 	UTrueSkySequenceAsset*	GetActiveSequence();
 	
-	/** If there is a TrueSkySequenceActor in the persistent level, this returns that actor.*/
-	ATrueSkySequenceActor* GetActor();
-	
-	void PropertiesChanged(ATrueSkySequenceActor* a);
+	void UpdateFromActor();
+
 	struct SEditorInstance
 	{
 		/** Editor window */
@@ -194,7 +199,6 @@ protected:
 	bool					IsToggleRenderingChecked();
 
 	/** Called when the Toggle Fades Overlay button is pressed*/
-	DECLARE_TOGGLE(RenderSky)
 	DECLARE_TOGGLE(ShowFades)
 	DECLARE_TOGGLE(ShowCompositing)
 	DECLARE_TOGGLE(Show3DCloudTextures)
@@ -315,6 +319,8 @@ protected:
 	static void				OnTimeChangedCallback(HWND OwnerHWND,float t);
 	
 	FRenderTarget			*cloudShadowRenderTarget;
+
+	bool					actorPropertiesChanged;
 };
 
 
@@ -336,7 +342,6 @@ public:
 	virtual void RegisterCommands() override
 	{
 		UI_COMMAND(AddSequence				,"Add Sequence To Scene","Adds a TrueSkySequenceActor to the current scene", EUserInterfaceActionType::Button, FInputGesture());
-		UI_COMMAND(ToggleRenderSky			,"Render Sky"			,"Toggles the rendering.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(ToggleFades				,"Atmospheric Tables"	,"Toggles the atmospheric tables overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(ToggleShowCompositing	,"Compositing"			,"Toggles the compositing overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
 		UI_COMMAND(ToggleShow3DCloudTextures,"Show 3D Cloud Textures","Toggles the 3D cloud overlay.", EUserInterfaceActionType::ToggleButton, FInputGesture());
@@ -346,7 +351,6 @@ public:
 	}
 public:
 	TSharedPtr<FUICommandInfo> AddSequence;
-	TSharedPtr<FUICommandInfo> ToggleRenderSky;
 	TSharedPtr<FUICommandInfo> ToggleFades;
 	TSharedPtr<FUICommandInfo> ToggleShowCompositing;
 	TSharedPtr<FUICommandInfo> ToggleShow3DCloudTextures;
@@ -361,6 +365,7 @@ FTrueSkyPlugin* FTrueSkyPlugin::Instance = NULL;
 static std::string trueSkyPluginPath="../../Plugins/TrueSkyPlugin";
 FTrueSkyPlugin::FTrueSkyPlugin()
 	:cloudShadowRenderTarget(NULL)
+	,actorPropertiesChanged(true)
 {
 	Instance = this;
 #ifdef SHARED_FROM_THIS
@@ -371,6 +376,7 @@ TSharedRef< FTrueSkyPlugin,(ESPMode::Type)0 > ref=AsShared();
 	AutoSaveTimer = 0.0f;
 	//we need to pass through real DeltaSecond; from our scene Actor?
 	CachedDeltaSeconds = 0.0333f;
+
 }
 
 FTrueSkyPlugin::~FTrueSkyPlugin()
@@ -534,11 +540,6 @@ void FTrueSkyPlugin::StartupModule()
 								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::ShowDocumentation)
 								);
 	{
-		CommandList->MapAction( FTrueSkyCommands::Get().ToggleRenderSky,
-								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleRenderSky),
-								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked),
-								FIsActionChecked::CreateRaw(this, &FTrueSkyPlugin::IsToggledRenderSky)
-								);
 		CommandList->MapAction( FTrueSkyCommands::Get().ToggleFades,
 								FExecuteAction::CreateRaw(this, &FTrueSkyPlugin::OnToggleShowFades),
 								FCanExecuteAction::CreateRaw(this, &FTrueSkyPlugin::IsToggleRenderingChecked),
@@ -625,13 +626,9 @@ void FTrueSkyPlugin::RenderFrame( FPostOpaqueRenderParameters& RenderParameters 
 	check(IsInRenderingThread());
 	if(!RenderParameters.ViewportRect.Width()||!RenderParameters.ViewportRect.Height())
 		return;
+	UpdateFromActor();
 	if(!RenderingEnabled )
-	{
-		ATrueSkySequenceActor *actor=GetActor();
-		PropertiesChanged(actor);
-		if(!RenderingEnabled )
-			return;
-	}
+		return;
 	SCOPED_DRAW_EVENT(TrueSkyRenderFrame, FColor( 0, 0, 255 ) );
 	if( RenderingEnabled )
 	{
@@ -737,7 +734,6 @@ void FTrueSkyPlugin::FillMenu( FMenuBuilder& MenuBuilder )
 	
 void FTrueSkyPlugin::FillOverlayMenu(FMenuBuilder& MenuBuilder)
 {		
-	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleRenderSky);
 	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleFades);
 	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleShowCompositing);
 	MenuBuilder.AddMenuEntry(FTrueSkyCommands::Get().ToggleShow3DCloudTextures);
@@ -1243,7 +1239,6 @@ void FTrueSkyPlugin::OnToggleRendering()
 	}
 }
 
-IMPLEMENT_TOGGLE(RenderSky)
 IMPLEMENT_TOGGLE(ShowFades)
 IMPLEMENT_TOGGLE(ShowCompositing)
 IMPLEMENT_TOGGLE(Show3DCloudTextures)
@@ -1277,7 +1272,8 @@ void FTrueSkyPlugin::OnAddSequence()
 	if ( SequenceActor == NULL )
 	{
 		// Add sequence actor
-		GWorld->SpawnActor<ATrueSkySequenceActor>(ATrueSkySequenceActor::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+		SequenceActor=GWorld->SpawnActor<ATrueSkySequenceActor>(ATrueSkySequenceActor::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+	
 	}
 	else
 	{
@@ -1297,41 +1293,19 @@ bool FTrueSkyPlugin::IsAddSequenceEnabled()
 	return true;
 }
 
-void FTrueSkyPlugin::PropertiesChanged(ATrueSkySequenceActor* a)
+void FTrueSkyPlugin::UpdateFromActor()
 {
-	if(!a)
-		return;
-	if(a->Visible!=RenderingEnabled)
+	if(actorCrossThreadProperties.Visible!=RenderingEnabled)
 	{
 		OnToggleRendering();
 	}
-	SetRenderFloat("SimpleCloudShadowing",a->SimpleCloudShadowing);
-}
-
-ATrueSkySequenceActor* FTrueSkyPlugin::GetActor()
-{
-	ULevel* const Level = GWorld->PersistentLevel;
-	for(int i = 0; i < Level->Actors.Num(); i++)
-	{
-		if ( ATrueSkySequenceActor* SequenceActor = Cast<ATrueSkySequenceActor>(Level->Actors[i]) )
-		{
-			return SequenceActor;
-		}
-	}
-	return NULL;
+	SetRenderFloat("SimpleCloudShadowing",actorCrossThreadProperties.SimpleCloudShadowing);
+	SetRenderFloat("SimpleCloudShadowSharpness",actorCrossThreadProperties.SimpleCloudShadowSharpness);
 }
 
 UTrueSkySequenceAsset* FTrueSkyPlugin::GetActiveSequence()
 {
-	ULevel* const Level = GWorld->PersistentLevel;
-	for(int i = 0; i < Level->Actors.Num(); i++)
-	{
-		if ( ATrueSkySequenceActor* SequenceActor = Cast<ATrueSkySequenceActor>(Level->Actors[i]) )
-		{
-			return SequenceActor->ActiveSequence;
-		}
-	}
-	return NULL;
+	return actorCrossThreadProperties.activeSequence;
 }
 
 
