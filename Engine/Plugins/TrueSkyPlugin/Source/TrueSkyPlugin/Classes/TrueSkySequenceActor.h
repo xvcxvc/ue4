@@ -8,18 +8,19 @@ UCLASS(hideCategories=(Actor, Advanced, Display, Events, Object, Attachment, Mov
 class ATrueSkySequenceActor : public AActor
 {
 	GENERATED_UCLASS_BODY()
-		
+	~ATrueSkySequenceActor();
+	void Destroyed();
 	//UPROPERTY(EditAnywhere, Category=TrueSky)
 	//FString LicenceKey;
 
 	UFUNCTION(BlueprintCallable, Category=TrueSky)
 	void SetTime( float value );
 
-	UFUNCTION(BlueprintCallable, BlueprintPure,Category=TrueSky)
-	FRotator GetSunRotation();
+	UFUNCTION(BlueprintCallable, Category=TrueSky)
+	FRotator GetSunRotation() const;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure,Category=TrueSky)
-	FLinearColor GetSunColor();
+	UFUNCTION(BlueprintCallable, Category=TrueSky)
+	FLinearColor GetSunColor() const;
 
 	UPROPERTY(EditAnywhere, Category=TrueSky)
 	UTrueSkySequenceAsset* ActiveSequence;

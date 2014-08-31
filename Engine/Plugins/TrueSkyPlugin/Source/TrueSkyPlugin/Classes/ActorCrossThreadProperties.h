@@ -4,11 +4,13 @@
 struct ActorCrossThreadProperties
 {
 	ActorCrossThreadProperties()
-		:Visible(false)
+		:Destroyed(false)
+		,Visible(false)
 		,SimpleCloudShadowing(0.0f)
 		,activeSequence(NULL)
 	{
 	}
+	bool Destroyed;
 	bool Visible;
 	float SimpleCloudShadowing;
 	float SimpleCloudShadowSharpness;

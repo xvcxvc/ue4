@@ -1,4 +1,4 @@
-#define TRUESKY_LICENCE_KEY "F9B84314064801F6"
+#define TRUESKY_LICENCE_KEY "77ACC0FE885C8222"
 // Replace the string above with your own licence key!
 
 // Copyright 2013-2014 Simul Software Ltd. All Rights Reserved.
@@ -214,6 +214,7 @@ protected:
 	
 	/** Adds a TrueSkySequenceActor to the current scene */
 	void					OnAddSequence();
+	void					OnSequenceDestroyed();
 	/** Returns true if user can add a sequence actor */
 	bool					IsAddSequenceEnabled();
 
@@ -381,12 +382,7 @@ TSharedRef< FTrueSkyPlugin,(ESPMode::Type)0 > ref=AsShared();
 
 FTrueSkyPlugin::~FTrueSkyPlugin()
 {
-	//static int n;
-	//n=TickableObjects.Num();
-	//char c[100];
-	//sprintf(c,"%d",n);
 	Instance = NULL;
-	//staticSharedRef.Reset();
 }
 
 
@@ -820,7 +816,7 @@ static HWND GetSWindowHWND(const TSharedPtr<SWindow>& Window)
 
 bool FTrueSkyPlugin::InitRenderingInterface(  )
 {
-#ifdef _DEBUG
+#if 0
 	const TCHAR* const DllPath =L"TrueSkyPluginRender_MDd.dll";
 #else
 	const TCHAR* const DllPath =L"TrueSkyPluginRender_MD.dll";
@@ -931,7 +927,7 @@ static std::string WStringToUtf8(const wchar_t *src_w)
 #define warnf(expr, ...)				{ if(!(expr)) FDebug::AssertFailed( #expr, __FILE__, __LINE__, ##__VA_ARGS__ ); CA_ASSUME(expr); }
 FTrueSkyPlugin::SEditorInstance* FTrueSkyPlugin::CreateEditorInstance(   void* Env )
 {
-#ifdef _DEBUG
+#if 0
 	const TCHAR* const DllPath =L"TrueSkyUI_MDd.dll";
 #else
 	const TCHAR* const DllPath =L"TrueSkyUI_MD.dll";
@@ -1273,7 +1269,6 @@ void FTrueSkyPlugin::OnAddSequence()
 	{
 		// Add sequence actor
 		SequenceActor=GWorld->SpawnActor<ATrueSkySequenceActor>(ATrueSkySequenceActor::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
-	
 	}
 	else
 	{
@@ -1281,11 +1276,15 @@ void FTrueSkyPlugin::OnAddSequence()
 	}
 }
 
+void FTrueSkyPlugin::OnSequenceDestroyed()
+{
+}
+
 bool FTrueSkyPlugin::IsAddSequenceEnabled()
 {
 	// Returns false if TrueSkySequenceActor already exists!
 	ULevel* const Level = GWorld->PersistentLevel;
-	for(int i = 0; i < Level->Actors.Num(); i++)
+	for(int i=0;i<Level->Actors.Num();i++)
 	{
 		if ( Cast<ATrueSkySequenceActor>(Level->Actors[i]) )
 			return false;
@@ -1295,12 +1294,17 @@ bool FTrueSkyPlugin::IsAddSequenceEnabled()
 
 void FTrueSkyPlugin::UpdateFromActor()
 {
+	if(actorCrossThreadProperties.Destroyed)
+		actorCrossThreadProperties.Visible=false;
 	if(actorCrossThreadProperties.Visible!=RenderingEnabled)
 	{
 		OnToggleRendering();
 	}
-	SetRenderFloat("SimpleCloudShadowing",actorCrossThreadProperties.SimpleCloudShadowing);
-	SetRenderFloat("SimpleCloudShadowSharpness",actorCrossThreadProperties.SimpleCloudShadowSharpness);
+	if(RenderingEnabled)
+	{
+		SetRenderFloat("SimpleCloudShadowing",actorCrossThreadProperties.SimpleCloudShadowing);
+		SetRenderFloat("SimpleCloudShadowSharpness",actorCrossThreadProperties.SimpleCloudShadowSharpness);
+	}
 }
 
 UTrueSkySequenceAsset* FTrueSkyPlugin::GetActiveSequence()

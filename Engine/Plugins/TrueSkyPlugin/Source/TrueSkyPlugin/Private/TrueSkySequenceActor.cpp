@@ -15,12 +15,28 @@ ATrueSkySequenceActor::ATrueSkySequenceActor(const class FPostConstructInitializ
 	SetActorTickEnabled(true);
 }
 
+ATrueSkySequenceActor::~ATrueSkySequenceActor()
+{
+	ActorCrossThreadProperties *A	=GetActorCrossThreadProperties();
+	if(A)
+		A->Destroyed=true;
+}
+
+void ATrueSkySequenceActor::Destroyed()
+{
+	ActorCrossThreadProperties *A	=GetActorCrossThreadProperties();
+	if(!A)
+		return;
+	A->Destroyed=true;
+	AActor::Destroyed();
+}
+
 void ATrueSkySequenceActor::SetTime( float value )
 {
 	ITrueSkyPlugin::Get().SetRenderFloat("time",value);
 }
 
-FRotator ATrueSkySequenceActor::GetSunRotation()
+FRotator ATrueSkySequenceActor::GetSunRotation() const
 {
 	float azimuth	=ITrueSkyPlugin::Get().GetRenderFloat("SunAzimuthDegrees");
 	float elevation	=ITrueSkyPlugin::Get().GetRenderFloat("SunElevationDegrees");
@@ -28,7 +44,7 @@ FRotator ATrueSkySequenceActor::GetSunRotation()
 	return sunRotation;
 }
 
-FLinearColor ATrueSkySequenceActor::GetSunColor()
+FLinearColor ATrueSkySequenceActor::GetSunColor() const
 {
 	float r	=ITrueSkyPlugin::Get().GetRenderFloat("SunIrradianceRed");
 	float g	=ITrueSkyPlugin::Get().GetRenderFloat("SunIrradianceGreen");
@@ -41,6 +57,7 @@ void ATrueSkySequenceActor::TransferProperties()
 	ActorCrossThreadProperties *A	=GetActorCrossThreadProperties();
 	if(!A)
 		return;
+	A->Destroyed			=false;
 	A->Visible				=Visible;
 	A->SimpleCloudShadowing	=SimpleCloudShadowing;
 	A->activeSequence		=ActiveSequence;
