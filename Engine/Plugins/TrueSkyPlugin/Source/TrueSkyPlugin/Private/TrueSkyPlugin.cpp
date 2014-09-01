@@ -1,4 +1,4 @@
-#define TRUESKY_LICENCE_KEY "77ACC0FE885C8222"
+#define TRUESKY_LICENCE_KEY "place key here"
 // Replace the string above with your own licence key!
 
 // Copyright 2013-2014 Simul Software Ltd. All Rights Reserved.
