@@ -22,6 +22,12 @@ ATrueSkySequenceActor::~ATrueSkySequenceActor()
 		A->Destroyed=true;
 }
 
+void ATrueSkySequenceActor::PostInitProperties()
+{
+	TransferProperties();
+    Super::PostInitProperties();
+}
+
 void ATrueSkySequenceActor::Destroyed()
 {
 	ActorCrossThreadProperties *A	=GetActorCrossThreadProperties();
@@ -69,7 +75,9 @@ void ATrueSkySequenceActor::TickActor(float DeltaTime,enum ELevelTick TickType,F
 	TransferProperties();
 }
 
+#if UE_EDITOR
 void ATrueSkySequenceActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	TransferProperties();
 }
+#endif

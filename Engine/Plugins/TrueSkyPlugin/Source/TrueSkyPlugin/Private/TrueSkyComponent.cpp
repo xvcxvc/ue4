@@ -1,7 +1,6 @@
 #include "TrueSkyPluginPrivatePCH.h"
 #include "TrueSkyComponent.h"
 
-
 UTrueSkyComponent::UTrueSkyComponent(const class FPostConstructInitializeProperties& PCIP):Super(PCIP)
 {
 }
@@ -21,3 +20,4 @@ void UTrueSkyComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 void UTrueSkyComponent::OnUnregister()
 {
 }
+

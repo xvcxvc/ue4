@@ -1,5 +1,5 @@
 #pragma once
-
+#if UE_EDITOR
 #include "AssetToolsPrivatePCH.h"
 #include "Toolkits/IToolkitHost.h"
 #include "TrueSkySequenceAsset.h"
@@ -20,3 +20,4 @@ private:
 	/** Handler for when Edit is selected */
 	void ExecuteEdit(TArray<TWeakObjectPtr<UTrueSkySequenceAsset>> Objects);
 };
+#endif

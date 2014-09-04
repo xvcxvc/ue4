@@ -1,12 +1,12 @@
 {
-    "PluginFileVersion" : 1,
+    "PluginFileVersion" : 2,
 	
 	"FriendlyName" : "TrueSky Plugin",
 	"Version" : 1,
-	"VersionName" : "0.2",
+	"VersionName" : "1.0",
 	"CreatedBy" : "Simul Software Ltd.",
 	"CreatedByURL" : "http://simul.co/",
-	"MinEngineVersion" : 1579795,
+	"EngineVersion" : "4.3.0",
 	"Description" : "TrueSky plugin for real-time sky simulation.",
 	"CategoryPath" : "Rendering.Custom",
 	
@@ -16,7 +16,7 @@
 			"Name" : "TrueSkyPlugin",
 			"Type" : "Runtime",
 			"LoadingPhase": "PostDefault",
-			"WhitelistPlatforms" : [ "Win64", "Win32" ]
+			"WhitelistPlatforms" : [ "Win64" ]
 		}
 	],
 	"CanContainContent" : true

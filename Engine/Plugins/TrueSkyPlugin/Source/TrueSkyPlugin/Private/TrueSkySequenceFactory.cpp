@@ -1,7 +1,7 @@
 #include "TrueSkyPluginPrivatePCH.h"
+#if UE_EDITOR
 #include "TrueSkySequenceFactory.h"
 #include "TrueSkySequenceAsset.h"
-
 UTrueSkySequenceFactory::UTrueSkySequenceFactory(const class FPostConstructInitializeProperties& PCIP)
 	: Super(PCIP)
 {
@@ -21,3 +21,4 @@ FName UTrueSkySequenceFactory::GetNewAssetThumbnailOverride() const
 {
 	return TEXT("ClassThumbnail.TrueSkySequenceAsset");
 }
+#endif

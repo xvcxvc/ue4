@@ -1,3 +1,4 @@
+#if UE_EDITOR
 #include "TrueSkyPluginPrivatePCH.h"
 #include "AssetTypeActions_TrueSkySequence.h"
 #include "TrueSkySequenceAsset.h"
@@ -12,3 +13,4 @@ void FAssetTypeActions_TrueSkySequence::OpenAssetEditor( const TArray<UObject*>&
 		}
 	}
 }
+#endif

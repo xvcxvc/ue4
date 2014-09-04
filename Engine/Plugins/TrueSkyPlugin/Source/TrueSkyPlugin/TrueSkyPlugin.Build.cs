@@ -8,39 +8,54 @@ namespace UnrealBuildTool.Rules
 		{
 			PublicIncludePaths.AddRange(
 				new string[] {
-					"Core",
-                    "Developer/AssetTools/Private",
-                    "Editor/PlacementMode/Private",
-					// ... add public include paths required here ...
+				"Core",
+				"CoreUObject",
+				"Engine",
 				}
 				);
+			if(UEBuildConfiguration.bBuildEditor==true)
+			{
+				PublicIncludePaths.AddRange(new string[] {
+					"Editor/LevelEditor/Public",
+					"Editor/PlacementMode/Private",
+					"Editor/MainFrame/Public/Interfaces",
+                    "Developer/AssetTools/Private",
+				});
+			}
 
+			// ... Add private include paths required here ...
 			PrivateIncludePaths.AddRange(
 				new string[] {
 					"TrueSkyPlugin/Private"
-					// ... add other private include paths required here ...
 				}
 				);
 
+			// Add public dependencies that we statically link with here ...
 			PublicDependencyModuleNames.AddRange(
-				new string[]
-				{
-					"Core",
-					"CoreUObject",
-					"Slate",
-					"Engine",
-					"UnrealEd",
-					"LevelEditor",
-					"MainFrame",
-                    "AssetTools",
-                    "PlacementMode",
-                    "UnrealEd",
-                    "CollectionManager",
-                    "ContentBrowser",
-					"EditorStyle"
-					// ... add other public dependencies that you statically link with here ...
-				}
+					new string[]
+					{
+						"Core",
+						"CoreUObject",
+						"Slate",
+						"Engine",
+					}
 				);
+
+			if(UEBuildConfiguration.bBuildEditor==true)
+			{
+				PublicDependencyModuleNames.AddRange(
+						new string[]
+						{
+							"UnrealEd",
+							"EditorStyle",
+							"CollectionManager",
+							"EditorStyle",
+							"AssetTools",
+							"PlacementMode",
+							"ContentBrowser"
+						}
+					);
+			}
 
 			PrivateDependencyModuleNames.AddRange(
 				new string[]
@@ -55,7 +70,13 @@ namespace UnrealBuildTool.Rules
 				}
 				);
 
-            AddThirdPartyPrivateStaticDependencies(Target,"DX11");
+            AddThirdPartyPrivateStaticDependencies(Target,
+				
+				"DX11"
+				
+				);
+
+
 		}
 	}
 }

@@ -6,5 +6,8 @@
 // add includes for headers that are used in most of your module's source files though.
 
 #include "RenderResource.h"
+#if UE_EDITOR
 #include "UnrealEd.h"
-#include "UnrealClient.h"
+#else
+#include "Engine.h"
+#endif

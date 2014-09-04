@@ -36,10 +36,11 @@ class ATrueSkySequenceActor : public AActor
 
 	UPROPERTY(EditAnywhere, Category=TrueSky)
 	bool Visible;
-	
+	void PostInitProperties();
 	void TickActor( float DeltaTime, enum ELevelTick TickType, FActorTickFunction& ThisTickFunction ) override;
+#if UE_EDITOR
 	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-
+#endif
 protected:
 	UTrueSkyComponent *trueSkyComponent;
 	void TransferProperties();
