@@ -7,11 +7,11 @@ namespace UnrealBuildTool.Rules
 		public TrueSkyPlugin(TargetInfo Target)
 		{
 			PublicIncludePaths.AddRange(
-				new string[] {
-				"Core",
-				"CoreUObject",
-				"Engine",
-				}
+					new string[] {
+					"Core",
+					"CoreUObject",
+					"Engine",
+					}
 				);
 			if(UEBuildConfiguration.bBuildEditor==true)
 			{

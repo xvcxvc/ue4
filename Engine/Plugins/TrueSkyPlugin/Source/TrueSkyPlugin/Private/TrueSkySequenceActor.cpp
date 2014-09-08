@@ -24,8 +24,20 @@ ATrueSkySequenceActor::~ATrueSkySequenceActor()
 
 void ATrueSkySequenceActor::PostInitProperties()
 {
-	TransferProperties();
     Super::PostInitProperties();
+	TransferProperties();
+}
+
+void ATrueSkySequenceActor::PostLoad()
+{
+    Super::PostLoad();
+	TransferProperties();
+}
+
+void ATrueSkySequenceActor::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+	TransferProperties();
 }
 
 void ATrueSkySequenceActor::Destroyed()
@@ -40,6 +52,47 @@ void ATrueSkySequenceActor::Destroyed()
 void ATrueSkySequenceActor::SetTime( float value )
 {
 	ITrueSkyPlugin::Get().SetRenderFloat("time",value);
+}
+
+
+float ATrueSkySequenceActor::GetFloat(FString name )
+{
+	return ITrueSkyPlugin::Get().GetRenderFloat(name);
+}
+
+void ATrueSkySequenceActor::SetFloat(FString name, float value )
+{
+	ITrueSkyPlugin::Get().SetRenderFloat(name,value);
+}
+
+int32 ATrueSkySequenceActor::GetInt(FString name )
+{
+	return ITrueSkyPlugin::Get().GetRenderInt(name);
+}
+
+void ATrueSkySequenceActor::SetInt(FString name, int32 value )
+{
+	ITrueSkyPlugin::Get().SetRenderInt(name,value);
+}
+
+float ATrueSkySequenceActor::GetKeyframeFloat(uint32 k,FString name )
+{
+	return ITrueSkyPlugin::Get().GetKeyframeFloat(k,name);
+}
+
+void ATrueSkySequenceActor::SetKeyframeFloat(uint32 k,FString name, float value )
+{
+	ITrueSkyPlugin::Get().SetKeyframeFloat(k,name,value);
+}
+
+int32 ATrueSkySequenceActor::GetKeyframeInt(uint32 k,FString name )
+{
+	return ITrueSkyPlugin::Get().GetKeyframeInt(k,name);
+}
+
+void ATrueSkySequenceActor::SetKeyframeInt(uint32 k,FString name, int32 value )
+{
+	ITrueSkyPlugin::Get().SetKeyframeInt(k,name,value);
 }
 
 FRotator ATrueSkySequenceActor::GetSunRotation() const
@@ -75,7 +128,8 @@ void ATrueSkySequenceActor::TickActor(float DeltaTime,enum ELevelTick TickType,F
 	TransferProperties();
 }
 
-#if UE_EDITOR
+
+#if WITH_EDITOR
 void ATrueSkySequenceActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	TransferProperties();

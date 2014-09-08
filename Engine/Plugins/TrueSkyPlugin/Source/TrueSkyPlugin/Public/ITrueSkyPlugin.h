@@ -35,10 +35,25 @@ public:
 		return FModuleManager::Get().IsModuleLoaded( "TrueSkyPlugin" );
 	}
 
-	virtual void OpenEditor(class UTrueSkySequenceAsset* const TrueSkySequence) = 0;
+	virtual void	SetRenderFloat(const FString& name, float value) = 0;
+	virtual float	GetRenderFloat(const FString& name) const = 0;
+	virtual void	SetRenderInt(const FString& name, int value) = 0;
+	virtual int		GetRenderInt(const FString& name) const = 0;
 
-	virtual void SetRenderFloat(const char* name, float value) = 0;
-	virtual float GetRenderFloat(const char* name) const = 0;
-//	virtual void ActorPropertiesChanged()=0;
+	virtual void	SetKeyframeFloat(unsigned,const FString& name, float value) = 0;
+	virtual float	GetKeyframeFloat(unsigned,const FString& name) const = 0;
+	virtual void	SetKeyframeInt(unsigned,const FString& name, int value) = 0;
+	virtual int		GetKeyframeInt(unsigned,const FString& name) const = 0;
+
+	virtual void	SetRenderBool(const FString& name, bool value) = 0;
+	virtual bool	GetRenderBool(const FString& name) const = 0;
+	virtual void	SetRenderString(const FString& name, const FString&  value)=0;
+	virtual FString	GetRenderString(const FString& name) const =0;
+	virtual void	TriggerAction(const FString& name) = 0;
+	virtual void	SetRenderingEnabled(bool) = 0;
+	
+	virtual class	UTrueSkySequenceAsset* GetActiveSequence()=0;
+	virtual void*	GetRenderEnvironment()=0;
+	virtual void	OnToggleRendering() = 0;
 };
 

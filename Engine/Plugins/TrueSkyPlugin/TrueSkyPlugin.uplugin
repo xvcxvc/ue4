@@ -1,9 +1,9 @@
 {
-    "PluginFileVersion" : 2,
+    "PluginFileVersion" : 3,
 	
 	"FriendlyName" : "TrueSky Plugin",
-	"Version" : 1,
-	"VersionName" : "1.0",
+	"Version" : 3,
+	"VersionName" : "3.0",
 	"CreatedBy" : "Simul Software Ltd.",
 	"CreatedByURL" : "http://simul.co/",
 	"EngineVersion" : "4.3.0",
@@ -16,6 +16,12 @@
 			"Name" : "TrueSkyPlugin",
 			"Type" : "Runtime",
 			"LoadingPhase": "PostDefault",
+			"WhitelistPlatforms" : [ "Win64" ]
+		},
+		{
+			"Name" : "TrueSkyEditorPlugin",
+			"Type" : "Developer",
+			"LoadingPhase" : "PostDefault",
 			"WhitelistPlatforms" : [ "Win64" ]
 		}
 	],

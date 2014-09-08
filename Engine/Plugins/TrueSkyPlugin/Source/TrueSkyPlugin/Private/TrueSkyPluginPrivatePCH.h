@@ -1,5 +1,5 @@
 // Copyright 1998-2013 Epic Games, Inc. All Rights Reserved.
-
+#pragma once
 #include "ITrueSkyPlugin.h"
 
 // You should place include statements to your module's private header files here.  You only need to
@@ -11,3 +11,15 @@
 #else
 #include "Engine.h"
 #endif
+
+enum PluginStyle
+{
+	DEFAULT_STYLE=0
+	,UNREAL_STYLE=1
+	,UNITY_STYLE=2
+	,UNITY_STYLE_DEFERRED=3
+};
+	struct Viewport
+	{
+		int x,y,w,h;
+	};
